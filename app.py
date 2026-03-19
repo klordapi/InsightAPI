@@ -749,7 +749,7 @@ def api_consulta_cnpj():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CNPJ não fornecido"}), 400
-    url_base = "http://klordapisBrasil.serveo.net/cnpj/"
+    url_base = "https://klordapi-rild.onrender.com/cnpj/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -759,7 +759,7 @@ def api_consulta_cpf():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CPF não fornecido"}), 400
-    url_base = "https://klordapisbrasil.serveo.net/cpf/"
+    url_base = "https://klordapi-rild.onrender.com/cpf/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -769,7 +769,7 @@ def api_consulta_cpf2():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CPF não fornecido"}), 400
-    url_base = "https://klordsearchapis.serveo.net/cpf/"
+    url_base = "https://klordapi-rild.onrender.com/cpf/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -779,7 +779,7 @@ def api_consulta_placa():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado PLACA não fornecido"}), 400
-    url_base = "http://klordapisBrasil.serveo.net/placa/"
+    url_base = "https://klordapi-rild.onrender.com/placa/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
     
@@ -799,7 +799,7 @@ def api_consulta_nome():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado NOME não fornecido"}), 400
-    url_base = "https://klordsearchapis.serveo.net/nome/"
+    url_base = "https://klordapi-rild.onrender.com/nome/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -809,7 +809,7 @@ def api_consulta_telefone():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado TELEFONE não fornecido"}), 400
-    url_base = "https://klordapisbrasil.serveo.net/telefone/"
+    url_base = "https://klordapi-rild.onrender.com/telefone/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
     
@@ -829,7 +829,7 @@ def api_consulta_foto_sp():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CPF/RG não fornecido"}), 400
-    url_base = "https://klordsearchapis.serveo.net/fotos/SP/"
+    url_base = "https://klordapi-rild.onrender.com/fotos/SP/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -839,7 +839,7 @@ def api_consulta_foto_rj():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CPF/RG não fornecido"}), 400
-    url_base = "http://klordsearchapis.serveo.net/fotorj/"
+    url_base = "https://klordapi-rild.onrender.com/fotorj/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -849,7 +849,7 @@ def api_consulta_foto_es():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CPF/RG não fornecido"}), 400
-    url_base = "https://klordsearchapis.serveo.net/fotos/ES/"
+    url_base = "https://klordapi-rild.onrender.com/fotos/ES/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -859,7 +859,7 @@ def api_consulta_renavam():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado RENAVAM não fornecido"}), 400
-    url_base = "https://klordsearchapis.serveo.net/renavam/"
+    url_base = "https://klordapi-rild.onrender.com/renavam/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
