@@ -7,6 +7,14 @@
             "nome_completo": "Administrador Owner",
             "email": "owner@klordbuscas.com",
             "tipo": "owner"
+        },
+        {
+            "usuario": "paulo",
+            "senha": "paulo37483",
+            "expiracao": null,
+            "nome_completo": "Paulo",
+            "email": "cliente@gmail.com",
+            "tipo": "usuario"
         }
     ]
 }
