@@ -598,7 +598,7 @@ def admin_manager():
 
 
 # =======================================================
-# ROTAS DE CONSULTA (MANTIDAS)
+# ROTAS DE CONSULTA (ATUALIZADAS - insightapi.ct.ws)
 # =======================================================
 
 @app.route('/api/consulta-cnpj')
@@ -606,7 +606,7 @@ def api_consulta_cnpj():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CNPJ não fornecido"}), 400
-    url_base = "http://klordapisBrasil.serveo.net/cnpj/"
+    url_base = "http://insightapi.ct.ws/cnpj/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -615,7 +615,7 @@ def api_consulta_cpf():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CPF não fornecido"}), 400
-    url_base = "https://klordapisbrasil.serveo.net/cpf/"
+    url_base = "https://insightapi.ct.ws/cpf/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -624,7 +624,7 @@ def api_consulta_cpf2():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CPF não fornecido"}), 400
-    url_base = "https://klordsearchapis.serveo.net/cpf/"
+    url_base = "https://insightapi.ct.ws/cpf/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -633,16 +633,16 @@ def api_consulta_placa():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado PLACA não fornecido"}), 400
-    url_base = "http://klordapisBrasil.serveo.net/placa/"
+    url_base = "http://insightapi.ct.ws/placa/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
-
+    
 @app.route('/api/consulta-placa-completa')
 def api_consulta_placa_completa():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado PLACA não fornecido"}), 400
-    url_base = "https://datazinapis.serveo.net/api/token=91919/consulta?tipo=placacompleta&dado="
+    url_base = "https://insightapi.ct.ws/api/token=91919/consulta?tipo=placacompleta&dado="
     resultado = proxy_consulta(url_base, dado, requires_token_external=False)
     return jsonify(resultado)
 
@@ -651,7 +651,7 @@ def api_consulta_nome():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado NOME não fornecido"}), 400
-    url_base = "https://klordsearchapis.serveo.net/nome/"
+    url_base = "https://insightapi.ct.ws/nome/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -660,16 +660,16 @@ def api_consulta_telefone():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado TELEFONE não fornecido"}), 400
-    url_base = "https://klordapisbrasil.serveo.net/telefone/"
+    url_base = "https://insightapi.ct.ws/telefone/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
-
+    
 @app.route('/api/consulta-telefone2')
 def api_consulta_telefone2():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado TELEFONE não fornecido"}), 400
-    url_base = "http://n3.yoshinofenixbots.com:5042/AlizinHacker/telefone?token=klordmalware&telefone="
+    url_base = "http://insightapi.ct.ws/AlizinHacker/telefone?token=klordmalware&telefone="
     resultado = proxy_consulta(url_base, dado, requires_token_external=False)
     return jsonify(resultado)
 
@@ -678,7 +678,7 @@ def api_consulta_foto_sp():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado não fornecido"}), 400
-    url_base = "https://klordsearchapis.serveo.net/fotos/SP/"
+    url_base = "https://insightapi.ct.ws/fotos/SP/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -687,7 +687,7 @@ def api_consulta_foto_rj():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado não fornecido"}), 400
-    url_base = "http://klordsearchapis.serveo.net/fotorj/"
+    url_base = "http://insightapi.ct.ws/fotorj/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -696,7 +696,7 @@ def api_consulta_foto_es():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado não fornecido"}), 400
-    url_base = "https://klordsearchapis.serveo.net/fotos/ES/"
+    url_base = "https://insightapi.ct.ws/fotos/ES/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -705,7 +705,7 @@ def api_consulta_renavam():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado RENAVAM não fornecido"}), 400
-    url_base = "https://klordsearchapis.serveo.net/renavam/"
+    url_base = "https://insightapi.ct.ws/renavam/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
