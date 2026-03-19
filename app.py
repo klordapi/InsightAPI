@@ -1,8 +1,4 @@
-
-# Vou gerar o código completo do app.py modificado
-# Este código substitui o sistema de arquivo local pelo GitHub API
-
-codigo_completo = '''from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory
 import json
 import os
 import requests
@@ -29,131 +25,76 @@ ADMIN_ROUTE = f"/adm/{ADMIN_MANAGER_TOKEN}"
 # =======================================================
 # CONFIGURAÇÃO DO GITHUB (NOVO)
 # =======================================================
-# REPOSITÓRIO: https://github.com/klordTV/klTV
-# ARQUIVO: database.json na raiz do repo
-
 GITHUB_TOKEN = "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"
 GITHUB_REPO = "klordTV/klTV"
 GITHUB_FILE_PATH = "database.json"
 GITHUB_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{GITHUB_FILE_PATH}"
-
-# ID do serviço no Render (para trigger de deploy)
-# Você encontra isso em: Dashboard > Seu Serviço > Settings > Deploy Hook
-RENDER_SERVICE_ID = "srv-XXXXXXXXXXXXXXXXXXXXXX"  # SUBSTITUA PELO SEU!
-RENDER_API_KEY = "rnd_XXXXXXXXXXXXXXXXXXXXXXXX"      # SUBSTITUA PELO SEU!
 
 # =======================================================
 # FUNÇÕES GITHUB API (NOVAS)
 # =======================================================
 
 def get_github_file():
-    """
-    Busca o database.json do GitHub.
-    Retorna: (content_dict, sha, error_message)
-    """
+    """Busca o database.json do GitHub."""
     headers = {
         "Authorization": f"token {GITHUB_TOKEN}",
         "Accept": "application/vnd.github.v3+json"
     }
-    
+
     try:
         response = requests.get(GITHUB_API_URL, headers=headers, timeout=30)
-        
+
         if response.status_code == 404:
-            # Arquivo não existe, retorna estrutura vazia
             return {"logins": []}, None, None
-            
+
         if response.status_code == 200:
             data = response.json()
             content_base64 = data.get("content", "")
             sha = data.get("sha")
-            
-            # Decodifica o conteúdo base64
+
             content_decoded = base64.b64decode(content_base64).decode('utf-8')
             content_json = json.loads(content_decoded)
-            
+
             return content_json, sha, None
         else:
-            return None, None, f"Erro GitHub API: {response.status_code} - {response.text}"
-            
-    except requests.exceptions.RequestException as e:
-        return None, None, f"Erro de conexão com GitHub: {str(e)}"
-    except json.JSONDecodeError:
-        return None, None, "Erro ao decodificar JSON do GitHub"
+            return None, None, f"Erro GitHub API: {response.status_code}"
+
     except Exception as e:
-        return None, None, f"Erro inesperado: {str(e)}"
+        return None, None, f"Erro: {str(e)}"
 
 
-def update_github_file(content_dict, sha, commit_message="Atualização de usuários"):
-    """
-    Atualiza o database.json no GitHub.
-    Retorna: (success_bool, error_message)
-    """
+def update_github_file(content_dict, sha, commit_message="Atualização"):
+    """Atualiza o database.json no GitHub."""
     headers = {
         "Authorization": f"token {GITHUB_TOKEN}",
         "Accept": "application/vnd.github.v3+json"
     }
-    
-    # Codifica o conteúdo para base64
+
     content_json = json.dumps(content_dict, indent=4, ensure_ascii=False)
     content_base64 = base64.b64encode(content_json.encode('utf-8')).decode('utf-8')
-    
+
     payload = {
         "message": commit_message,
         "content": content_base64,
-        "sha": sha  # Necessário para atualização, None para criação
+        "sha": sha
     }
-    
-    # Se não tem SHA (arquivo novo), removemos o sha do payload
+
     if sha is None:
         del payload["sha"]
-    
+
     try:
         response = requests.put(GITHUB_API_URL, headers=headers, json=payload, timeout=30)
-        
-        if response.status_code in [200, 201]:
-            return True, None
-        else:
-            return False, f"Erro ao atualizar GitHub: {response.status_code} - {response.text}"
-            
-    except requests.exceptions.RequestException as e:
-        return False, f"Erro de conexão ao salvar no GitHub: {str(e)}"
+        return response.status_code in [200, 201], None
     except Exception as e:
-        return False, f"Erro inesperado ao salvar: {str(e)}"
+        return False, str(e)
 
-
-def trigger_render_deploy():
-    """
-    Dispara um novo deploy no Render via API.
-    Opcional: Você pode usar Deploy Hooks (mais simples) ou a API oficial.
-    """
-    # MÉTODO 1: Deploy Hook (mais simples, recomendado)
-    # Crie um Deploy Hook em: Dashboard > Settings > Deploy Hook
-    deploy_hook_url = "https://api.render.com/v1/services/{RENDER_SERVICE_ID}/deploys"
-    
-    headers = {
-        "Authorization": f"Bearer {RENDER_API_KEY}",
-        "Accept": "application/json"
-    }
-    
-    try:
-        response = requests.post(deploy_hook_url, headers=headers, timeout=30)
-        return response.status_code == 201
-    except:
-        return False
-
-
-# =======================================================
-# FUNÇÕES AUXILIARES PARA LOGINS (MODIFICADAS)
-# =======================================================
 
 def carregar_logins():
-    """Carrega os logins do GitHub em vez de arquivo local."""
+    """Carrega os logins do GitHub."""
     content, sha, error = get_github_file()
-    
+
     if error:
-        print(f"[ERRO] Falha ao carregar do GitHub: {error}")
-        # Fallback: tenta carregar do arquivo local se existir
+        # Fallback: tenta arquivo local
         if os.path.exists("database.json"):
             try:
                 with open("database.json", "r") as f:
@@ -161,52 +102,43 @@ def carregar_logins():
             except:
                 return []
         return []
-    
-    # Retorna a lista de logins do JSON
+
     return content.get("logins", [])
 
 
 def salvar_logins(logins_list):
-    """Salva a lista de logins no GitHub."""
-    # Primeiro, busca o arquivo atual para obter o SHA
+    """Salva no GitHub."""
     content, sha, error = get_github_file()
-    
-    if error and "404" not in str(error):
-        print(f"[ERRO] Falha ao buscar arquivo para atualização: {error}")
-        return False
-    
-    # Prepara o novo conteúdo
+
     new_content = {"logins": logins_list}
-    
-    # Atualiza no GitHub
-    success, error = update_github_file(new_content, sha, f"Atualização usuários - {datetime.now().strftime('%d/%m/%Y %H:%M')}")
-    
+
+    success, error = update_github_file(
+        new_content, 
+        sha, 
+        f"Update users - {datetime.now().strftime('%d/%m %H:%M')}"
+    )
+
     if success:
-        print("[SUCESSO] Usuários salvos no GitHub!")
-        
-        # Também salva localmente como backup/cache
+        # Backup local
         try:
             with open("database.json", "w") as f:
                 json.dump(new_content, f, indent=4)
         except:
             pass
-            
         return True
-    else:
-        print(f"[ERRO] Falha ao salvar no GitHub: {error}")
-        return False
+    return False
 
 
 def check_expiration(user_data):
-    """Verifica se a conta de um usuário está expirada."""
+    """Verifica expiração da conta."""
     expiracao_str = user_data.get("expiracao")
     if not expiracao_str:
         return "ATIVO"
-    
+
     try:
         expiracao_date = datetime.strptime(expiracao_str, '%Y-%m-%d').date()
         today = date.today()
-        
+
         if expiracao_date < today:
             return "EXPIRADO"
         else:
@@ -216,13 +148,12 @@ def check_expiration(user_data):
 
 
 # =======================================================
-# DECORATOR E PROXY (SEM ALTERAÇÕES)
+# DECORATOR E PROXY
 # =======================================================
 
 def token_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        token = request.args.get('token')
         return f(*args, **kwargs)
     return decorated_function
 
@@ -230,33 +161,33 @@ def token_required(f):
 def proxy_consulta(api_url, dado, requires_token_external=False, token_key='token'):
     TIMEOUT_SECONDS = 60 
     url = f"{api_url}{dado}"
-    
+
     if requires_token_external:
         sep = '&' if '?' in url else '?'
         url += f"{sep}{token_key}={ADM_TOKEN_EXTERNAL}"
-        
+
     try:
         response = requests.get(url, timeout=TIMEOUT_SECONDS)
-        
+
         if response.ok:
             try:
                 return response.json()
-            except json.JSONDecodeError:
-                return {"erro": "A API externa retornou uma resposta não-JSON", "detalhes": response.text}
+            except:
+                return {"erro": "Resposta não-JSON", "detalhes": response.text}
         else:
             try:
-                return {"erro": f"API Externa retornou erro HTTP {response.status_code}", "detalhes": response.json()}
+                return {"erro": f"HTTP {response.status_code}", "detalhes": response.json()}
             except:
-                return {"erro": f"API Externa retornou erro HTTP {response.status_code}", "detalhes": response.text}
+                return {"erro": f"HTTP {response.status_code}", "detalhes": response.text}
 
     except requests.exceptions.Timeout:
-        return {"erro": "Tempo limite de conexão com a API externa excedido"}
-    except requests.exceptions.RequestException as e:
-        return {"erro": f"Erro de conexão com a API externa: {str(e)}"}
+        return {"erro": "Timeout"}
+    except Exception as e:
+        return {"erro": f"Erro: {str(e)}"}
 
 
 # =======================================================
-# ROTAS PRINCIPAIS (SEM ALTERAÇÕES)
+# ROTAS PRINCIPAIS
 # =======================================================
 
 @app.route('/')
@@ -273,7 +204,7 @@ def consulta():
 
 
 # =======================================================
-# ROTA DE LOGIN (COM VERIFICAÇÃO DE EXPIRAÇÃO)
+# ROTA DE LOGIN
 # =======================================================
 
 @app.route('/api/login', methods=['POST'])
@@ -286,50 +217,50 @@ def api_login():
     for login in logins:
         if login.get("usuario") == usuario and login.get("senha") == senha:
             status = check_expiration(login)
-            
+
             if status == "EXPIRADO":
-                 return jsonify({"ok": False, "erro": "Sua conta está expirada. Contate o administrador."}), 403
+                 return jsonify({"ok": False, "erro": "Conta expirada"}), 403
             if status == "ERRO":
-                 return jsonify({"ok": False, "erro": "Erro na data de expiração. Contate o administrador."}), 500
-                 
-            return jsonify({"ok": True, "mensagem": "Login bem-sucedido"})
+                 return jsonify({"ok": False, "erro": "Erro data expiração"}), 500
+
+            return jsonify({"ok": True, "mensagem": "Login OK"})
 
     return jsonify({"ok": False, "erro": "Usuário ou senha inválidos"}), 401
 
 
 # =======================================================
-# ROTA DE ADMINISTRAÇÃO UNIFICADA (MODIFICADA)
+# ROTA DE ADMINISTRAÇÃO
 # =======================================================
 
 @app.route(ADMIN_ROUTE, methods=['GET', 'POST'])
 def admin_manager():
-    
+
     if request.method == 'POST':
         try:
             dados = request.get_json()
         except:
             return jsonify({"ok": False, "erro": "JSON inválido"}), 400
-            
+
         acao = dados.get('acao')
         usuario = dados.get('usuario')
         logins = carregar_logins()
 
         if not usuario:
-            return jsonify({"ok": False, "erro": "Nome de usuário é obrigatório"}), 400
-        
+            return jsonify({"ok": False, "erro": "Usuário obrigatório"}), 400
+
         if acao == 'cadastrar':
             senha = dados.get('senha')
-            expiracao = dados.get('expiracao') if dados.get('expiracao') else None
-            nome_completo = dados.get('nome_completo') if dados.get('nome_completo') else None
-            email = dados.get('email') if dados.get("email") else None
+            expiracao = dados.get('expiracao') or None
+            nome_completo = dados.get('nome_completo') or None
+            email = dados.get('email') or None
             tipo = dados.get('tipo') or 'user'
 
             if not senha:
-                 return jsonify({"ok": False, "erro": "Senha é obrigatória para o cadastro"}), 400
+                 return jsonify({"ok": False, "erro": "Senha obrigatória"}), 400
 
             if any(login.get("usuario") == usuario for login in logins):
                  return jsonify({"ok": False, "erro": f"Usuário '{usuario}' já existe"}), 409
-                 
+
             novo_login = {
                 "usuario": usuario, 
                 "senha": senha,
@@ -339,31 +270,29 @@ def admin_manager():
                 "tipo": tipo
             }
             logins.append(novo_login)
-            
-            # SALVA NO GITHUB!
+
             if salvar_logins(logins):
-                return jsonify({"ok": True, "mensagem": f"Usuário '{usuario}' cadastrado com sucesso no GitHub!"})
+                return jsonify({"ok": True, "mensagem": f"Usuário '{usuario}' salvo no GitHub!"})
             else:
-                return jsonify({"ok": False, "erro": "Usuário adicionado na memória, mas falha ao salvar no GitHub."}), 500
+                return jsonify({"ok": False, "erro": "Falha ao salvar no GitHub"}), 500
 
         elif acao == 'deletar':
             logins_filtrados = [login for login in logins if login.get("usuario") != usuario]
-            
+
             if len(logins) == len(logins_filtrados):
                 return jsonify({"ok": False, "erro": f"Usuário '{usuario}' não encontrado"}), 404
-                
-            # SALVA NO GITHUB!
+
             if salvar_logins(logins_filtrados):
-                return jsonify({"ok": True, "mensagem": f"Usuário '{usuario}' deletado com sucesso do GitHub!"})
+                return jsonify({"ok": True, "mensagem": f"Usuário '{usuario}' deletado!"})
             else:
-                return jsonify({"ok": False, "erro": "Usuário removido da memória, mas falha ao salvar no GitHub."}), 500
-            
+                return jsonify({"ok": False, "erro": "Falha ao deletar no GitHub"}), 500
+
         else:
-            return jsonify({"ok": False, "erro": "Ação inválida (use 'cadastrar' ou 'deletar')"}), 400
+            return jsonify({"ok": False, "erro": "Ação inválida"}), 400
 
     elif request.args.get('data') == 'json':
         logins = carregar_logins()
-        
+
         users_with_status = []
         for user in logins:
             status = check_expiration(user)
@@ -372,18 +301,18 @@ def admin_manager():
             user_data["expiracao"] = user_data.get("expiracao") or 'NUNCA'
             user_data.pop("senha", None)
             users_with_status.append(user_data)
-            
+
         return jsonify(users_with_status)
 
     else:
-        # HTML do painel admin (mantido igual, mas com referências atualizadas)
+        # HTML do painel admin
         html_content = f"""
         <!DOCTYPE html>
         <html lang="pt-BR">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Gerenciamento de Usuários - Klord Buscas</title>
+            <title>Admin - Klord Buscas</title>
             <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
             <style>
@@ -407,8 +336,8 @@ def admin_manager():
                 .user-management-card {{ background: var(--cor-card-fundo); padding: 30px; border-radius: var(--radius-borda); box-shadow: var(--shadow); border: 1px solid var(--cor-borda); }}
                 .card-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }}
                 .card-header h2 {{ font-size: 1.5rem; font-weight: 600; margin: 0; }}
-                .btn-new-user {{ padding: 12px 20px; background: var(--cor-gradiente-btn); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; transition: opacity 0.2s, transform 0.1s; box-shadow: 0 4px 10px rgba(127, 0, 255, 0.4); }}
-                .btn-new-user:hover {{ opacity: 0.9; transform: translateY(-1px); }}
+                .btn-new-user {{ padding: 12px 20px; background: var(--cor-gradiente-btn); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; transition: opacity 0.2s; box-shadow: 0 4px 10px rgba(127, 0, 255, 0.4); }}
+                .btn-new-user:hover {{ opacity: 0.9; }}
                 .user-table {{ width: 100%; border-collapse: collapse; text-align: left; }}
                 .user-table th {{ font-size: 0.85rem; font-weight: 600; color: var(--cor-texto-secundaria); padding: 15px 10px; border-bottom: 1px solid var(--cor-borda); text-transform: uppercase; }}
                 .user-table td {{ font-size: 0.95rem; padding: 15px 10px; border-bottom: 1px solid #1f1f3a; color: var(--cor-texto-principal); }}
@@ -419,8 +348,7 @@ def admin_manager():
                 .tag-admin {{ background-color: #ff9800; color: #333; }}
                 .tag-ativo {{ background-color: var(--cor-sucesso); color: white; }}
                 .tag-expirado {{ background-color: var(--cor-erro); color: white; }}
-                .tag-erro {{ background-color: #ffc107; color: #333; }}
-                .btn-delete {{ background-color: var(--cor-erro); color: white; padding: 8px 15px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: background-color 0.2s; }}
+                .btn-delete {{ background-color: var(--cor-erro); color: white; padding: 8px 15px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }}
                 .modal {{ display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); }}
                 .modal-content {{ background: var(--cor-card-fundo); margin: 10% auto; padding: 30px; border-radius: var(--radius-borda); width: 90%; max-width: 500px; box-shadow: var(--shadow); border: 1px solid var(--cor-borda); position: relative; }}
                 .modal-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--cor-borda); padding-bottom: 15px; }}
@@ -441,7 +369,7 @@ def admin_manager():
         <body onload="fetchUsersAndRenderTable()">
             <div class="container">
                 <a href="/" class="back-link">&lt; Voltar para Login</a>
-                
+
                 <div class="user-management-card">
                     <div class="card-header">
                         <div>
@@ -450,7 +378,7 @@ def admin_manager():
                         </div>
                         <button class="btn-new-user" onclick="openModal()"><i class="fas fa-plus"></i> Novo Usuário</button>
                     </div>
-                    
+
                     <div style="overflow-x: auto;">
                         <table class="user-table">
                             <thead>
@@ -508,7 +436,7 @@ def admin_manager():
                                 <option value="admin">Administrador</option>
                             </select>
                         </div>
-                        
+
                         <div class="modal-footer">
                             <button type="button" class="btn-cancelar" onclick="closeModal()">Cancelar</button>
                             <button type="submit" class="btn-salvar">Salvar no GitHub</button>
@@ -533,18 +461,18 @@ def admin_manager():
                 async function fetchUsersAndRenderTable() {{
                     loadingMsg.style.display = 'block';
                     tableBody.innerHTML = '';
-                    
+
                     try {{
                         const response = await fetch(ADMIN_API_URL + '?data=json', {{ method: 'GET' }});
                         const users = await response.json();
-                        
+
                         if (!Array.isArray(users)) {{
-                            throw new Error("Resposta inválida do servidor");
+                            throw new Error("Resposta inválida");
                         }}
-                        
+
                         githubStatus.textContent = 'GitHub: Online';
                         githubStatus.className = 'github-status github-online';
-                        
+
                         if (users.length === 0) {{
                             tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Nenhum usuário cadastrado.</td></tr>';
                         }} else {{
@@ -573,10 +501,10 @@ def admin_manager():
                             }});
                         }}
                     }} catch (error) {{
-                        console.error('Erro ao buscar usuários:', error);
+                        console.error('Erro:', error);
                         githubStatus.textContent = 'GitHub: Offline';
                         githubStatus.className = 'github-status github-offline';
-                        tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--cor-erro);">Erro ao carregar dados do GitHub.</td></tr>';
+                        tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--cor-erro);">Erro ao carregar dados.</td></tr>';
                     }} finally {{
                         loadingMsg.style.display = 'none';
                     }}
@@ -628,10 +556,7 @@ def admin_manager():
                 }});
 
                 async function deletar(usuario) {{
-                    if (!confirm(`DELETAR ${{usuario}}? Esta ação é irreversível.`)) return;
-
-                    setMsg('loadingMsg', `Deletando...`, false);
-                    loadingMsg.style.display = 'block';
+                    if (!confirm(`DELETAR ${{usuario}}?`)) return;
 
                     try {{
                         const response = await fetch(ADMIN_API_URL, {{
@@ -673,7 +598,7 @@ def admin_manager():
 
 
 # =======================================================
-# ROTAS DE CONSULTA (MANTIDAS INALTERADAS)
+# ROTAS DE CONSULTA (MANTIDAS)
 # =======================================================
 
 @app.route('/api/consulta-cnpj')
@@ -711,7 +636,7 @@ def api_consulta_placa():
     url_base = "http://klordapisBrasil.serveo.net/placa/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
-    
+
 @app.route('/api/consulta-placa-completa')
 def api_consulta_placa_completa():
     dado = request.args.get('dado')
@@ -738,7 +663,7 @@ def api_consulta_telefone():
     url_base = "https://klordapisbrasil.serveo.net/telefone/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
-    
+
 @app.route('/api/consulta-telefone2')
 def api_consulta_telefone2():
     dado = request.args.get('dado')
@@ -752,7 +677,7 @@ def api_consulta_telefone2():
 def api_consulta_foto_sp():
     dado = request.args.get('dado')
     if not dado:
-        return jsonify({"erro": "Dado CPF/RG não fornecido"}), 400
+        return jsonify({"erro": "Dado não fornecido"}), 400
     url_base = "https://klordsearchapis.serveo.net/fotos/SP/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
@@ -761,7 +686,7 @@ def api_consulta_foto_sp():
 def api_consulta_foto_rj():
     dado = request.args.get('dado')
     if not dado:
-        return jsonify({"erro": "Dado CPF/RG não fornecido"}), 400
+        return jsonify({"erro": "Dado não fornecido"}), 400
     url_base = "http://klordsearchapis.serveo.net/fotorj/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
@@ -770,7 +695,7 @@ def api_consulta_foto_rj():
 def api_consulta_foto_es():
     dado = request.args.get('dado')
     if not dado:
-        return jsonify({"erro": "Dado CPF/RG não fornecido"}), 400
+        return jsonify({"erro": "Dado não fornecido"}), 400
     url_base = "https://klordsearchapis.serveo.net/fotos/ES/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
@@ -786,51 +711,7 @@ def api_consulta_renavam():
 
 
 if __name__ == '__main__':
-    print(f"🚀 Servidor Flask rodando na porta 5000...")
-    print(f"✅ Token de acesso ao Painel (Interno): {VALID_TOKEN}")
-    print(f"🔑 Token de acesso às APIs Externas: {ADM_TOKEN_EXTERNAL}")
-    print(f"🐙 GitHub Repo: {GITHUB_REPO}")
-    print(f"📁 Arquivo de usuários: {GITHUB_FILE_PATH}")
-    print("------------------------------------------------------")
-    print(f"✅ ADMIN: Acesse http://localhost:5000{ADMIN_ROUTE}")
-    print("⚠️  IMPORTANTE: Verifique se o arquivo database.json existe no repo!")
-    print("------------------------------------------------------")
+    print("🚀 Klord Buscas iniciando...")
+    print(f"📁 GitHub: {GITHUB_REPO}/{GITHUB_FILE_PATH}")
+    print(f"🔑 Admin: /adm/{ADMIN_MANAGER_TOKEN}")
     app.run(host='0.0.0.0', port=5000)
-'''
-
-print("✅ Código do app.py gerado com sucesso!")
-print("\n" + "="*60)
-print("RESUMO DAS ALTERAÇÕES:")
-print("="*60)
-print("""
-1. ✅ INTEGRAÇÃO GITHUB API
-   - get_github_file(): Lê database.json do GitHub
-   - update_github_file(): Salva alterações no GitHub
-   - carregar_logins(): Agora busca do GitHub
-   - salvar_logins(): Agora salva no GitHub
-
-2. ✅ ESTRUTURA DO DATABASE.JSON
-   {
-     "logins": [
-       {
-         "usuario": "admin",
-         "senha": "123456",
-         "expiracao": "2026-12-31",
-         "nome_completo": "Administrador",
-         "email": "admin@teste.com",
-         "tipo": "owner"
-       }
-     ]
-   }
-
-3. ✅ PAINEL ADMIN ATUALIZADO
-   - Indicador de status do GitHub (Online/Offline)
-   - Mensagens claras sobre persistência
-   - Botão "Salvar no GitHub"
-
-4. ⚠️ CONFIGURAÇÕES NECESSÁRIAS NO CÓDIGO:
-   - GITHUB_TOKEN: Já configurado com seu token
-   - GITHUB_REPO: klordTV/klTV (já configurado)
-   - RENDER_SERVICE_ID: SUBSTITUA pelo ID do seu serviço
-   - RENDER_API_KEY: SUBSTITUA pela sua API key do Render
-""")
