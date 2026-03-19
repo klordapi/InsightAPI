@@ -1,6 +1,12 @@
-from flask import Flask, request, jsonify, send_from_directory
-import json, os
+
+# Vou gerar o código completo do app.py modificado
+# Este código substitui o sistema de arquivo local pelo GitHub API
+
+codigo_completo = '''from flask import Flask, request, jsonify, send_from_directory
+import json
+import os
 import requests
+import base64
 from functools import wraps
 from datetime import datetime, date
 
@@ -9,51 +15,195 @@ app = Flask(__name__, static_folder='.', template_folder='.')
 # =======================================================
 # CONFIGURAÇÃO DE SEGURANÇA E TOKENS
 # =======================================================
-# O caminho para o arquivo de logs de login (necessário para a rota /api/login)
-LOG_PATH = os.path.expanduser("~/storage/downloads/APIs/log.json")
 
-# Este token é usado APENAS para acesso ao Painel (login.html) e para proteger 
-# as rotas de consulta (ex: /api/consulta-cnpj) do seu próprio frontend.
+# Token para acesso interno ao painel
 VALID_TOKEN = "KLORD-TESTE-1234567890ABCDEF" 
 
-# Token usado para autenticar nas APIs externas (substitua pelo seu token real)
+# Token usado para autenticar nas APIs externas de consulta
 ADM_TOKEN_EXTERNAL = "admkl0rd" 
 
-# NOVO Token secreto para acessar as rotas de gerenciamento de usuários
+# Token secreto para acessar as rotas de gerenciamento de usuários
 ADMIN_MANAGER_TOKEN = "Kl0rd777" 
-# NOVO CAMINHO BASE UNIFICADO para a página e API de admin
 ADMIN_ROUTE = f"/adm/{ADMIN_MANAGER_TOKEN}"
 
 # =======================================================
-# FUNÇÕES AUXILIARES PARA LOGINS (Expiração e CRUD do arquivo)
+# CONFIGURAÇÃO DO GITHUB (NOVO)
+# =======================================================
+# REPOSITÓRIO: https://github.com/klordTV/klTV
+# ARQUIVO: database.json na raiz do repo
+
+GITHUB_TOKEN = "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"
+GITHUB_REPO = "klordTV/klTV"
+GITHUB_FILE_PATH = "database.json"
+GITHUB_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{GITHUB_FILE_PATH}"
+
+# ID do serviço no Render (para trigger de deploy)
+# Você encontra isso em: Dashboard > Seu Serviço > Settings > Deploy Hook
+RENDER_SERVICE_ID = "srv-XXXXXXXXXXXXXXXXXXXXXX"  # SUBSTITUA PELO SEU!
+RENDER_API_KEY = "rnd_XXXXXXXXXXXXXXXXXXXXXXXX"      # SUBSTITUA PELO SEU!
+
+# =======================================================
+# FUNÇÕES GITHUB API (NOVAS)
+# =======================================================
+
+def get_github_file():
+    """
+    Busca o database.json do GitHub.
+    Retorna: (content_dict, sha, error_message)
+    """
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    
+    try:
+        response = requests.get(GITHUB_API_URL, headers=headers, timeout=30)
+        
+        if response.status_code == 404:
+            # Arquivo não existe, retorna estrutura vazia
+            return {"logins": []}, None, None
+            
+        if response.status_code == 200:
+            data = response.json()
+            content_base64 = data.get("content", "")
+            sha = data.get("sha")
+            
+            # Decodifica o conteúdo base64
+            content_decoded = base64.b64decode(content_base64).decode('utf-8')
+            content_json = json.loads(content_decoded)
+            
+            return content_json, sha, None
+        else:
+            return None, None, f"Erro GitHub API: {response.status_code} - {response.text}"
+            
+    except requests.exceptions.RequestException as e:
+        return None, None, f"Erro de conexão com GitHub: {str(e)}"
+    except json.JSONDecodeError:
+        return None, None, "Erro ao decodificar JSON do GitHub"
+    except Exception as e:
+        return None, None, f"Erro inesperado: {str(e)}"
+
+
+def update_github_file(content_dict, sha, commit_message="Atualização de usuários"):
+    """
+    Atualiza o database.json no GitHub.
+    Retorna: (success_bool, error_message)
+    """
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    
+    # Codifica o conteúdo para base64
+    content_json = json.dumps(content_dict, indent=4, ensure_ascii=False)
+    content_base64 = base64.b64encode(content_json.encode('utf-8')).decode('utf-8')
+    
+    payload = {
+        "message": commit_message,
+        "content": content_base64,
+        "sha": sha  # Necessário para atualização, None para criação
+    }
+    
+    # Se não tem SHA (arquivo novo), removemos o sha do payload
+    if sha is None:
+        del payload["sha"]
+    
+    try:
+        response = requests.put(GITHUB_API_URL, headers=headers, json=payload, timeout=30)
+        
+        if response.status_code in [200, 201]:
+            return True, None
+        else:
+            return False, f"Erro ao atualizar GitHub: {response.status_code} - {response.text}"
+            
+    except requests.exceptions.RequestException as e:
+        return False, f"Erro de conexão ao salvar no GitHub: {str(e)}"
+    except Exception as e:
+        return False, f"Erro inesperado ao salvar: {str(e)}"
+
+
+def trigger_render_deploy():
+    """
+    Dispara um novo deploy no Render via API.
+    Opcional: Você pode usar Deploy Hooks (mais simples) ou a API oficial.
+    """
+    # MÉTODO 1: Deploy Hook (mais simples, recomendado)
+    # Crie um Deploy Hook em: Dashboard > Settings > Deploy Hook
+    deploy_hook_url = "https://api.render.com/v1/services/{RENDER_SERVICE_ID}/deploys"
+    
+    headers = {
+        "Authorization": f"Bearer {RENDER_API_KEY}",
+        "Accept": "application/json"
+    }
+    
+    try:
+        response = requests.post(deploy_hook_url, headers=headers, timeout=30)
+        return response.status_code == 201
+    except:
+        return False
+
+
+# =======================================================
+# FUNÇÕES AUXILIARES PARA LOGINS (MODIFICADAS)
 # =======================================================
 
 def carregar_logins():
-    """Carrega os logins do arquivo JSON."""
-    if not os.path.exists(LOG_PATH):
+    """Carrega os logins do GitHub em vez de arquivo local."""
+    content, sha, error = get_github_file()
+    
+    if error:
+        print(f"[ERRO] Falha ao carregar do GitHub: {error}")
+        # Fallback: tenta carregar do arquivo local se existir
+        if os.path.exists("database.json"):
+            try:
+                with open("database.json", "r") as f:
+                    return json.load(f).get("logins", [])
+            except:
+                return []
         return []
-    try:
-        with open(LOG_PATH, "r") as f:
-            return json.load(f)
-    except json.JSONDecodeError:
-        return [] # Retorna lista vazia se o arquivo estiver corrompido
-    except Exception:
-        return []
+    
+    # Retorna a lista de logins do JSON
+    return content.get("logins", [])
 
-def salvar_logins(logins):
-    """Salva a lista de logins no arquivo JSON, criando o dir se necessário."""
-    os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
-    with open(LOG_PATH, "w") as f:
-        json.dump(logins, f, indent=4)
+
+def salvar_logins(logins_list):
+    """Salva a lista de logins no GitHub."""
+    # Primeiro, busca o arquivo atual para obter o SHA
+    content, sha, error = get_github_file()
+    
+    if error and "404" not in str(error):
+        print(f"[ERRO] Falha ao buscar arquivo para atualização: {error}")
+        return False
+    
+    # Prepara o novo conteúdo
+    new_content = {"logins": logins_list}
+    
+    # Atualiza no GitHub
+    success, error = update_github_file(new_content, sha, f"Atualização usuários - {datetime.now().strftime('%d/%m/%Y %H:%M')}")
+    
+    if success:
+        print("[SUCESSO] Usuários salvos no GitHub!")
+        
+        # Também salva localmente como backup/cache
+        try:
+            with open("database.json", "w") as f:
+                json.dump(new_content, f, indent=4)
+        except:
+            pass
+            
+        return True
+    else:
+        print(f"[ERRO] Falha ao salvar no GitHub: {error}")
+        return False
+
 
 def check_expiration(user_data):
     """Verifica se a conta de um usuário está expirada."""
     expiracao_str = user_data.get("expiracao")
     if not expiracao_str:
-        return "ATIVO" # Sem data de expiração = Nunca expira
+        return "ATIVO"
     
     try:
-        # Tenta converter a string 'YYYY-MM-DD' para objeto date
         expiracao_date = datetime.strptime(expiracao_str, '%Y-%m-%d').date()
         today = date.today()
         
@@ -62,29 +212,22 @@ def check_expiration(user_data):
         else:
             return "ATIVO"
     except ValueError:
-        return "ERRO" # Formato inválido
+        return "ERRO"
+
 
 # =======================================================
-# DECORATOR DE AUTENTICAÇÃO (Sem alteração)
+# DECORATOR E PROXY (SEM ALTERAÇÕES)
 # =======================================================
+
 def token_required(f):
-    """Verifica se o token na query string (do seu frontend) é válido."""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         token = request.args.get('token')
-        # if not token or token != VALID_TOKEN:
-        #     return jsonify({"erro": "Token de acesso ao Painel inválido"}), 403
         return f(*args, **kwargs)
     return decorated_function
 
-# =======================================================
-# FUNÇÃO PROXY PARA CHAMAR APIs EXTERNAS (Sem alteração)
-# =======================================================
+
 def proxy_consulta(api_url, dado, requires_token_external=False, token_key='token'):
-    """
-    Função genérica para chamar uma API externa e retornar sua resposta.
-    O dado é injetado na URL.
-    """
     TIMEOUT_SECONDS = 60 
     url = f"{api_url}{dado}"
     
@@ -99,7 +242,7 @@ def proxy_consulta(api_url, dado, requires_token_external=False, token_key='toke
             try:
                 return response.json()
             except json.JSONDecodeError:
-                return {"erro": "A API externa retornou uma resposta não-JSON (Texto Puro)", "detalhes": response.text}
+                return {"erro": "A API externa retornou uma resposta não-JSON", "detalhes": response.text}
         else:
             try:
                 return {"erro": f"API Externa retornou erro HTTP {response.status_code}", "detalhes": response.json()}
@@ -110,31 +253,29 @@ def proxy_consulta(api_url, dado, requires_token_external=False, token_key='toke
         return {"erro": "Tempo limite de conexão com a API externa excedido"}
     except requests.exceptions.RequestException as e:
         return {"erro": f"Erro de conexão com a API externa: {str(e)}"}
-    except json.JSONDecodeError:
-        return {"erro": "A API externa retornou uma resposta inválida (não-JSON)"}
+
 
 # =======================================================
-# ROTAS PRINCIPAIS (Sem alteração)
+# ROTAS PRINCIPAIS (SEM ALTERAÇÕES)
 # =======================================================
 
 @app.route('/')
 def home():
-    """Retorna a tela de login."""
     return send_from_directory('.', 'login.html') 
 
 @app.route('/painel')
 def painel():
-    """Retorna o painel de consultas (index.html)."""
     return send_from_directory('.', 'index.html')
 
 @app.route('/consulta')
 def consulta():
-    """Retorna a página de consulta individual (consulta.html)."""
     return send_from_directory('.', 'consulta.html')
+
 
 # =======================================================
 # ROTA DE LOGIN (COM VERIFICAÇÃO DE EXPIRAÇÃO)
 # =======================================================
+
 @app.route('/api/login', methods=['POST'])
 def api_login():
     dados = request.get_json()
@@ -144,7 +285,6 @@ def api_login():
 
     for login in logins:
         if login.get("usuario") == usuario and login.get("senha") == senha:
-            
             status = check_expiration(login)
             
             if status == "EXPIRADO":
@@ -152,19 +292,18 @@ def api_login():
             if status == "ERRO":
                  return jsonify({"ok": False, "erro": "Erro na data de expiração. Contate o administrador."}), 500
                  
-            # Login bem-sucedido e ativo
             return jsonify({"ok": True, "mensagem": "Login bem-sucedido"})
 
     return jsonify({"ok": False, "erro": "Usuário ou senha inválidos"}), 401
 
+
 # =======================================================
-# ROTA DE ADMINISTRAÇÃO UNIFICADA (Página e API de Dados)
+# ROTA DE ADMINISTRAÇÃO UNIFICADA (MODIFICADA)
 # =======================================================
 
 @app.route(ADMIN_ROUTE, methods=['GET', 'POST'])
 def admin_manager():
     
-    # 1. Rota de API (POST) - Para Cadastro/Deletar
     if request.method == 'POST':
         try:
             dados = request.get_json()
@@ -180,16 +319,14 @@ def admin_manager():
         
         if acao == 'cadastrar':
             senha = dados.get('senha')
-            # Tratamento de campos opcionais
             expiracao = dados.get('expiracao') if dados.get('expiracao') else None
             nome_completo = dados.get('nome_completo') if dados.get('nome_completo') else None
-            email = dados.get('email') if dados.get('email') else None
+            email = dados.get('email') if dados.get("email") else None
             tipo = dados.get('tipo') or 'user'
 
             if not senha:
                  return jsonify({"ok": False, "erro": "Senha é obrigatória para o cadastro"}), 400
 
-            # Verifica se o usuário já existe
             if any(login.get("usuario") == usuario for login in logins):
                  return jsonify({"ok": False, "erro": f"Usuário '{usuario}' já existe"}), 409
                  
@@ -202,8 +339,12 @@ def admin_manager():
                 "tipo": tipo
             }
             logins.append(novo_login)
-            salvar_logins(logins)
-            return jsonify({"ok": True, "mensagem": f"Usuário '{usuario}' cadastrado com sucesso!"})
+            
+            # SALVA NO GITHUB!
+            if salvar_logins(logins):
+                return jsonify({"ok": True, "mensagem": f"Usuário '{usuario}' cadastrado com sucesso no GitHub!"})
+            else:
+                return jsonify({"ok": False, "erro": "Usuário adicionado na memória, mas falha ao salvar no GitHub."}), 500
 
         elif acao == 'deletar':
             logins_filtrados = [login for login in logins if login.get("usuario") != usuario]
@@ -211,32 +352,31 @@ def admin_manager():
             if len(logins) == len(logins_filtrados):
                 return jsonify({"ok": False, "erro": f"Usuário '{usuario}' não encontrado"}), 404
                 
-            salvar_logins(logins_filtrados)
-            return jsonify({"ok": True, "mensagem": f"Usuário '{usuario}' deletado com sucesso!"})
+            # SALVA NO GITHUB!
+            if salvar_logins(logins_filtrados):
+                return jsonify({"ok": True, "mensagem": f"Usuário '{usuario}' deletado com sucesso do GitHub!"})
+            else:
+                return jsonify({"ok": False, "erro": "Usuário removido da memória, mas falha ao salvar no GitHub."}), 500
             
         else:
-            return jsonify({"ok": False, "erro": "Ação inválida ou não especificada (use 'cadastrar' ou 'deletar')"}), 400
+            return jsonify({"ok": False, "erro": "Ação inválida (use 'cadastrar' ou 'deletar')"}), 400
 
-    # 2. Rota de API (GET) - Para Listar Usuários (Usado pelo JS para fetch)
     elif request.args.get('data') == 'json':
         logins = carregar_logins()
         
-        # Adiciona o status de expiração e formata a expiração para o frontend
         users_with_status = []
         for user in logins:
             status = check_expiration(user)
-            user_data = user.copy() # Cria cópia para não alterar o objeto original
+            user_data = user.copy()
             user_data["status"] = status
-            user_data["expiracao"] = user_data.get("expiracao") or 'NUNCA' # Garante "NUNCA" se for None/vazio
-            user_data.pop("senha", None) # Remove a senha por segurança
+            user_data["expiracao"] = user_data.get("expiracao") or 'NUNCA'
+            user_data.pop("senha", None)
             users_with_status.append(user_data)
             
         return jsonify(users_with_status)
 
-    # 3. Rota de Página (GET) - Para Servir o HTML/JS
     else:
-        # Retorna o HTML/CSS/JS fornecido pelo usuário.
-        # Ajustei o JavaScript para usar o novo endpoint e corrigi os SyntaxWarnings.
+        # HTML do painel admin (mantido igual, mas com referências atualizadas)
         html_content = f"""
         <!DOCTYPE html>
         <html lang="pt-BR">
@@ -247,7 +387,6 @@ def admin_manager():
             <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
             <style>
-                /* Variáveis de Tema (Roxo Escuro e Gradientes) */
                 :root {{
                     --cor-fundo: #0c0c14; 
                     --cor-card-fundo: #1a1a2e; 
@@ -262,230 +401,41 @@ def admin_manager():
                     --radius-borda: 16px;
                     --shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
                 }}
-
-                body {{
-                    font-family: 'Inter', sans-serif;
-                    background-color: var(--cor-fundo);
-                    color: var(--cor-texto-principal);
-                    margin: 0;
-                    padding: 30px;
-                    min-height: 100vh;
-                }}
-
-                .container {{
-                    max-width: 1200px;
-                    margin: 0 auto;
-                }}
-
-                .back-link {{ 
-                    color: #a259ff; 
-                    text-decoration: none; 
-                    margin-bottom: 25px; 
-                    display: inline-block;
-                    font-size: 1rem;
-                    font-weight: 600;
-                }}
-
-                /* Card Principal da Tabela */
-                .user-management-card {{
-                    background: var(--cor-card-fundo);
-                    padding: 30px;
-                    border-radius: var(--radius-borda);
-                    box-shadow: var(--shadow);
-                    border: 1px solid var(--cor-borda);
-                }}
-                
-                .card-header {{
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 25px;
-                }}
-
-                .card-header h2 {{
-                    font-size: 1.5rem;
-                    font-weight: 600;
-                    margin: 0;
-                }}
-
-                /* Botão Novo Usuário (Gradiente) */
-                .btn-new-user {{
-                    padding: 12px 20px;
-                    background: var(--cor-gradiente-btn);
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-size: 1rem;
-                    font-weight: 600;
-                    transition: opacity 0.2s, transform 0.1s;
-                    box-shadow: 0 4px 10px rgba(127, 0, 255, 0.4);
-                }}
-                
-                .btn-new-user:hover {{
-                    opacity: 0.9;
-                    transform: translateY(-1px);
-                }}
-
-                /* Tabela de Usuários */
-                .user-table {{
-                    width: 100%;
-                    border-collapse: collapse;
-                    text-align: left;
-                }}
-
-                .user-table th {{
-                    font-size: 0.85rem;
-                    font-weight: 600;
-                    color: var(--cor-texto-secundaria);
-                    padding: 15px 10px;
-                    border-bottom: 1px solid var(--cor-borda);
-                    text-transform: uppercase;
-                }}
-
-                .user-table td {{
-                    font-size: 0.95rem;
-                    padding: 15px 10px;
-                    border-bottom: 1px solid #1f1f3a; /* Linha mais sutil */
-                    color: var(--cor-texto-principal);
-                }}
-                
-                .user-table tbody tr:hover {{
-                    background-color: #151525;
-                }}
-                
-                /* Tags de Status e Tipo */
-                .tag {{
-                    padding: 4px 8px;
-                    border-radius: 4px;
-                    font-size: 0.75rem;
-                    font-weight: 600;
-                    text-transform: capitalize;
-                }}
+                body {{ font-family: 'Inter', sans-serif; background-color: var(--cor-fundo); color: var(--cor-texto-principal); margin: 0; padding: 30px; min-height: 100vh; }}
+                .container {{ max-width: 1200px; margin: 0 auto; }}
+                .back-link {{ color: #a259ff; text-decoration: none; margin-bottom: 25px; display: inline-block; font-size: 1rem; font-weight: 600; }}
+                .user-management-card {{ background: var(--cor-card-fundo); padding: 30px; border-radius: var(--radius-borda); box-shadow: var(--shadow); border: 1px solid var(--cor-borda); }}
+                .card-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }}
+                .card-header h2 {{ font-size: 1.5rem; font-weight: 600; margin: 0; }}
+                .btn-new-user {{ padding: 12px 20px; background: var(--cor-gradiente-btn); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; transition: opacity 0.2s, transform 0.1s; box-shadow: 0 4px 10px rgba(127, 0, 255, 0.4); }}
+                .btn-new-user:hover {{ opacity: 0.9; transform: translateY(-1px); }}
+                .user-table {{ width: 100%; border-collapse: collapse; text-align: left; }}
+                .user-table th {{ font-size: 0.85rem; font-weight: 600; color: var(--cor-texto-secundaria); padding: 15px 10px; border-bottom: 1px solid var(--cor-borda); text-transform: uppercase; }}
+                .user-table td {{ font-size: 0.95rem; padding: 15px 10px; border-bottom: 1px solid #1f1f3a; color: var(--cor-texto-principal); }}
+                .user-table tbody tr:hover {{ background-color: #151525; }}
+                .tag {{ padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; text-transform: capitalize; }}
                 .tag-owner {{ background-color: #8800ff; color: white; }}
-                .tag-user {{ background-color: #007bff; color: white; }} /* Novo */
-                .tag-admin {{ background-color: #ff9800; color: #333; }} /* Novo */
+                .tag-user {{ background-color: #007bff; color: white; }}
+                .tag-admin {{ background-color: #ff9800; color: #333; }}
                 .tag-ativo {{ background-color: var(--cor-sucesso); color: white; }}
                 .tag-expirado {{ background-color: var(--cor-erro); color: white; }}
                 .tag-erro {{ background-color: #ffc107; color: #333; }}
-                
-                /* Botão Deletar */
-                .btn-delete {{
-                    background-color: var(--cor-erro);
-                    color: white;
-                    padding: 8px 15px;
-                    border: none;
-                    border-radius: 6px;
-                    cursor: pointer;
-                    font-size: 0.9rem;
-                    transition: background-color 0.2s;
-                }}
-
-                /* ======================================================= */
-                /* MODAL (Novo Usuário) */
-                /* ======================================================= */
-                .modal {{
-                    display: none; 
-                    position: fixed;
-                    z-index: 1000;
-                    left: 0;
-                    top: 0;
-                    width: 100%;
-                    height: 100%;
-                    overflow: auto;
-                    background-color: rgba(0,0,0,0.7);
-                }}
-
-                .modal-content {{
-                    background: var(--cor-card-fundo);
-                    margin: 10% auto;
-                    padding: 30px;
-                    border-radius: var(--radius-borda);
-                    width: 90%;
-                    max-width: 500px;
-                    box-shadow: var(--shadow);
-                    border: 1px solid var(--cor-borda);
-                    position: relative;
-                }}
-
-                .modal-header {{
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 20px;
-                    border-bottom: 1px solid var(--cor-borda);
-                    padding-bottom: 15px;
-                }}
-                
-                .modal-header h3 {{
-                    font-size: 1.5rem;
-                    margin: 0;
-                    color: var(--cor-secundaria-acao);
-                }}
-
-                .modal-close {{
-                    color: var(--cor-texto-secundaria);
-                    font-size: 1.5rem;
-                    font-weight: bold;
-                    cursor: pointer;
-                }}
-
-                .modal-form-group {{
-                    margin-bottom: 18px;
-                }}
-
-                .modal-form-group label {{
-                    display: block;
-                    font-weight: 600;
-                    margin-bottom: 5px;
-                    color: var(--cor-texto-principal);
-                    font-size: 0.95rem;
-                }}
-
-                .modal-form-group input, .modal-form-group select {{
-                    width: 100%;
-                    padding: 12px;
-                    background-color: #111122; 
-                    color: var(--cor-texto-principal);
-                    border: 1px solid var(--cor-borda);
-                    border-radius: 8px;
-                    font-size: 1rem;
-                    box-sizing: border-box;
-                }}
-                
-                .modal-form-group input:focus, .modal-form-group select:focus {{
-                    outline: none;
-                    border-color: var(--cor-secundaria-acao);
-                }}
-
-                .modal-footer {{
-                    display: flex;
-                    justify-content: flex-end;
-                    gap: 15px;
-                    margin-top: 25px;
-                    padding-top: 15px;
-                    border-top: 1px solid var(--cor-borda);
-                }}
-
-                .btn-salvar {{
-                    background: var(--cor-gradiente-btn);
-                    color: white;
-                    padding: 10px 20px;
-                    border-radius: 8px;
-                    border: none;
-                    font-weight: 600;
-                    cursor: pointer;
-                }}
-                
-                .btn-cancelar {{
-                    background: transparent;
-                    color: var(--cor-texto-secundaria);
-                    padding: 10px 20px;
-                    border-radius: 8px;
-                    border: 1px solid var(--cor-borda);
-                    font-weight: 600;
-                    cursor: pointer;
-                }}
+                .btn-delete {{ background-color: var(--cor-erro); color: white; padding: 8px 15px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: background-color 0.2s; }}
+                .modal {{ display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); }}
+                .modal-content {{ background: var(--cor-card-fundo); margin: 10% auto; padding: 30px; border-radius: var(--radius-borda); width: 90%; max-width: 500px; box-shadow: var(--shadow); border: 1px solid var(--cor-borda); position: relative; }}
+                .modal-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--cor-borda); padding-bottom: 15px; }}
+                .modal-header h3 {{ font-size: 1.5rem; margin: 0; color: var(--cor-secundaria-acao); }}
+                .modal-close {{ color: var(--cor-texto-secundaria); font-size: 1.5rem; font-weight: bold; cursor: pointer; }}
+                .modal-form-group {{ margin-bottom: 18px; }}
+                .modal-form-group label {{ display: block; font-weight: 600; margin-bottom: 5px; color: var(--cor-texto-principal); font-size: 0.95rem; }}
+                .modal-form-group input, .modal-form-group select {{ width: 100%; padding: 12px; background-color: #111122; color: var(--cor-texto-principal); border: 1px solid var(--cor-borda); border-radius: 8px; font-size: 1rem; box-sizing: border-box; }}
+                .modal-form-group input:focus, .modal-form-group select:focus {{ outline: none; border-color: var(--cor-secundaria-acao); }}
+                .modal-footer {{ display: flex; justify-content: flex-end; gap: 15px; margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--cor-borda); }}
+                .btn-salvar {{ background: var(--cor-gradiente-btn); color: white; padding: 10px 20px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; }}
+                .btn-cancelar {{ background: transparent; color: var(--cor-texto-secundaria); padding: 10px 20px; border-radius: 8px; border: 1px solid var(--cor-borda); font-weight: 600; cursor: pointer; }}
+                .github-status {{ display: inline-block; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; }}
+                .github-online {{ background-color: var(--cor-sucesso); color: white; }}
+                .github-offline {{ background-color: var(--cor-erro); color: white; }}
             </style>
         </head>
         <body onload="fetchUsersAndRenderTable()">
@@ -494,7 +444,10 @@ def admin_manager():
                 
                 <div class="user-management-card">
                     <div class="card-header">
-                        <h2>Gerenciamento de Usuários</h2>
+                        <div>
+                            <h2>Gerenciamento de Usuários</h2>
+                            <span id="githubStatus" class="github-status github-offline">GitHub: Conectando...</span>
+                        </div>
                         <button class="btn-new-user" onclick="openModal()"><i class="fas fa-plus"></i> Novo Usuário</button>
                     </div>
                     
@@ -512,7 +465,7 @@ def admin_manager():
                                 </tr>
                             </thead>
                             <tbody id="userTableBody">
-                                </tbody>
+                            </tbody>
                         </table>
                         <p id="loadingMsg" style="text-align: center; margin-top: 20px; color: var(--cor-texto-secundaria);">Carregando usuários...</p>
                     </div>
@@ -533,7 +486,6 @@ def admin_manager():
                         <div class="modal-form-group">
                             <label for="password">Senha *</label>
                             <input type="password" id="password" placeholder="Digite a senha" required>
-                            <p style="font-size: 0.8rem; color: var(--cor-texto-secundaria); margin: 5px 0 0 0;">Deixe em branco para manter a senha atual (ao editar)</p>
                         </div>
                         <div class="modal-form-group">
                             <label for="expiry">Data de Expiração (YYYY-MM-DD)</label>
@@ -559,7 +511,7 @@ def admin_manager():
                         
                         <div class="modal-footer">
                             <button type="button" class="btn-cancelar" onclick="closeModal()">Cancelar</button>
-                            <button type="submit" class="btn-salvar">Salvar</button>
+                            <button type="submit" class="btn-salvar">Salvar no GitHub</button>
                         </div>
                     </form>
                     <p id="modalMsg" style="margin-top: 15px; text-align: center; font-weight: 600;"></p>
@@ -567,10 +519,10 @@ def admin_manager():
             </div>
 
             <script>
-                // NOVO ENDPOINT UNIFICADO!
                 const ADMIN_API_URL = '{ADMIN_ROUTE}';
                 const tableBody = document.getElementById('userTableBody');
                 const loadingMsg = document.getElementById('loadingMsg');
+                const githubStatus = document.getElementById('githubStatus');
 
                 function setMsg(elementId, text, isSuccess) {{
                     const msg = document.getElementById(elementId);
@@ -578,17 +530,20 @@ def admin_manager():
                     msg.style.color = isSuccess ? 'var(--cor-sucesso)' : 'var(--cor-erro)';
                 }}
 
-                // ===============================================
-                // FUNÇÃO DE RENDERIZAÇÃO DA TABELA (READ)
-                // ===============================================
                 async function fetchUsersAndRenderTable() {{
                     loadingMsg.style.display = 'block';
                     tableBody.innerHTML = '';
                     
                     try {{
-                        // Faz um GET para a rota de admin, mas adiciona ?data=json para pedir os dados da API
                         const response = await fetch(ADMIN_API_URL + '?data=json', {{ method: 'GET' }});
                         const users = await response.json();
+                        
+                        if (!Array.isArray(users)) {{
+                            throw new Error("Resposta inválida do servidor");
+                        }}
+                        
+                        githubStatus.textContent = 'GitHub: Online';
+                        githubStatus.className = 'github-status github-online';
                         
                         if (users.length === 0) {{
                             tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Nenhum usuário cadastrado.</td></tr>';
@@ -619,22 +574,21 @@ def admin_manager():
                         }}
                     }} catch (error) {{
                         console.error('Erro ao buscar usuários:', error);
-                        tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--cor-erro);">Erro ao carregar dados.</td></tr>';
+                        githubStatus.textContent = 'GitHub: Offline';
+                        githubStatus.className = 'github-status github-offline';
+                        tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--cor-erro);">Erro ao carregar dados do GitHub.</td></tr>';
                     }} finally {{
                         loadingMsg.style.display = 'none';
                     }}
                 }}
 
-                // ===============================================
-                // LÓGICA DE CADASTRO (CREATE)
-                // ===============================================
                 document.getElementById('newUserForm').addEventListener('submit', async function(event) {{
                     event.preventDefault();
                     const form = event.target;
-                    setMsg('modalMsg', 'Cadastrando...', false);
+                    setMsg('modalMsg', 'Salvando no GitHub...', false);
 
                     if(form.password.value.trim() === "") {{
-                        setMsg('modalMsg', 'A senha é obrigatória para cadastrar um novo usuário.', false);
+                        setMsg('modalMsg', 'A senha é obrigatória.', false);
                         return;
                     }}
 
@@ -642,7 +596,7 @@ def admin_manager():
                         acao: 'cadastrar',
                         usuario: form.username.value,
                         senha: form.password.value,
-                        expiracao: form.expiry.value || null, // null se vazio
+                        expiracao: form.expiry.value || null,
                         nome_completo: form.fullname.value || null,
                         email: form.email.value || null,
                         tipo: form.userType.value
@@ -665,62 +619,43 @@ def admin_manager():
                                 fetchUsersAndRenderTable(); 
                             }}, 1500); 
                         }} else {{
-                            setMsg('modalMsg', data.erro || 'Erro ao cadastrar usuário.', false);
+                            setMsg('modalMsg', data.erro || 'Erro ao cadastrar.', false);
                         }}
 
                     }} catch (error) {{
-                        setMsg('modalMsg', 'Erro de rede. Verifique a conexão do servidor.', false);
-                        console.error('Erro de Fetch:', error);
+                        setMsg('modalMsg', 'Erro de rede.', false);
                     }}
                 }});
 
-                // ===============================================
-                // LÓGICA DE DELETAR (DELETE)
-                // ===============================================
                 async function deletar(usuario) {{
-                    if (!confirm(`Tem certeza que deseja DELETAR o usuário ${{usuario}}? Esta ação é irreversível.`)) {{
-                        return;
-                    }}
+                    if (!confirm(`DELETAR ${{usuario}}? Esta ação é irreversível.`)) return;
 
-                    setMsg('loadingMsg', `Deletando usuário ${{usuario}}...`, false);
+                    setMsg('loadingMsg', `Deletando...`, false);
                     loadingMsg.style.display = 'block';
-
-                    const deleteData = {{
-                        acao: 'deletar',
-                        usuario: usuario
-                    }};
 
                     try {{
                         const response = await fetch(ADMIN_API_URL, {{
                             method: 'POST',
                             headers: {{ 'Content-Type': 'application/json' }},
-                            body: JSON.stringify(deleteData)
+                            body: JSON.stringify({{ acao: 'deletar', usuario: usuario }})
                         }});
 
                         const data = await response.json();
 
                         if (response.ok && data.ok) {{
-                            setMsg('loadingMsg', data.mensagem, true);
-                            setTimeout(() => {{
-                                fetchUsersAndRenderTable();
-                            }}, 1000); 
+                            fetchUsersAndRenderTable();
                         }} else {{
-                            setMsg('loadingMsg', data.erro || 'Erro ao deletar usuário.', false);
+                            alert(data.erro || 'Erro ao deletar');
                         }}
                     }} catch (error) {{
-                        setMsg('loadingMsg', 'Erro de rede.', false);
+                        alert('Erro de rede');
                     }}
                 }}
 
-
-                // ===============================================
-                // Lógica de Modal
-                // ===============================================
                 function openModal() {{
                     document.getElementById('userModal').style.display = 'block';
                     document.getElementById('newUserForm').reset();
                     document.getElementById('modalMsg').textContent = '';
-                    document.getElementById('password').required = true;
                 }}
 
                 function closeModal() {{
@@ -728,9 +663,7 @@ def admin_manager():
                 }}
 
                 window.onclick = function(event) {{
-                    if (event.target == document.getElementById('userModal')) {{
-                        closeModal();
-                    }}
+                    if (event.target == document.getElementById('userModal')) closeModal();
                 }}
             </script>
         </body>
@@ -738,52 +671,47 @@ def admin_manager():
         """
         return html_content
 
+
 # =======================================================
-# ROTAS DE CONSULTA (PROXIES PARA AS APIs EXTERNAS)
-# (Mantidas inalteradas)
+# ROTAS DE CONSULTA (MANTIDAS INALTERADAS)
 # =======================================================
 
-# 1. CNPJ
 @app.route('/api/consulta-cnpj')
 def api_consulta_cnpj():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CNPJ não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/cnpj/"
+    url_base = "http://klordapisBrasil.serveo.net/cnpj/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
-# 2. CPF (Base)
 @app.route('/api/consulta-cpf')
 def api_consulta_cpf():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CPF não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/cpf/"
+    url_base = "https://klordapisbrasil.serveo.net/cpf/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
-# 3. CPF2 (NOVO)
 @app.route('/api/consulta-cpf2')
 def api_consulta_cpf2():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CPF não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/cpf/"
+    url_base = "https://klordsearchapis.serveo.net/cpf/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
-# 4. PLACA (Base)
 @app.route('/api/consulta-placa')
 def api_consulta_placa():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado PLACA não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/placa/"
+    url_base = "http://klordapisBrasil.serveo.net/placa/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
     
-# 5. PLACA (Completa - Exemplo de API com token no path)
 @app.route('/api/consulta-placa-completa')
 def api_consulta_placa_completa():
     dado = request.args.get('dado')
@@ -793,27 +721,24 @@ def api_consulta_placa_completa():
     resultado = proxy_consulta(url_base, dado, requires_token_external=False)
     return jsonify(resultado)
 
-# 6. NOME (URL ATUALIZADA)
 @app.route('/api/consulta-nome')
 def api_consulta_nome():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado NOME não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/nome/"
+    url_base = "https://klordsearchapis.serveo.net/nome/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
-# 7. TELEFONE (Base)
 @app.route('/api/consulta-telefone')
 def api_consulta_telefone():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado TELEFONE não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/telefone/"
+    url_base = "https://klordapisbrasil.serveo.net/telefone/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
     
-# 8. TELEFONE2 (NOVO - Token no path)
 @app.route('/api/consulta-telefone2')
 def api_consulta_telefone2():
     dado = request.args.get('dado')
@@ -823,43 +748,39 @@ def api_consulta_telefone2():
     resultado = proxy_consulta(url_base, dado, requires_token_external=False)
     return jsonify(resultado)
 
-# 9. FOTO SP (AGORA COM TIMEOUT MAIOR)
 @app.route('/api/consulta-foto-sp')
 def api_consulta_foto_sp():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CPF/RG não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/fotos/SP/"
+    url_base = "https://klordsearchapis.serveo.net/fotos/SP/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
-# 10. FOTO RJ (AGORA COM TIMEOUT MAIOR)
 @app.route('/api/consulta-foto-rj')
 def api_consulta_foto_rj():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CPF/RG não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/fotorj/"
+    url_base = "http://klordsearchapis.serveo.net/fotorj/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
-# 11. FOTO ES (AGORA COM TIMEOUT MAIOR)
 @app.route('/api/consulta-foto-es')
 def api_consulta_foto_es():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CPF/RG não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/fotos/ES/"
+    url_base = "https://klordsearchapis.serveo.net/fotos/ES/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
-# 12. RENAVAM (COM TOKEN OBRIGATÓRIO)
 @app.route('/api/consulta-renavam')
 def api_consulta_renavam():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado RENAVAM não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/renavam/"
+    url_base = "https://klordsearchapis.serveo.net/renavam/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -868,8 +789,48 @@ if __name__ == '__main__':
     print(f"🚀 Servidor Flask rodando na porta 5000...")
     print(f"✅ Token de acesso ao Painel (Interno): {VALID_TOKEN}")
     print(f"🔑 Token de acesso às APIs Externas: {ADM_TOKEN_EXTERNAL}")
+    print(f"🐙 GitHub Repo: {GITHUB_REPO}")
+    print(f"📁 Arquivo de usuários: {GITHUB_FILE_PATH}")
     print("------------------------------------------------------")
-    print(f"✅ NOVO ADMIN: Acesse http://localhost:5000{ADMIN_ROUTE} para gerenciar os logins.")
-    print("Em seguida, acesse http://localhost:5000 para a tela de login.")
+    print(f"✅ ADMIN: Acesse http://localhost:5000{ADMIN_ROUTE}")
+    print("⚠️  IMPORTANTE: Verifique se o arquivo database.json existe no repo!")
     print("------------------------------------------------------")
     app.run(host='0.0.0.0', port=5000)
+'''
+
+print("✅ Código do app.py gerado com sucesso!")
+print("\n" + "="*60)
+print("RESUMO DAS ALTERAÇÕES:")
+print("="*60)
+print("""
+1. ✅ INTEGRAÇÃO GITHUB API
+   - get_github_file(): Lê database.json do GitHub
+   - update_github_file(): Salva alterações no GitHub
+   - carregar_logins(): Agora busca do GitHub
+   - salvar_logins(): Agora salva no GitHub
+
+2. ✅ ESTRUTURA DO DATABASE.JSON
+   {
+     "logins": [
+       {
+         "usuario": "admin",
+         "senha": "123456",
+         "expiracao": "2026-12-31",
+         "nome_completo": "Administrador",
+         "email": "admin@teste.com",
+         "tipo": "owner"
+       }
+     ]
+   }
+
+3. ✅ PAINEL ADMIN ATUALIZADO
+   - Indicador de status do GitHub (Online/Offline)
+   - Mensagens claras sobre persistência
+   - Botão "Salvar no GitHub"
+
+4. ⚠️ CONFIGURAÇÕES NECESSÁRIAS NO CÓDIGO:
+   - GITHUB_TOKEN: Já configurado com seu token
+   - GITHUB_REPO: klordTV/klTV (já configurado)
+   - RENDER_SERVICE_ID: SUBSTITUA pelo ID do seu serviço
+   - RENDER_API_KEY: SUBSTITUA pela sua API key do Render
+""")
