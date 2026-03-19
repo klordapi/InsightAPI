@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Consulta Klord</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Variáveis de Tema (Roxo Escuro e Gradientes) */
+        :root {
+            --cor-fundo: #0c0c14; 
+            --cor-card-fundo: #1a1a2e; 
+            --cor-borda: #3a3a5e; 
+            --cor-primaria: #7f00ff; 
+            --cor-secundaria-acao: #a259ff; 
+            --cor-gradiente-btn: linear-gradient(135deg, #7f00ff 0%, #a259ff 100%);
+            --cor-texto-principal: #e0e0e0;
+            --cor-texto-secundaria: #9e9e9e;
+            --cor-sucesso: #4caf50;
+            --cor-erro: #f44336;
+            --radius-borda: 16px;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--cor-fundo);
+            margin: 0;
+            padding: 30px;
+            min-height: 10vh;
+            color: var(--cor-texto-principal);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Topo e Título */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--cor-secundaria-acao);
+            margin: 0;
+        }
+        
+        /* Input e Botões de Ação */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            background: var(--cor-card-fundo);
+            padding: 15px;
+            border-radius: var(--radius-borda);
+        }
+
+        #dadoConsulta {
+            flex-grow: 1;
+            padding: 12px 15px;
+            background-color: #111122; 
+            color: var(--cor-texto-principal);
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .btn-action {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-consultar {
+            background: var(--cor-gradiente-btn);
+            color: white;
+            box-shadow: 0 4px 10px rgba(127, 0, 255, 0.4);
+        }
+
+        .btn-consultar:hover { opacity: 0.9; }
+
+        .btn-limpar, .btn-copiar {
+            background-color: #333355;
+            color: var(--cor-texto-principal);
+        }
+        
+        /* Mensagem de Status (Veículo encontrado com sucesso) */
+        .status-message-box {
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-success {
+            background-color: rgba(76, 175, 80, 0.2); /* Verde transparente */
+            color: var(--cor-sucesso);
+            border: 1px solid var(--cor-sucesso);
+        }
+
+        .status-error {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: var(--cor-erro);
+            border: 1px solid var(--cor-erro);
+        }
+
+        /* Cartão de Resultados Formatados */
+        .resultado-card {
+            background: var(--cor-card-fundo);
+            padding: 30px;
+            border-radius: var(--radius-borda);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--cor-borda);
+            margin-bottom: 25px;
+        }
+
+        .resultado-card h2 {
+            font-size: 1.3rem;
+            color: var(--cor-secundaria-acao);
+            border-bottom: 2px solid var(--cor-borda);
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .resultado-card h3 {
+            font-size: 1.1rem;
+            color: var(--cor-texto-principal);
+            margin: 25px 0 15px 0;
+            border-left: 3px solid var(--cor-primaria);
+            padding-left: 10px;
+        }
+
+
+        /* Grid de Dados Formatados */
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+
+        .data-field {
+            padding: 10px 0;
+        }
+
+        .data-field .label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--cor-texto-secundaria);
+            display: block;
+            text-transform: uppercase;
+        }
+
+        .data-field .value {
+            font-size: 1.05rem;
+            font-weight: 400;
+            color: var(--cor-texto-principal);
+            margin-top: 4px;
+            word-break: break-word; /* Para garantir que longos textos como e-mail/descrições quebrem a linha */
+        }
+        
+        .data-field .value.sem-informacao {
+            color: var(--cor-erro);
+            font-style: italic;
+        }
+        
+        /* Lista de Itens (para E-mails, Endereços, Restrições) */
+        .item-list-group {
+            margin-bottom: 25px;
+        }
+        
+        .item-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .item-list-item {
+            background: #151525;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #2a2a44;
+            font-size: 0.9rem;
+            color: var(--cor-texto-principal);
+            word-wrap: break-word;
+        }
+        
+        .item-list-item .item-label {
+            font-size: 0.8rem;
+            color: var(--cor-secundaria-acao);
+            margin-bottom: 5px;
+            display: block;
+            font-weight: 600;
+        }
+        
+        /* Estilo para Tabela de Resultados (Vizinhos, Nomes Encontrados, Telefones) */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            table-layout: auto; 
+        }
+
+        .data-table th, .data-table td {
+            padding: 10px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--cor-borda);
+            word-wrap: break-word;
+        }
+
+        .data-table th {
+            background-color: #2a2a44;
+            color: var(--cor-texto-principal);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .data-table tr:hover {
+            background-color: #202035;
+        }
+        
+        .data-table .col-cpf {
+            width: 150px; 
+        }
+        
+        .tag-restricao {
+            display: inline-block;
+            background-color: #f44336; /* Vermelho Erro */
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 id="moduleTitle">Carregando Módulo...</h1>
+            <a href="/painel" class="btn-action btn-limpar"><i class="fas fa-arrow-left"></i> Voltar</a>
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="dadoConsulta" placeholder="Insira o dado para consulta" onkeypress="if(event.key === 'Enter') fazerConsulta()">
+            <button class="btn-action btn-consultar" onclick="fazerConsulta()"><i class="fas fa-search"></i> Consultar</button>
+            <button class="btn-action btn-limpar" onclick="limparResultado()"><i class="fas fa-eraser"></i> Limpar</button>
+            <button class="btn-action btn-copiar" onclick="copiarResultado()"><i class="fas fa-copy"></i> Copiar</button>
+        </div>
+
+        <div id="statusMessage" class="status-message-box" style="display: none;"></div>
+
+        <div id="resultadoFormatado" class="resultado-card" style="display: none;">
+            </div>
+        
+        <div id="loadingPlaceholder" class="resultado-card" style="text-align: center; color: var(--cor-texto-secundaria);">
+            <i class="fas fa-circle-notch fa-spin" style="font-size: 2rem; margin-bottom: 15px; color: var(--cor-secundaria-acao);"></i>
+            <p>Aguardando sua primeira consulta...</p>
+        </div>
+
+    </div>
+
+    <script>
+        // API_MAP COMPLETO COM TODOS OS 12 MÓDULOS
+        const API_MAP = {
+            'cnpj': {title: 'Consulta CNPJ', endpoint: '/api/consulta-cnpj', placeholder: '00.000.000/0000-00'},
+            'cpf': {title: 'Consulta CPF (Base 1)', endpoint: '/api/consulta-cpf', placeholder: '000.000.000-00'},
+            'cpf2': {title: 'Consulta CPF (Base 2)', endpoint: '/api/consulta-cpf2', placeholder: '000.000.000-00'},
+            'placa': {title: 'Consulta PLACA (Base)', endpoint: '/api/consulta-placa', placeholder: 'ABC1234'},
+            'placa_completa': {title: 'Consulta PLACA (Completa)', endpoint: '/api/consulta-placa-completa', placeholder: 'ABC1234'},
+            'nome': {title: 'Busca por NOME', endpoint: '/api/consulta-nome', placeholder: 'JOAO MIGUEL DA SILVA'},
+            'telefone': {title: 'Consulta TELEFONE (Base 1)', endpoint: '/api/consulta-telefone', placeholder: '84999225188'},
+            'telefone2': {title: 'Consulta TELEFONE (Base 2)', endpoint: '/api/consulta-telefone2', placeholder: '84999225188'},
+            'renavam': {title: 'Consulta RENAVAM', endpoint: '/api/consulta-renavam', placeholder: '00539918229'},
+            // Módulos de Foto com HÍFEN
+            'foto-sp': {title: 'Consulta FOTO (SP)', endpoint: '/api/consulta-foto-sp', placeholder: 'CPF/RG para Foto SP'},
+            'foto-rj': {title: 'Consulta FOTO (RJ)', endpoint: '/api/consulta-foto-rj', placeholder: 'CPF/RG para Foto RJ'},
+            'foto-es': {title: 'Consulta FOTO (ES)', endpoint: '/api/consulta-foto-es', placeholder: 'CPF/RG para Foto ES'}
+        };
+
+        let currentModule = '';
+        // Use o token que está no seu app.py
+        const internalToken = "KLORD-TESTE-1234567890ABCDEF"; 
+        
+        // Referência do botão (necessária para desativar/ativar)
+        const btnConsultar = document.querySelector('.btn-consultar');
+
+        // Função para extrair o parâmetro da URL
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Função de inicialização
+        window.onload = function() {
+            currentModule = getQueryParam('modulo');
+            // TRATAMENTO DA CHAVE API_MAP: CORRIGE _ para - SE NECESSÁRIO
+            if (!currentModule || !API_MAP[currentModule]) {
+                if (currentModule && currentModule.includes('_')) {
+                    const correctedModule = currentModule.replace(/_/g, '-');
+                    if (API_MAP[correctedModule]) {
+                         currentModule = correctedModule;
+                    }
+                }
+            }
+            
+            if (currentModule && API_MAP[currentModule]) {
+                const config = API_MAP[currentModule];
+                document.getElementById('moduleTitle').textContent = config.title;
+                document.getElementById('pageTitle').textContent = config.title;
+                document.getElementById('dadoConsulta').placeholder = config.placeholder;
+            } else {
+                document.getElementById('moduleTitle').textContent = 'Módulo Inválido';
+            }
+        };
+
+        // Helper para renderizar um campo individual
+        function renderField(label, value) {
+            // Trata valores como nulos, vazios, "SEM INFORMAÇÃO", "NÃO INFORMADO", "******", "Sem dados", e "N/I"
+            const invalidValues = ['SEM INFORMAÇÃO', 'NÃO INFORMADO', '******', 'SEM DADOS', 'N/I', 'undefined'];
+            // Garante que o valor não é um objeto ou array e converte para string
+            const valueString = (typeof value === 'object' && value !== null) ? JSON.stringify(value) : String(value);
+            const displayValue = (value === null || value === '' || invalidValues.includes(valueString.toUpperCase())) ? 'SEM INFORMAÇÃO' : valueString;
+            const className = displayValue === 'SEM INFORMAÇÃO' ? 'value sem-informacao' : 'value';
+            
+            // Não renderiza o label se for um campo de tabela (label vazio)
+            const labelHtml = label ? `<span class="label">${label}</span>` : '';
+
+            return `
+                <div class="data-field">
+                    ${labelHtml}
+                    <span class="${className}">${displayValue}</span>
+                </div>
+            `;
+        }
+        
+        // ----------------------------------------------------------------
+        // --- FUNÇÕES DE FORMATAÇÃO PRINCIPAIS ---
+        // ----------------------------------------------------------------
+
+        // FUNÇÃO DE TELEFONE (IMPLEMENTADA para Telefone e Telefone2)
+        function formatResultTelefone(data) {
+            let html = `<h2>Resultado Consulta Telefone (${API_MAP[currentModule].title.replace('Consulta TELEFONE ', '')})</h2>`;
+
+            // Detecta a estrutura da API (Base 1 vs. Base 2)
+            const isBase2 = !!data.resultado;
+
+            if (isBase2) {
+                // Estrutura Base 2 (AlizinHacker)
+                const result = data.resultado || {};
+                const dadosCadastrais = result.dados_cadastrais || {};
+                const endereco = result.endereco || {};
+                const renda = result.renda || {};
+                const veiculos = result.veiculos || {};
+
+                // --- 1. DADOS CADASTRAIS (GRID) ---
+                html += `<h3>Dados Cadastrais (Telefone: ${result.telefone})</h3><div class="data-grid">`;
+                html += renderField('Nome Completo', dadosCadastrais.nome);
+                html += renderField('CPF', dadosCadastrais.cpf);
+                html += renderField('Data Nascimento', dadosCadastrais.nascimento);
+                html += renderField('Nome da Mãe', dadosCadastrais.mae);
+                html += renderField('Status Receita', dadosCadastrais.status_receita);
+                html += renderField('Sexo', dadosCadastrais.sexo);
+                html += '</div>';
+
+                // --- 2. ENDEREÇO (GRID) ---
+                html += `<h3>Endereço Atual</h3><div class="data-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">`;
+                
+                const logradouroCompleto = `${endereco.tipo || ''} ${endereco.logradouro || ''}, ${endereco.numero || ''} ${endereco.complemento || ''}`;
+                
+                html += renderField('Endereço', logradouroCompleto.trim());
+                html += renderField('Bairro', endereco.bairro);
+                html += renderField('Cidade/UF', `${endereco.cidade || ''} / ${endereco.uf || ''}`);
+                html += renderField('CEP', endereco.cep);
+                html += '</div>';
+                
+                // --- 3. INFORMAÇÕES EXTRAS (GRID) ---
+                html += `<h3>Informações Adicionais</h3><div class="data-grid">`;
+                html += renderField('Renda Presumida (R$)', renda.renda_presumida);
+                html += renderField('Faixa de Renda', renda.faixa_renda);
+                html += renderField('Qtd. Veículos', veiculos.quantidade);
+                html += renderField('Veículo Principal', `${veiculos.marca1 || ''} / ${veiculos.modelo1 || ''} (${veiculos.ano1 || ''})`);
+                html += '</div>';
+
+            } else {
+                // Estrutura Base 1 (Telefone Base)
+                const result = data.dados || {};
+                const endereco = result.ENDERECO || {};
+
+                // --- 1. DADOS CADASTRAIS (GRID) ---
+                html += `<h3>Dados Cadastrais (Telefone: ${result.TELEFONE})</h3><div class="data-grid">`;
+                html += renderField('Nome do Titular', result.NOME_TITULAR);
+                html += renderField('CPF/CNPJ do Titular', result.CPF_CNPJ_TITULAR);
+                html += '</div>';
+
+                // --- 2. ENDEREÇO (GRID) ---
+                html += `<h3>Endereço Associado</h3><div class="data-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">`;
+                
+                const logradouroCompleto = `${endereco.LOGRADOURO || ''}, ${endereco.NUMERO || ''} ${endereco.COMPLEMENTO || ''}`;
+                
+                html += renderField('Endereço', logradouroCompleto.trim());
+                html += renderField('Bairro', endereco.BAIRRO);
+                html += renderField('Cidade/Estado', `${endereco.CIDADE || ''} / ${endereco.ESTADO || ''}`);
+                html += renderField('CEP', endereco.CEP);
+                html += '</div>';
+            }
+
+            return html;
+        }
+
+        // FUNÇÃO DE CNPJ
+        function formatResultCnpj(data) {
+            let html = `<h2>Resultado Consulta CNPJ</h2>`;
+
+            const result = data.dados || data;
+            const endereco = result.ENDERECO || {};
+            const contato = result.CONTATO || {};
+            const atividades = result.ATIVIDADES || {};
+            const socios = result.SOCIOS_ADMINISTRADORES || [];
+
+            // --- 1. DADOS CADASTRAIS (GRID) ---
+            html += `<h3>Dados da Empresa</h3><div class="data-grid">`;
+            html += renderField('Nome Empresarial', result.NOME_EMPRESARIAL);
+            html += renderField('Nome Fantasia', result.NOME_FANTASIA);
+            html += renderField('CNPJ', result.CNPJ);
+            html += renderField('Tipo (Matriz/Filial)', result.TIPO);
+            html += renderField('Situação Cadastral', result.SITUACAO_CADASTRAL);
+            html += renderField('Status', result.STATUS);
+            html += renderField('Natureza Jurídica', result.NATUREZA_JURIDICA);
+            html += renderField('Porte', result.PORTE);
+            html += renderField('Capital Social', result.CAPITAL_SOCIAL);
+            html += renderField('Data de Abertura', result.ABERTURA);
+            html += renderField('Última Atualização', result.ULTIMA_ATUALIZACAO);
+            html += '</div>';
+
+            // --- 2. CONTATO E ENDEREÇO (GRID) ---
+            html += `<h3>Contato e Localização</h3><div class="data-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">`;
+            html += renderField('Telefone', contato.TELEFONE);
+            html += renderField('E-mail', contato.EMAIL);
+            
+            const enderecoCompleto = `${endereco.LOGRADOURO || ''}, ${endereco.NUMERO || ''}${endereco.COMPLEMENTO && endereco.COMPLEMENTO.toUpperCase() !== 'SEM INFORMAÇÃO' ? ' - ' + endereco.COMPLEMENTO : ''}`;
+            const municipioUfCep = `${endereco.MUNICIPIO || ''} / ${endereco.ESTADO || ''} (CEP: ${endereco.CEP || ''})`;
+
+            html += renderField('Endereço', enderecoCompleto.trim());
+            html += renderField('Bairro', endereco.BAIRRO);
+            html += renderField('Município / UF / CEP', municipioUfCep.trim());
+            html += '</div>';
+
+            // --- 3. ATIVIDADES (LISTA SIMPLES) ---
+            html += `<h3>Atividades Econômicas (CNAE)</h3><div class="data-grid" style="grid-template-columns: 1fr 1fr;">`;
+            html += renderField('Principal', atividades.PRINCIPAL);
+            if (atividades.SECUNDARIAS) {
+                const sec = Array.isArray(atividades.SECUNDARIAS) ? atividades.SECUNDARIAS.join('; ') : atividades.SECUNDARIAS;
+                html += renderField('Secundárias', sec);
+            }
+            html += `</div>`;
+
+
+            // --- 4. SÓCIOS E ADMINISTRADORES (TABELA) ---
+            if (socios.length > 0) {
+                html += `<div class="item-list-group"><h3>Sócios e Administradores (${socios.length})</h3>`;
+                html += `<table class="data-table"><thead><tr><th>Nome</th><th>Qualificação</th></tr></thead><tbody>`;
+                socios.forEach(socio => {
+                    html += `<tr>
+                                <td>${renderField('', socio.nome)}</td>
+                                <td>${renderField('', socio.qualificacao)}</td>
+                            </tr>`;
+                });
+                html += `</tbody></table></div>`;
+            } else {
+                 html += `<div class="item-list-group"><h3>Sócios e Administradores</h3><p class="tag-restricao" style="background-color: var(--cor-texto-secundaria);">Nenhuma informação de sócio/administrador encontrada.</p></div>`;
+            }
+
+            return html;
+        }
+
+        // FUNÇÃO DE BUSCA POR NOME
+        function formatResultNome(data) {
+            let html = `<h2>Resultado Busca por Nome (${API_MAP[currentModule].title})</h2>`;
+
+            const resultList = data.pessoas_encontradas || data.dados || (Array.isArray(data) ? data : []); 
+
+            if (resultList.length > 0) {
+                html += `<div class="item-list-group"><h3>Pessoas Encontradas (${resultList.length})</h3>`;
+                html += `<table class="data-table"><thead><tr><th>Nome Completo</th><th class="col-cpf">CPF</th><th>Data Nasc.</th></tr></thead><tbody>`;
+                
+                resultList.forEach(p => {
+                    const nome = p.nome_completo || p.nome || p.NOME;
+                    const cpf = p.cpf || p.CPF;
+                    const dataNasc = p.data_nascimento || p.NASCIMENTO;
+                    
+                    html += `<tr>
+                                <td>${renderField('', nome)}</td>
+                                <td>${renderField('', cpf)}</td>
+                                <td>${renderField('', dataNasc || 'N/A')}</td>
+                            </tr>`;
+                });
+                
+                html += `</tbody></table></div>`;
+            } else {
+                html += `<h3>Pessoas Encontradas</h3><p class="tag-restricao" style="background-color: var(--cor-texto-secundaria);">Nenhuma pessoa encontrada com este nome na base.</p>`;
+            }
+
+            return html;
+        }
+
+        // FUNÇÃO DE CPF CORRIGIDA
+        function formatResultCpf(data) {
+            let html = `<h2>Resultado Consulta CPF (${API_MAP[currentModule].title.replace('Consulta CPF ', '')})</h2>`;
+
+            const result = data.dados || data;
+
+            // --- 1. DADOS CADASTRAIS (GRID) ---
+            html += `<h3>Dados Pessoais</h3><div class="data-grid">`;
+            
+            html += renderField('Nome Completo', result.NOME);
+            html += renderField('CPF', result.CPF);
+            html += renderField('Data Nascimento', result.NASCIMENTO);
+            html += renderField('Idade', result.IDADE);
+            html += renderField('Situação Receita Federal', result.STATUS_RECEITA_FEDERAL);
+            html += renderField('Estado Civil', result.ESTADO_CIVIL);
+            html += renderField('Nome da Mãe', result.MAE);
+            html += renderField('Nome do Pai', result.PAI);
+            html += renderField('Escolaridade', result.ESCOLARIDADE);
+            html += renderField('Profissão', result.PROFISSAO);
+            html += renderField('PIS', result.PIS);
+            html += renderField('RG', result.RG);
+            
+            html += '</div>';
+
+            // --- 2. TELEFONES (TABELA) ---
+            const telefones = result.TELEFONES_PROPRIETARIO || [];
+            if (telefones.length > 0) {
+                html += `<div class="item-list-group"><h3>Telefones do Proprietário (${telefones.length})</h3>`;
+                html += `<table class="data-table"><thead><tr><th>Número</th><th>Status/Operadora</th></tr></thead><tbody>`;
+                telefones.forEach(tel => {
+                    html += `<tr><td>${renderField('', tel.numero || tel.NUMERO)}</td><td>${renderField('', tel.status || tel.STATUS)}</td></tr>`;
+                });
+                html += `</tbody></table></div>`;
+            }
+
+            // --- 3. E-MAILS (LISTA SIMPLES) ---
+            const emails = result.EMAILS || [];
+            if (emails.length > 0) {
+                html += `<div class="item-list-group"><h3>E-mails Encontrados (${emails.length})</h3><div class="item-list">`;
+                emails.forEach(email => {
+                    html += `<div class="item-list-item">${renderField('', email)}</div>`;
+                });
+                html += `</div></div>`;
+            }
+
+            // --- 4. ENDEREÇOS (LISTA SIMPLES) ---
+            const enderecos = result.ENDERECOS || [];
+            if (enderecos.length > 0) {
+                html += `<div class="item-list-group"><h3>Endereços Encontrados (${enderecos.length})</h3><div class="item-list">`;
+                enderecos.forEach(endereco => {
+                    html += `<div class="item-list-item">${renderField('', endereco)}</div>`;
+                });
+                html += `</div></div>`;
+            }
+
+            // --- 5. VIZINHOS (TABELA) ---
+            const vizinhos = result.POSSIVEIS_VIZINHOS || [];
+            if (vizinhos.length > 0) {
+                 html += `<div class="item-list-group"><h3>Possíveis Vizinhos (${vizinhos.length})</h3>`;
+                 html += `<table class="data-table"><thead><tr><th>Nome</th><th class="col-cpf">CPF</th></tr></thead><tbody>`;
+                 vizinhos.forEach(v => {
+                    html += `<tr><td>${renderField('', v.nome)}</td><td>${renderField('', v.cpf)}</td></tr>`; 
+                 });
+                 html += `</tbody></table></div>`;
+            }
+            
+            return html;
+        }
+
+        // FUNÇÃO DE PLACA/VEÍCULO
+        function formatResultVeiculo(data) {
+            let html = `<h2>Resultado Consulta Veículo (${API_MAP[currentModule].title.replace('Consulta ', '')})</h2>`;
+
+            const result = data.dados || data;
+            const dadosVeiculo = result.DADOS_VEICULO || {};
+            const dadosFabricacao = result.DADOS_FABRICACAO || {};
+            const proprietario = result.PROPRIETARIO_POSSUIDOR || {};
+            const registro = result.REGISTRO || {};
+            
+            // --- 1. DADOS BÁSICOS (GRID) ---
+            html += `<h3>Identificação e Situação</h3><div class="data-grid">`;
+            html += renderField('Placa', result.PLACA);
+            html += renderField('RENAVAM', result.RENAVAM);
+            html += renderField('CHASSI', result.CHASSI);
+            html += renderField('Situação', result.SITUACAO);
+            html += renderField('UF Registro', registro.UF_REGISTRO);
+            html += renderField('Município Registro', registro.MUNICIPIO_REGISTRO);
+            html += renderField('Emissão Último CRV', registro.EMISSAO_ULTIMO_CRV);
+            html += renderField('Última Atualização', registro.ULTIMA_ATUALIZACAO);
+            html += '</div>';
+
+            // --- 2. DADOS TÉCNICOS (GRID) ---
+            html += `<h3>Dados Técnicos</h3><div class="data-grid">`;
+            html += renderField('Marca/Modelo', `${dadosVeiculo.MARCA || ''} / ${dadosVeiculo.MODELO || ''}`);
+            html += renderField('Ano Fabricação', dadosFabricacao.ANO_FABRICACAO);
+            html += renderField('Ano Modelo', dadosFabricacao.ANO_MODELO);
+            html += renderField('Cor', dadosVeiculo.COR);
+            html += renderField('Combustível', dadosVeiculo.COMBUSTIVEL);
+            html += renderField('Potência (CV)', dadosVeiculo.POTENCIA);
+            html += renderField('Cilindradas (CC)', dadosVeiculo.CILINDRADAS);
+            html += renderField('Tipo de Veículo', dadosVeiculo.TIPO_VEICULO);
+            html += renderField('Espécie', dadosVeiculo.ESPECIE);
+            html += renderField('Qtd. Passageiros', dadosVeiculo.QUANTIDADE_PASSAGEIROS);
+            html += '</div>';
+            
+            // --- 3. PROPRIETÁRIO (GRID) ---
+            html += `<h3>Dados do Proprietário/Possuidor</h3><div class="data-grid">`;
+            html += renderField('Nome', proprietario.NOME);
+            html += renderField('CPF/CNPJ', proprietario.CPF_CNPJ);
+            html += '</div>';
+
+            // --- 4. RESTRIÇÕES (LISTA DE TAGS) ---
+            const restricoes = result.RESTRICOES || [];
+            if (restricoes.length > 0) {
+                 html += `<div class="item-list-group"><h3>Restrições e Impedimentos (${restricoes.length})</h3>`;
+                 restricoes.forEach(restricao => {
+                    html += `<span class="tag-restricao">${restricao.replace(/_/g, ' ')}</span>`;
+                 });
+                 html += `</div>`;
+            } else {
+                 html += `<div class="item-list-group"><h3>Restrições e Impedimentos</h3><p class="tag-restricao" style="background-color: var(--cor-sucesso);">NENHUMA RESTRIÇÃO ENCONTRADA</p></div>`;
+            }
+
+            return html;
+        }
+
+        // FUNÇÃO DE FOTO 
+        function formatResultFoto(data) {
+             const rawBase64Img = data.base64_image || data.base64_img || data.foto_base64;
+             
+             if (rawBase64Img) {
+                 const base64Img = rawBase64Img.replace(/[\s\n\r]/g, '');
+                 
+                 return `
+                    <h2>Resultado da Consulta de Foto (${API_MAP[currentModule].title.replace('Consulta FOTO ', '')})</h2>
+                    <p>CPF/RG Consultado: ${data.consulta || 'N/A'}</p>
+                    <img src="data:image/jpeg;base64,${base64Img}" style="max-width: 400px; height: auto; border: 3px solid var(--cor-secundaria-acao); border-radius: 8px; margin-top: 15px;">
+                 `;
+             }
+             return '<h2>Resultado Foto (Não Encontrada)</h2>';
+        }
+        
+        // Função para formatar o JSON bruto em caso de fallback/erro
+        function formatResultRaw(data) {
+            const content = data ? JSON.stringify(data, null, 2) : 'SEM DADOS DE RESPOSTA';
+            return `
+                <h3>Resultado Bruto (JSON - Exibido apenas em caso de erro/falha)</h3>
+                <pre style="white-space: pre-wrap; word-wrap: break-word; color: #ccc;">${content}</pre>
+            `;
+        }
+
+
+        // Função principal de formatação (seleciona a função correta)
+        function formatResult(module, data) {
+            // Tratamento de Erro Padrão
+            if (data.erro || data.status === 'erro' || data.status === 'error' || data.status === 'falha') {
+                const errorMsg = data.erro || data.mensagem || (data.status === 'erro' ? 'Erro retornado pela API externa.' : 'Falha na consulta.');
+                return `
+                    <div class="status-message-box status-error">
+                        <i class="fas fa-times-circle"></i>
+                        <span>ERRO NA API: ${errorMsg}</span>
+                    </div>
+                    ${formatResultRaw(data.detalhes || data)}
+                `;
+            }
+            
+            // Seleção da Formatação Correta
+            if (module.startsWith('cpf')) return formatResultCpf(data);
+            if (module === 'nome') return formatResultNome(data);
+            if (module === 'cnpj') return formatResultCnpj(data);
+            // Agora as duas de telefone caem aqui
+            if (module.startsWith('telefone')) return formatResultTelefone(data);
+            
+            if (module.includes('placa') || module === 'renavam') return formatResultVeiculo(data);
+            if (module.startsWith('foto-')) return formatResultFoto(data);
+
+            // Retorno Padrão (Fallback para o JSON bruto em caso de módulo sem formatação)
+            return formatResultRaw(data);
+        }
+        
+        // Função principal de consulta (AGORA COM TRY/FINALLY E BOTÃO)
+        async function fazerConsulta() {
+            const config = API_MAP[currentModule];
+            
+            if (!config) {
+                 const statusDiv = document.getElementById('statusMessage');
+                 statusDiv.className = 'status-message-box status-error';
+                 statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>ERRO: Módulo de consulta não configurado (Verifique o API_MAP).</span>';
+                 statusDiv.style.display = 'flex';
+                 return;
+            }
+
+            const dado = document.getElementById('dadoConsulta').value;
+            const statusDiv = document.getElementById('statusMessage');
+            const resultadoDiv = document.getElementById('resultadoFormatado');
+            const loadingPlaceholder = document.getElementById('loadingPlaceholder');
+
+
+            // 1. Validação
+            if (!dado || dado.trim() === '') {
+                statusDiv.className = 'status-message-box status-error';
+                statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>ERRO: Insira um dado válido para consulta.</span>';
+                statusDiv.style.display = 'flex';
+                resultadoDiv.style.display = 'none';
+                return;
+            }
+
+            // 2. Estado de Carregamento
+            btnConsultar.disabled = true; // DESABILITA O BOTÃO
+            statusDiv.className = 'status-message-box status-error'; 
+            statusDiv.style.display = 'none';
+            resultadoDiv.style.display = 'none';
+            loadingPlaceholder.style.display = 'block';
+            loadingPlaceholder.innerHTML = `<i class="fas fa-circle-notch fa-spin" style="font-size: 2rem; margin-bottom: 15px; color: var(--cor-secundaria-acao);"></i><p>Consultando API para ${config.title}. Aguarde (Máximo 60 segundos)...</p>`;
+
+
+            try {
+                // 3. Chamada ao Backend (Flask)
+                const url_completa = `${config.endpoint}?dado=${encodeURIComponent(dado)}&token=${internalToken}`;
+                const response = await fetch(url_completa);
+                const data = await response.json();
+
+                // 4. Tratamento de Erro do Backend/API
+                if (!response.ok) {
+                    statusDiv.className = 'status-message-box status-error';
+                    statusDiv.innerHTML = `<i class="fas fa-times-circle"></i><span>ERRO HTTP ${response.status}: Falha ao receber resposta do backend (Flask).</span>`;
+                    resultadoDiv.innerHTML = formatResultRaw(data);
+                } else if (data.erro || data.status === 'erro' || data.status === 'error' || data.status === 'falha') {
+                    const errorMsg = data.erro || data.mensagem || (data.detalhes ? JSON.stringify(data.detalhes) : 'Falha na consulta.');
+                    statusDiv.className = 'status-message-box status-error';
+                    statusDiv.innerHTML = `<i class="fas fa-times-circle"></i><span>ERRO NA CONSULTA: ${errorMsg}</span>`;
+                    resultadoDiv.innerHTML = formatResultRaw(data);
+                } else {
+                    // 5. Sucesso e Formatação
+                    statusDiv.className = 'status-message-box status-success';
+                    statusDiv.innerHTML = `<i class="fas fa-check-circle"></i><span>Dados encontrados com sucesso!</span>`;
+                    resultadoDiv.innerHTML = formatResult(currentModule, data);
+                }
+
+            } catch (error) {
+                // 6. Erro de Rede ou JSON Inesperado
+                statusDiv.className = 'status-message-box status-error';
+                statusDiv.innerHTML = `<i class="fas fa-network-wired"></i><span>ERRO DE REDE/JSON: Não foi possível conectar ou processar a resposta do backend (Flask).</span>`;
+                resultadoDiv.innerHTML = formatResultRaw({erro: "Erro de Rede/Processamento JSON", detalhes: error.message});
+                console.error('Erro de Fetch:', error);
+            }
+            
+            // 7. Finalização (Sempre Executa)
+            finally {
+                loadingPlaceholder.style.display = 'none';
+                statusDiv.style.display = 'flex';
+                resultadoDiv.style.display = 'block';
+                btnConsultar.disabled = false; // REABILITA O BOTÃO
+            }
+        }
+        
+        function limparResultado() {
+            document.getElementById('dadoConsulta').value = '';
+            document.getElementById('statusMessage').style.display = 'none';
+            document.getElementById('resultadoFormatado').style.display = 'none';
+            document.getElementById('loadingPlaceholder').style.display = 'block';
+            document.getElementById('loadingPlaceholder').innerHTML = '<i class="fas fa-circle-notch fa-spin" style="font-size: 2rem; margin-bottom: 15px; color: var(--cor-secundaria-acao);"></i><p>Aguardando sua primeira consulta...</p>';
+        }
+
+        function copiarResultado() {
+            const resultadoText = document.getElementById('resultadoFormatado').innerText;
+            if (resultadoText) {
+                // Garante que o texto bruto do resultado JSON seja copiado se não houver formatação
+                navigator.clipboard.writeText(resultadoText).then(() => {
+                    alert('Resultado copiado para a área de transferência!');
+                }).catch(err => {
+                    alert('Erro ao copiar: ' + err);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
+

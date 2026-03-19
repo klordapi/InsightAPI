@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Usuários - Klord Buscas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Variáveis de Tema (Roxo Escuro e Gradientes) */
+        :root {
+            --cor-fundo: #0c0c14; 
+            --cor-card-fundo: #1a1a2e; 
+            --cor-borda: #3a3a5e; 
+            --cor-primaria: #7f00ff; 
+            --cor-secundaria-acao: #a259ff; 
+            --cor-gradiente-btn: linear-gradient(135deg, #7f00ff 0%, #a259ff 100%);
+            --cor-texto-principal: #e0e0e0;
+            --cor-texto-secundaria: #9e9e9e;
+            --cor-sucesso: #4caf50;
+            --cor-erro: #f44336;
+            --radius-borda: 16px;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto-principal);
+            margin: 0;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Card Principal da Tabela */
+        .user-management-card {
+            background: var(--cor-card-fundo);
+            padding: 30px;
+            border-radius: var(--radius-borda);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--cor-borda);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Botão Novo Usuário (Gradiente) */
+        .btn-new-user {
+            padding: 12px 20px;
+            background: var(--cor-gradiente-btn);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: opacity 0.2s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(127, 0, 255, 0.4);
+        }
+        
+        .btn-new-user:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* Tabela de Usuários */
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .user-table th {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--cor-texto-secundaria);
+            padding: 15px 10px;
+            border-bottom: 1px solid var(--cor-borda);
+            text-transform: uppercase;
+        }
+
+        .user-table td {
+            font-size: 0.95rem;
+            padding: 15px 10px;
+            border-bottom: 1px solid #1f1f3a; /* Linha mais sutil */
+            color: var(--cor-texto-principal);
+        }
+        
+        .user-table tbody tr:hover {
+            background-color: #151525;
+        }
+        
+        /* Tags de Status e Tipo */
+        .tag {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+        .tag-owner { background-color: #8800ff; color: white; }
+        .tag-undefined { background-color: #ffc107; color: #333; }
+        .tag-ativo { background-color: var(--cor-sucesso); color: white; }
+        .tag-inativo { background-color: var(--cor-erro); color: white; }
+
+        /* Botão Editar */
+        .btn-edit {
+            background-color: var(--cor-primaria);
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        /* ======================================================= */
+        /* MODAL (Novo Usuário) */
+        /* ======================================================= */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+        }
+
+        .modal-content {
+            background: var(--cor-card-fundo);
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: var(--radius-borda);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--cor-borda);
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--cor-borda);
+            padding-bottom: 15px;
+        }
+        
+        .modal-header h3 {
+            font-size: 1.5rem;
+            margin: 0;
+            color: var(--cor-secundaria-acao);
+        }
+
+        .modal-close {
+            color: var(--cor-texto-secundaria);
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-form-group {
+            margin-bottom: 18px;
+        }
+
+        .modal-form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--cor-texto-principal);
+            font-size: 0.95rem;
+        }
+
+        .modal-form-group input, .modal-form-group select {
+            width: 100%;
+            padding: 12px;
+            background-color: #111122; 
+            color: var(--cor-texto-principal);
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        
+        .modal-form-group input:focus, .modal-form-group select:focus {
+            outline: none;
+            border-color: var(--cor-secundaria-acao);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid var(--cor-borda);
+        }
+
+        .btn-salvar {
+            background: var(--cor-gradiente-btn);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .btn-cancelar {
+            background: transparent;
+            color: var(--cor-texto-secundaria);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--cor-borda);
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <script>
+             // Simulação do template Flask para incluir o menu no snippet
+             fetch('/admin_menu.html')
+                 .then(response => response.text())
+                 .then(html => {
+                     document.querySelector('.container').insertAdjacentHTML('afterbegin', html.replace('{% if active_page == \'users\' %}active{% endif %}', 'active').replace('{% if active_page == \'dashboard\' %}active{% endif %}', ''));
+                 })
+                 .catch(err => console.error('Erro ao carregar menu:', err));
+        </script>
+        
+        <div class="user-management-card">
+            <div class="card-header">
+                <h2>Gerenciamento de Usuários</h2>
+                <button class="btn-new-user" onclick="openModal()"><i class="fas fa-plus"></i> Novo Usuário</button>
+            </div>
+            
+            <div style="overflow-x: auto;">
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>Usuário</th>
+                            <th>Nome Completo</th>
+                            <th>Email</th>
+                            <th>Tipo</th>
+                            <th>Status</th>
+                            <th>Expiração</th>
+                            <th>Último Acesso</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>owner</td>
+                            <td>Administrador Owner</td>
+                            <td>owner@klordbuscas.com</td>
+                            <td><span class="tag tag-owner">owner</span></td>
+                            <td><span class="tag tag-undefined">undefined</span></td>
+                            <td>Sem expiração</td>
+                            <td>18/10/2025, 21:18:02</td>
+                            <td><button class="btn-edit">Editar</button></td>
+                        </tr>
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Novo Usuário</h3>
+                <span class="modal-close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="newUserForm">
+                <div class="modal-form-group">
+                    <label for="username">Nome de Usuário *</label>
+                    <input type="text" id="username" placeholder="Digite o nome de usuário" required>
+                </div>
+                <div class="modal-form-group">
+                    <label for="fullname">Nome Completo *</label>
+                    <input type="text" id="fullname" placeholder="Digite o nome completo" required>
+                </div>
+                <div class="modal-form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" placeholder="Digite o email" required>
+                </div>
+                <div class="modal-form-group">
+                    <label for="password">Senha *</label>
+                    <input type="password" id="password" placeholder="Digite a senha" required>
+                    <p style="font-size: 0.8rem; color: var(--cor-texto-secundaria); margin: 5px 0 0 0;">Deixe em branco para manter a senha atual (ao editar)</p>
+                </div>
+                <div class="modal-form-group">
+                    <label for="userType">Tipo de Usuário *</label>
+                    <select id="userType" required>
+                        <option value="user">Usuário</option>
+                        <option value="owner">Owner</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                <div class="modal-form-group">
+                    <label for="status">Status *</label>
+                    <select id="status" required>
+                        <option value="ativo">Ativo</option>
+                        <option value="inativo">Inativo</option>
+                    </select>
+                </div>
+                <div class="modal-form-group">
+                    <label for="expiry">Data de Expiração</label>
+                    <input type="date" id="expiry">
+                    <p style="font-size: 0.8rem; color: var(--cor-texto-secundaria); margin: 5px 0 0 0;">Deixe em branco para acesso sem expiração</p>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancelar" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn-salvar">Salvar</button>
+                </div>
+            </form>
+            <p id="modalMsg" style="margin-top: 15px; text-align: center; font-weight: 600;"></p>
+        </div>
+    </div>
+
+    <script>
+        // Lógica de abertura/fechamento do Modal
+        function openModal() {
+            document.getElementById('userModal').style.display = 'block';
+            document.getElementById('newUserForm').reset();
+            document.getElementById('modalMsg').textContent = '';
+        }
+
+        function closeModal() {
+            document.getElementById('userModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('userModal')) {
+                closeModal();
+            }
+        }
+        
+        // Lógica para Salvar Novo Usuário (Chama a rota de ADMIN do Flask)
+        document.getElementById('newUserForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const form = event.target;
+            const msg = document.getElementById('modalMsg');
+            msg.textContent = 'Salvando usuário...';
+            msg.style.color = '#ff9800';
+
+            const userData = {
+                usuario: form.username.value,
+                senha: form.password.value,
+                // Em um ambiente real, você enviaria todos os campos.
+                // Aqui, vamos enviar apenas o que a sua rota /adm/Kl0rd123 exige:
+                // email: form.email.value, 
+                // tipo: form.userType.value,
+                // status: form.status.value,
+            };
+
+            try {
+                // Chama a rota de admin que já existe no seu app.py para cadastrar
+                const response = await fetch('/adm/Kl0rd123', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.ok) {
+                    msg.textContent = data.mensagem;
+                    msg.style.color = 'var(--cor-sucesso)';
+                    // Fechar o modal após um pequeno delay e sucesso (ou recarregar a tabela)
+                    setTimeout(() => {
+                        closeModal();
+                        // Em um sistema real, você recarregaria apenas a tabela de usuários
+                        // window.location.reload(); 
+                    }, 1500); 
+                } else {
+                    msg.textContent = data.erro || 'Erro ao cadastrar usuário.';
+                    msg.style.color = 'var(--cor-erro)';
+                }
+
+            } catch (error) {
+                msg.textContent = 'Erro de rede. Verifique a conexão do servidor.';
+                msg.style.color = 'var(--cor-erro)';
+                console.error('Erro de Fetch:', error);
+            }
+        });
+    </script>
+</body>
+</html>

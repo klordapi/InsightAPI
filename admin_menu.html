@@ -1,0 +1,51 @@
+<style>
+    /* Estilos do Menu de Navegação (Baseado em 1000009166.jpg) */
+    .admin-nav {
+        display: flex;
+        gap: 15px;
+        background: #151525; /* Fundo ligeiramente mais claro que o principal */
+        padding: 10px 20px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+    
+    .admin-nav a {
+        text-decoration: none;
+        color: var(--cor-texto-secundaria);
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: background 0.2s, color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .admin-nav a i {
+        font-size: 1.1rem;
+    }
+
+    /* Estilo para o item ATIVO (Fundo Gradiente Roxo) */
+    .admin-nav a.active {
+        background: var(--cor-gradiente-btn);
+        color: white;
+        box-shadow: 0 3px 10px rgba(127, 0, 255, 0.5);
+    }
+    
+    .admin-nav a:not(.active):hover {
+        background: rgba(162, 89, 255, 0.1);
+        color: var(--cor-secundaria-acao);
+    }
+</style>
+
+<div class="admin-nav">
+    <a href="/admin/dashboard" class="{% if active_page == 'dashboard' %}active{% endif %}">
+        <i class="fas fa-th-large"></i> Dashboard
+    </a>
+    <a href="/admin/users" class="{% if active_page == 'users' %}active{% endif %}">
+        <i class="fas fa-users"></i> Usuários
+    </a>
+    <a href="#"><i class="fas fa-layer-group"></i> Módulos</a>
+    <a href="#"><i class="fas fa-cog"></i> Sistema</a>
+</div>

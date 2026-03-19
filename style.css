@@ -1,0 +1,760 @@
+/* --- 1. Variáveis e Reset Geral --- */
+:root {
+    --color-bg-dark: #121212; /* Fundo principal (body) */
+    --color-bg-medium: #1e1e1e; /* Fundo de cards/sidebar */
+    --color-text-light: #e0e0e0; /* Texto principal */
+    --color-text-muted: #9e9e9e; /* Texto secundário/descrições */
+    
+    --color-primary: #8a2be2; /* Roxo principal (destaque) */
+    --color-active: #4caf50; /* Verde para status "Ativo" */
+    --color-blocked: #f44336; /* Vermelho para status "Bloqueado" */
+    
+    /* Cores dos ícones dos módulos */
+    --color-primary-icon: #3f51b5; 
+    --color-accent-icon: #e91e63; 
+    --color-success-icon: #00bcd4;
+    --color-blocked-icon: #9e9e9e;
+    --color-info-icon: #2196f3;
+    --color-warning-icon: #ff9800;
+
+    --sidebar-width: 250px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--color-bg-dark);
+    color: var(--color-text-light);
+    line-height: 1.6;
+}
+
+/* --- 2. Layout do Painel Principal e Sidebar --- */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--color-bg-medium);
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #333;
+}
+
+.sidebar-header {
+    padding: 0 20px 20px;
+    font-size: 1.5em;
+    color: var(--color-text-light);
+}
+
+.modules-title {
+    color: var(--color-text-muted);
+    font-size: 0.75em;
+    padding: 10px 20px 5px;
+    text-transform: uppercase;
+}
+
+.nav-list {
+    list-style: none;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-item:hover {
+    background-color: #333;
+}
+
+.nav-item.active {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.nav-item i {
+    margin-right: 15px;
+    width: 20px;
+    text-align: center;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+.panel-header {
+    margin-bottom: 30px;
+}
+
+.panel-header h1 {
+    font-size: 1.5em;
+    color: var(--color-text-muted);
+    font-weight: 300;
+}
+
+.panel-header .version {
+    font-size: 0.8em;
+    color: var(--color-primary);
+}
+
+.panel-header h2 {
+    font-size: 2.2em;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.panel-header p {
+    color: var(--color-text-muted);
+}
+
+/* --- 3. Cards dos Módulos (Grid) --- */
+.modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.module-card {
+    background-color: var(--color-bg-medium);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid #333;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    position: relative;
+    min-height: 180px;
+}
+
+.module-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+}
+
+.module-card.blocked {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.icon-container {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8em;
+    color: white;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.primary-bg { background-color: var(--color-primary-icon); }
+.accent-bg { background-color: var(--color-accent-icon); }
+.success-bg { background-color: var(--color-success-icon); }
+.blocked-bg { background-color: var(--color-blocked-icon); }
+.info-bg { background-color: var(--color-info-icon); }
+.warning-bg { background-color: var(--color-warning-icon); }
+
+.module-card h3 {
+    font-size: 1.4em;
+    margin-bottom: 5px;
+    color: white;
+}
+
+.module-card p {
+    font-size: 0.9em;
+    color: var(--color-text-muted);
+    margin-bottom: 15px;
+    min-height: 30px;
+}
+
+.status-tags {
+    display: flex;
+    gap: 10px;
+}
+
+.tag {
+    font-size: 0.75em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.tag.active {
+    background-color: var(--color-active);
+    color: white;
+}
+
+.tag.blocked {
+    background-color: var(--color-blocked);
+    color: white;
+}
+
+.tag.category {
+    background-color: #333;
+    color: var(--color-text-light);
+}
+
+.module-card::before {
+    content: "\f006";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 400;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: var(--color-text-muted);
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+/* --- 4. Estilos da Tela de Resultados (Veículo/CPF) --- */
+.alert-success {
+    background-color: #1e4620;
+    color: #b9f7b9;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 30px;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+}
+
+.alert-success i {
+    margin-right: 15px;
+    font-size: 1.2em;
+}
+
+.data-block {
+    background-color: var(--color-bg-medium);
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid #333;
+}
+
+.data-header {
+    display: flex;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #333;
+    margin-bottom: 20px;
+}
+
+.data-header h2 {
+    font-size: 1.5em;
+    margin: 0;
+    color: white;
+}
+
+.data-header i {
+    font-size: 1.5em;
+    color: var(--color-success-icon);
+    margin-right: 10px;
+}
+
+.section-title {
+    font-size: 0.9em;
+    color: var(--color-text-muted);
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+
+.data-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px 30px;
+}
+
+.data-grid-2-cols {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 10px 30px;
+    align-items: center;
+}
+
+.data-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.data-item.full-width {
+    grid-column: span 3;
+}
+
+.label, .label-large {
+    font-size: 0.8em;
+    color: var(--color-text-muted);
+    font-weight: normal;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.value, .value-large {
+    font-size: 1.1em;
+    color: white;
+    font-weight: bold;
+}
+
+.value.empty {
+    color: var(--color-text-muted);
+}
+
+.value.highlighted {
+    color: var(--color-primary);
+}
+
+/* Estilos de Lista */
+.list-header {
+    background-color: #2a2a2a;
+    padding: 10px 15px;
+    border-radius: 4px 4px 0 0;
+    margin-top: 15px;
+    font-weight: bold;
+    color: var(--color-text-muted);
+    font-size: 0.85em;
+    text-transform: uppercase;
+}
+
+.list-item {
+    padding: 10px 15px;
+    border-bottom: 1px solid #2a2a2a;
+    transition: background-color 0.15s;
+}
+
+.list-item:hover {
+    background-color: #252525;
+}
+
+.list-value {
+    color: var(--color-text-light);
+    word-break: break-all;
+}
+
+.list-value.highlight-tim {
+    color: #00bcd4;
+    font-weight: bold;
+}
+
+.simple-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.simple-list li {
+    background-color: #252525;
+    padding: 10px 15px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    color: var(--color-text-light);
+    font-size: 0.9em;
+    word-break: break-all;
+}
+
+.email-list li {
+    color: #90ee90;
+}
+
+/* --- 5. Estilos da Tela de Login --- */
+.login-body {
+    background-color: var(--color-bg-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.login-card {
+    background-color: var(--color-bg-medium);
+    padding: 40px 30px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid #333;
+}
+
+.login-logo {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background: var(--color-primary);
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5em;
+    color: white;
+    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.5);
+}
+
+.login-card h1 {
+    font-size: 1.8em;
+    margin-bottom: 5px;
+}
+
+.login-card .subtitle {
+    color: var(--color-text-muted);
+    font-size: 0.9em;
+    margin-bottom: 30px;
+}
+
+.login-form {
+    text-align: left;
+}
+
+.login-form label {
+    display: block;
+    color: var(--color-text-light);
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 8px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    padding-left: 45px;
+    background-color: #252525;
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
+    color: var(--color-text-light);
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    border-color: var(--color-primary);
+    outline: none;
+}
+
+.input-group i {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+}
+
+.btn-login {
+    width: 100%;
+    padding: 15px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    background: linear-gradient(135deg, #a4508b, #5f0a87);
+    box-shadow: 0 4px 10px rgba(95, 10, 135, 0.4);
+    transition: opacity 0.3s;
+}
+
+.btn-login:hover {
+    opacity: 0.9;
+}
+
+.login-footer {
+    margin-top: 40px;
+    font-size: 0.75em;
+    color: var(--color-text-muted);
+}
+
+/* --- 6. Estilos do Painel Admin (Dashboard e Usuários) --- */
+.admin-tabs {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.tab-item {
+    padding: 10px 20px;
+    border-radius: 8px;
+    color: var(--color-text-light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.tab-item i {
+    margin-right: 8px;
+}
+
+.tab-item:hover {
+    background-color: #2a2a2a;
+}
+
+.tab-item.active-tab {
+    background: linear-gradient(135deg, #a4508b, #5f0a87);
+    color: white;
+}
+
+/* Dashboard */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.status-card {
+    background-color: var(--color-bg-medium);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid #333;
+}
+
+.status-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.status-card .card-header h3 {
+    font-size: 1.1em;
+    color: var(--color-text-light);
+    font-weight: 500;
+}
+
+.status-card .icon-purple {
+    font-size: 1.5em;
+    color: var(--color-primary);
+}
+
+.status-card .main-number {
+    display: block;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.status-card .description {
+    font-size: 0.9em;
+    color: var(--color-text-muted);
+}
+
+/* Gerenciamento de Usuários (Tabela) */
+.user-management-block {
+    background-color: var(--color-bg-medium);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid #333;
+}
+
+.management-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+}
+
+.management-header h2 {
+    font-size: 1.5em;
+    color: white;
+}
+
+.btn-new-user {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    background: linear-gradient(90deg, #7b4397, #dc2430);
+    box-shadow: 0 2px 5px rgba(123, 67, 151, 0.5);
+    transition: opacity 0.2s;
+}
+
+.btn-new-user i {
+    margin-right: 5px;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95em;
+    text-align: left;
+}
+
+.users-table th {
+    color: var(--color-text-muted);
+    font-weight: bold;
+    padding: 12px 10px;
+    text-transform: uppercase;
+    font-size: 0.8em;
+}
+
+.users-table td {
+    padding: 12px 10px;
+    color: var(--color-text-light);
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.users-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.users-table .tag.type-owner {
+    background-color: #8a2be2;
+    color: white;
+}
+.users-table .tag.type-undefined {
+    background-color: #ffc107;
+    color: #121212;
+}
+.users-table .tag.type-user {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.btn-edit {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: background-color 0.2s;
+}
+
+.btn-edit:hover {
+    background-color: #6a0dad;
+}
+
+/* Formulário Novo Usuário (Modal) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.form-modal-container {
+    max-width: 500px;
+    padding: 20px;
+}
+
+.new-user-form-card {
+    background-color: var(--color-bg-medium);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    border: 1px solid #333;
+    color: var(--color-text-light);
+}
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.btn-close-form {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.new-user-form label {
+    display: block;
+    font-size: 1em;
+    color: white;
+    font-weight: 500;
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+.new-user-form input,
+.new-user-form select {
+    width: 100%;
+    padding: 12px;
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 8px;
+    color: var(--color-text-light);
+    font-size: 1em;
+    transition: border-color 0.3s;
+    appearance: none;
+}
+
+.input-hint {
+    font-size: 0.8em;
+    color: var(--color-text-muted);
+    margin-top: 5px;
+    margin-bottom: 10px;
+    padding-left: 5px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-save, .btn-cancel {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-save {
+    background: linear-gradient(135deg, #a4508b, #5f0a87);
+    color: white;
+}
+
+.btn-cancel {
+    background-color: #3a3a3a;
+    color: var(--color-text-light);
+}

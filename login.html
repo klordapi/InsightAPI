@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Klord Buscas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Variáveis de Tema (Roxo Escuro e Gradientes) */
+        :root {
+            --cor-fundo: #0c0c14; /* Fundo Principal */
+            --cor-card-fundo: #1a1a2e; /* Roxo Escuro do Card/Login */
+            --cor-borda: #3a3a5e; /* Borda e divisores */
+            --cor-primaria: #7f00ff; /* Roxo principal */
+            --cor-secundaria-acao: #a259ff; /* Roxo mais claro */
+            --cor-gradiente-btn: linear-gradient(135deg, #7f00ff 0%, #a259ff 100%); /* Gradiente do botão */
+            --cor-texto-principal: #e0e0e0;
+            --cor-texto-secundaria: #9e9e9e;
+            --radius-borda: 16px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto-principal);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            /* Fundo com efeito sutil (simulando as bolhas roxas) */
+            background-image: radial-gradient(circle at 10% 10%, rgba(127, 0, 255, 0.05), transparent 40%),
+                              radial-gradient(circle at 90% 90%, rgba(162, 89, 255, 0.05), transparent 40%);
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--cor-card-fundo);
+            padding: 40px;
+            border-radius: var(--radius-borda);
+            box-shadow: var(--shadow);
+            text-align: center;
+            border: 1px solid var(--cor-borda);
+        }
+
+        .logo-header {
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            /* Fundo do ícone (igual aos cards) */
+            background: var(--cor-gradiente-btn);
+            padding: 15px;
+            border-radius: 14px;
+            display: inline-block;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(127, 0, 255, 0.5);
+        }
+
+        .logo-icon i {
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--cor-texto-principal);
+            margin: 0 0 5px 0;
+        }
+
+        .subtitle {
+            color: var(--cor-texto-secundaria);
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            padding-left: 45px; /* Espaço para o ícone */
+            background-color: #111122; /* Fundo do input */
+            color: var(--cor-texto-principal);
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--cor-secundaria-acao);
+            box-shadow: 0 0 0 2px rgba(162, 89, 255, 0.5);
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--cor-texto-secundaria);
+            transition: color 0.2s;
+        }
+
+        input:focus + i {
+            color: var(--cor-primaria);
+        }
+        
+        /* Botão com Gradiente (principal) */
+        button {
+            width: 100%;
+            padding: 15px;
+            background: var(--cor-gradiente-btn);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 700;
+            transition: opacity 0.2s, transform 0.1s;
+            box-shadow: 0 5px 15px rgba(127, 0, 255, 0.5);
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 0.75rem;
+            color: var(--cor-texto-secundaria);
+        }
+        
+        #mensagem-login {
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-header">
+            <div class="logo-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h1>Klord Buscas</h1>
+            <p class="subtitle">Sistema de Consultas Avançadas</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="usuario">Usuário</label>
+                <div class="input-wrapper">
+                    <input type="text" id="usuario" placeholder="Digite seu usuário" required>
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="senha">Senha</label>
+                <div class="input-wrapper">
+                    <input type="password" id="senha" placeholder="Digite sua senha" required>
+                    <i class="fas fa-lock"></i>
+                </div>
+            </div>
+
+            <button type="submit">Entrar no Sistema</button>
+        </form>
+
+        <p id="mensagem-login" style="color: red;"></p>
+        
+        <div class="footer">
+            Klord Buscas © 2025 - Todos os direitos reservados
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const usuario = document.getElementById('usuario').value;
+            const senha = document.getElementById('senha').value;
+            const mensagemDiv = document.getElementById('mensagem-login');
+
+            mensagemDiv.textContent = 'Verificando credenciais...';
+            mensagemDiv.style.color = '#ff9800'; // Cor de alerta/loading
+
+            try {
+                // Chama a rota de login do seu backend Flask
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario, senha })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.ok) {
+                    // Login bem-sucedido
+                    mensagemDiv.textContent = data.mensagem;
+                    mensagemDiv.style.color = '#4caf50'; // Cor de sucesso
+                    
+                    // Em um sistema real, o backend retornaria um token JWT
+                    // que seria salvo aqui. Para este exemplo, apenas redirecionamos.
+                    
+                    // Redireciona para o Painel de Módulos (index.html)
+                    window.location.href = '/painel'; 
+                } else {
+                    // Login falhou (Usuário ou senha inválidos, ou erro do servidor)
+                    mensagemDiv.textContent = data.erro || 'Erro desconhecido no login.';
+                    mensagemDiv.style.color = '#f44336'; // Cor de erro
+                }
+
+            } catch (error) {
+                mensagemDiv.textContent = 'Erro de rede. Verifique a conexão do servidor Flask.';
+                mensagemDiv.style.color = '#f44336';
+                console.error('Erro de Fetch:', error);
+            }
+        });
+    </script>
+</body>
+</html>
+

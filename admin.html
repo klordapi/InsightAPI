@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração - Klord Buscas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="admin-body">
+
+    <div class="app-container" style="display: block;">
+        
+        <main class="main-content">
+            
+            <header class="panel-header" style="margin-bottom: 20px;">
+                <h1>Klord Buscas <span class="version">v2.0</span></h1>
+                <h2>Painel Administrativo</h2>
+            </header>
+
+            <nav class="admin-tabs">
+                <a href="#" class="tab-item active-tab" onclick="showAdminView('dashboard', this)"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="#" class="tab-item" onclick="showAdminView('users', this)"><i class="fas fa-users"></i> Usuários</a>
+                <a href="#" class="tab-item" onclick="showAdminView('modules', this)"><i class="fas fa-th-list"></i> Módulos</a>
+                <a href="#" class="tab-item" onclick="showAdminView('system', this)"><i class="fas fa-cog"></i> Sistema</a>
+            </nav>
+
+            <div id="dashboardView" class="admin-view active-view">
+                <div class="dashboard-grid">
+                    
+                    <div class="status-card">
+                        <div class="card-header">
+                            <h3>Usuários Ativos</h3>
+                            <i class="fas fa-users icon-purple"></i>
+                        </div>
+                        <div class="card-body">
+                            <span class="main-number">3</span>
+                            <p class="description">Total de usuários cadastrados</p>
+                        </div>
+                    </div>
+
+                    <div class="status-card">
+                        <div class="card-header">
+                            <h3>Módulos Ativos</h3>
+                            <i class="fas fa-th-large icon-purple"></i>
+                        </div>
+                        <div class="card-body">
+                            <span class="main-number">12</span>
+                            <p class="description">Módulos disponíveis no sistema</p>
+                        </div>
+                    </div>
+
+                    <div class="status-card">
+                        <div class="card-header">
+                            <h3>Consultas Hoje</h3>
+                            <i class="fas fa-calendar-alt icon-purple"></i>
+                        </div>
+                        <div class="card-body">
+                            <span class="main-number">0</span>
+                            <p class="description">Consultas realizadas hoje</p>
+                        </div>
+                    </div>
+
+                    <div class="status-card system-status">
+                        <div class="card-header">
+                            <h3>Status do Sistema</h3>
+                            <i class="fas fa-check-circle icon-purple"></i>
+                        </div>
+                        <div class="card-body">
+                            <span class="tag active">Online</span>
+                            <p class="description">Sistema operacional</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="usersView" class="admin-view" style="display:none;">
+                <div class="user-management-block">
+                    <div class="management-header">
+                        <h2>Gerenciamento de Usuários</h2>
+                        <button class="btn-new-user" onclick="showModal()"><i class="fas fa-plus"></i> Novo Usuário</button>
+                    </div>
+
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>USUÁRIO</th>
+                                <th>NOME COMPLETO</th>
+                                <th>EMAIL</th>
+                                <th>TIPO</th>
+                                <th>STATUS</th>
+                                <th>EXPIRAÇÃO</th>
+                                <th>ÚLTIMO ACESSO</th>
+                                <th>AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>owner</td>
+                                <td>Administrador Owner</td>
+                                <td>owner@klordbuscas.com</td>
+                                <td><span class="tag type-owner">owner</span></td>
+                                <td><span class="tag type-undefined">undefined</span></td>
+                                <td>Sem expiração</td>
+                                <td>18/10/2025, 21:18:02</td>
+                                <td><button class="btn-edit"><i class="fas fa-pen"></i> Editar</button></td>
+                            </tr>
+                            <tr>
+                                <td>manoel</td>
+                                <td>Manoel da Silva</td>
+                                <td>manoel.s@email.com</td>
+                                <td><span class="tag type-user">user</span></td>
+                                <td><span class="tag active">Ativo</span></td>
+                                <td>01/01/2026</td>
+                                <td>18/10/2025, 22:01:45</td>
+                                <td><button class="btn-edit"><i class="fas fa-pen"></i> Editar</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            </main>
+        
+        <div id="userModal" class="modal-overlay" style="display:none;">
+            <div class="form-modal-container">
+                <div class="new-user-form-card">
+                    
+                    <div class="form-header">
+                        <h2>Novo Usuário</h2>
+                        <button class="btn-close-form" onclick="hideModal()"><i class="fas fa-times"></i></button>
+                    </div>
+
+                    <form class="new-user-form">
+                        
+                        <label for="username">Nome de Usuário *</label>
+                        <input type="text" id="username" placeholder="Digite o nome de usuário" required>
+                        
+                        <label for="fullname">Nome Completo *</label>
+                        <input type="text" id="fullname" placeholder="Digite o nome completo" required>
+                        
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" placeholder="Digite o email" required>
+                        
+                        <label for="password">Senha *</label>
+                        <input type="password" id="password" placeholder="Digite a senha" required>
+                        <p class="input-hint">Deixe em branco para manter a senha atual (ao editar)</p>
+
+                        <label for="userType">Tipo de Usuário *</label>
+                        <select id="userType" required>
+                            <option value="usuario">Usuário</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                        
+                        <label for="status">Status *</label>
+                        <select id="status" required>
+                            <option value="ativo">Ativo</option>
+                            <option value="inativo">Inativo</option>
+                        </select>
+                        
+                        <label for="expirationDate">Data de Expiração</label>
+                        <input type="datetime-local" id="expirationDate" placeholder="dd/mm/aaaa --:--">
+                        <p class="input-hint">Deixe em branco para acesso sem expiração</p>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn-save">Salvar</button>
+                            <button type="button" class="btn-cancel" onclick="hideModal()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <script>
+        function showAdminView(viewId, element) {
+            document.querySelectorAll('.admin-view').forEach(div => div.style.display = 'none');
+            document.getElementById(viewId + 'View').style.display = 'block';
+            
+            document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active-tab'));
+            element.classList.add('active-tab');
+        }
+        
+        function showModal() {
+            document.getElementById('userModal').style.display = 'flex';
+        }
+
+        function hideModal() {
+            document.getElementById('userModal').style.display = 'none';
+        }
+        
+        // Carrega a dashboard por padrão ao iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+             // O "dashboardView" já está ativo no HTML, apenas garanta que a classe da aba está correta.
+             document.querySelector('.admin-tabs .tab-item').classList.add('active-tab');
+        });
+    </script>
+
+</body>
+</html>
