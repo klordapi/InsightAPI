@@ -1,0 +1,12 @@
+{
+    "logins": [
+        {
+            "usuario": "klord",
+            "senha": "Kl0rd777",
+            "expiracao": null,
+            "nome_completo": "Administrador Owner",
+            "email": "owner@klordbuscas.com",
+            "tipo": "owner"
+        }
+    ]
+}
