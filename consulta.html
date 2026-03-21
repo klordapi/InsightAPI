@@ -23,11 +23,7 @@
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -65,30 +61,13 @@
             transition: color 0.3s;
         }
 
-        .back-btn:hover {
-            color: var(--cor-primaria);
-        }
+        .back-btn:hover { color: var(--cor-primaria); }
 
-        .module-info {
-            text-align: right;
-        }
+        .module-info { text-align: right; }
+        .module-info h1 { font-size: 1.25rem; font-weight: 700; color: var(--cor-texto); }
+        .module-info span { font-size: 0.85rem; color: var(--cor-texto-sec); }
 
-        .module-info h1 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--cor-texto);
-        }
-
-        .module-info span {
-            font-size: 0.85rem;
-            color: var(--cor-texto-sec);
-        }
-
-        .main-content {
-            padding: 100px 2rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        .main-content { padding: 100px 2rem 2rem; max-width: 1200px; margin: 0 auto; }
 
         .input-section {
             background: var(--cor-card);
@@ -98,16 +77,9 @@
             margin-bottom: 2rem;
         }
 
-        .input-group {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
+        .input-group { display: flex; gap: 1rem; margin-bottom: 1rem; }
 
-        .input-wrapper {
-            flex: 1;
-            position: relative;
-        }
+        .input-wrapper { flex: 1; position: relative; }
 
         .input-icon {
             position: absolute;
@@ -153,22 +125,10 @@
             box-shadow: 0 8px 25px rgba(127, 0, 255, 0.4);
         }
 
-        .btn-consultar:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+        .btn-consultar:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        .actions-row {
-            display: flex;
-            gap: 1rem;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .actions-left {
-            display: flex;
-            gap: 1rem;
-        }
+        .actions-row { display: flex; gap: 1rem; justify-content: space-between; align-items: center; }
+        .actions-left { display: flex; gap: 1rem; }
 
         .btn-secundario {
             padding: 0.75rem 1.5rem;
@@ -184,10 +144,7 @@
             font-size: 0.9rem;
         }
 
-        .btn-secundario:hover {
-            border-color: var(--cor-primaria);
-            color: var(--cor-primaria);
-        }
+        .btn-secundario:hover { border-color: var(--cor-primaria); color: var(--cor-primaria); }
 
         .status-message {
             padding: 1rem 1.5rem;
@@ -201,33 +158,13 @@
         }
 
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .status-success {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid var(--cor-sucesso);
-            color: var(--cor-sucesso);
-        }
-
-        .status-error {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid var(--cor-erro);
-            color: var(--cor-erro);
-        }
-
-        .status-loading {
-            background: rgba(127, 0, 255, 0.1);
-            border: 1px solid var(--cor-primaria);
-            color: var(--cor-primaria);
-        }
+        .status-success { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--cor-sucesso); color: var(--cor-sucesso); }
+        .status-error { background: rgba(239, 68, 68, 0.1); border: 1px solid var(--cor-erro); color: var(--cor-erro); }
+        .status-loading { background: rgba(127, 0, 255, 0.1); border: 1px solid var(--cor-primaria); color: var(--cor-primaria); }
 
         .loading-container {
             text-align: center;
@@ -246,9 +183,7 @@
             margin: 0 auto 1.5rem;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         .results-container {
             background: var(--cor-card);
@@ -269,24 +204,11 @@
             gap: 1rem;
         }
 
-        .results-header h2 {
-            font-size: 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .results-header h2 { font-size: 1.25rem; display: flex; align-items: center; gap: 10px; }
+        .results-header h2 i { color: var(--cor-primaria); }
+        .results-body { padding: 1.5rem; }
 
-        .results-header h2 i {
-            color: var(--cor-primaria);
-        }
-
-        .results-body {
-            padding: 1.5rem;
-        }
-
-        .data-section {
-            margin-bottom: 2rem;
-        }
+        .data-section { margin-bottom: 2rem; }
 
         .section-title {
             font-size: 0.875rem;
@@ -299,11 +221,7 @@
             gap: 8px;
         }
 
-        .data-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-        }
+        .data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
 
         .data-field {
             background: var(--cor-card-sec);
@@ -312,30 +230,11 @@
             border: 1px solid var(--cor-borda);
         }
 
-        .data-field .label {
-            font-size: 0.75rem;
-            color: var(--cor-texto-sec);
-            text-transform: uppercase;
-            margin-bottom: 0.25rem;
-        }
+        .data-field .label { font-size: 0.75rem; color: var(--cor-texto-sec); text-transform: uppercase; margin-bottom: 0.25rem; }
+        .data-field .value { font-size: 1rem; font-weight: 600; color: var(--cor-texto); word-break: break-word; }
+        .data-field .value.empty { color: var(--cor-erro); font-style: italic; }
 
-        .data-field .value {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--cor-texto);
-            word-break: break-word;
-        }
-
-        .data-field .value.empty {
-            color: var(--cor-erro);
-            font-style: italic;
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
 
         .data-table th {
             text-align: left;
@@ -347,15 +246,8 @@
             font-weight: 600;
         }
 
-        .data-table td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--cor-borda);
-            color: var(--cor-texto);
-        }
-
-        .data-table tr:hover {
-            background: rgba(127, 0, 255, 0.05);
-        }
+        .data-table td { padding: 1rem; border-bottom: 1px solid var(--cor-borda); color: var(--cor-texto); }
+        .data-table tr:hover { background: rgba(127, 0, 255, 0.05); }
 
         .tag {
             display: inline-flex;
@@ -367,68 +259,20 @@
             margin: 0.25rem;
         }
 
-        .tag-restricao {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--cor-erro);
-            border: 1px solid var(--cor-erro);
-        }
+        .tag-restricao { background: rgba(239, 68, 68, 0.1); color: var(--cor-erro); border: 1px solid var(--cor-erro); }
+        .tag-success { background: rgba(16, 185, 129, 0.1); color: var(--cor-sucesso); border: 1px solid var(--cor-sucesso); }
+        .tag-info { background: rgba(0, 212, 255, 0.1); color: var(--cor-acento); border: 1px solid var(--cor-acento); }
 
-        .tag-success {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--cor-sucesso);
-            border: 1px solid var(--cor-sucesso);
-        }
+        .photo-container { text-align: center; padding: 2rem; }
+        .photo-container img { max-width: 100%; max-height: 400px; border-radius: 12px; border: 3px solid var(--cor-primaria); box-shadow: var(--shadow); }
 
-        .tag-info {
-            background: rgba(0, 212, 255, 0.1);
-            color: var(--cor-acento);
-            border: 1px solid var(--cor-acento);
-        }
+        .json-view { background: var(--cor-card-sec); padding: 1.5rem; border-radius: 10px; overflow-x: auto; }
+        .json-view pre { margin: 0; color: var(--cor-texto-sec); font-family: 'Fira Code', monospace; font-size: 0.875rem; line-height: 1.6; }
 
-        .photo-container {
-            text-align: center;
-            padding: 2rem;
-        }
+        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--cor-texto-sec); }
+        .empty-state i { font-size: 4rem; margin-bottom: 1rem; opacity: 0.3; }
 
-        .photo-container img {
-            max-width: 100%;
-            max-height: 400px;
-            border-radius: 12px;
-            border: 3px solid var(--cor-primaria);
-            box-shadow: var(--shadow);
-        }
-
-        .json-view {
-            background: var(--cor-card-sec);
-            padding: 1.5rem;
-            border-radius: 10px;
-            overflow-x: auto;
-        }
-
-        .json-view pre {
-            margin: 0;
-            color: var(--cor-texto-sec);
-            font-family: 'Fira Code', monospace;
-            font-size: 0.875rem;
-            line-height: 1.6;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--cor-texto-sec);
-        }
-
-        .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.3;
-        }
-
-        .export-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
+        .export-buttons { display: flex; gap: 0.5rem; }
 
         .btn-icon {
             width: 40px;
@@ -444,10 +288,7 @@
             justify-content: center;
         }
 
-        .btn-icon:hover {
-            border-color: var(--cor-primaria);
-            color: var(--cor-primaria);
-        }
+        .btn-icon:hover { border-color: var(--cor-primaria); color: var(--cor-primaria); }
 
         .btn-history {
             position: fixed;
@@ -469,9 +310,7 @@
             z-index: 100;
         }
 
-        .btn-history:hover {
-            transform: scale(1.1);
-        }
+        .btn-history:hover { transform: scale(1.1); }
 
         .history-badge {
             position: absolute;
@@ -500,9 +339,7 @@
             overflow-y: auto;
         }
 
-        .history-sidebar.open {
-            right: 0;
-        }
+        .history-sidebar.open { right: 0; }
 
         .history-header {
             padding: 1.5rem;
@@ -512,11 +349,7 @@
             align-items: center;
         }
 
-        .history-header h3 {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .history-header h3 { display: flex; align-items: center; gap: 10px; }
 
         .btn-close-history {
             background: none;
@@ -533,45 +366,15 @@
             transition: background 0.2s;
         }
 
-        .history-item:hover {
-            background: var(--cor-card-sec);
-        }
+        .history-item:hover { background: var(--cor-card-sec); }
+        .history-item .time { font-size: 0.75rem; color: var(--cor-texto-sec); }
+        .history-item .query { font-weight: 600; color: var(--cor-texto); margin-top: 0.25rem; }
+        .history-item .module { font-size: 0.8rem; color: var(--cor-primaria); margin-top: 0.25rem; }
 
-        .history-item .time {
-            font-size: 0.75rem;
-            color: var(--cor-texto-sec);
-        }
+        .overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 1500; display: none; }
+        .overlay.show { display: block; }
 
-        .history-item .query {
-            font-weight: 600;
-            color: var(--cor-texto);
-            margin-top: 0.25rem;
-        }
-
-        .history-item .module {
-            font-size: 0.8rem;
-            color: var(--cor-primaria);
-            margin-top: 0.25rem;
-        }
-
-        .overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1500;
-            display: none;
-        }
-
-        .overlay.show {
-            display: block;
-        }
-
-        .quick-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-        }
+        .quick-actions { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
 
         .quick-tag {
             padding: 0.5rem 1rem;
@@ -584,39 +387,15 @@
             transition: all 0.2s;
         }
 
-        .quick-tag:hover {
-            border-color: var(--cor-primaria);
-            color: var(--cor-primaria);
-        }
+        .quick-tag:hover { border-color: var(--cor-primaria); color: var(--cor-primaria); }
 
         @media (max-width: 768px) {
-            .input-group {
-                flex-direction: column;
-            }
-
-            .actions-row {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .actions-left {
-                justify-content: center;
-            }
-
-            .header-content {
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-
-            .history-sidebar {
-                width: 100%;
-                right: -100%;
-            }
-
-            .export-buttons {
-                width: 100%;
-                justify-content: center;
-            }
+            .input-group { flex-direction: column; }
+            .actions-row { flex-direction: column; align-items: stretch; }
+            .actions-left { justify-content: center; }
+            .header-content { flex-wrap: wrap; gap: 1rem; }
+            .history-sidebar { width: 100%; right: -100%; }
+            .export-buttons { width: 100%; justify-content: center; }
         }
     </style>
 </head>
@@ -661,15 +440,9 @@
                     </button>
                 </div>
                 <div class="export-buttons">
-                    <button class="btn-icon" onclick="copiarResultado()" title="Copiar">
-                        <i class="fas fa-copy"></i>
-                    </button>
-                    <button class="btn-icon" onclick="exportarJSON()" title="Exportar JSON">
-                        <i class="fas fa-file-code"></i>
-                    </button>
-                    <button class="btn-icon" onclick="exportarCSV()" title="Exportar CSV">
-                        <i class="fas fa-file-csv"></i>
-                    </button>
+                    <button class="btn-icon" onclick="copiarResultado()" title="Copiar"><i class="fas fa-copy"></i></button>
+                    <button class="btn-icon" onclick="exportarJSON()" title="Exportar JSON"><i class="fas fa-file-code"></i></button>
+                    <button class="btn-icon" onclick="exportarCSV()" title="Exportar CSV"><i class="fas fa-file-csv"></i></button>
                 </div>
             </div>
         </div>
@@ -707,9 +480,7 @@
     <div class="history-sidebar" id="historySidebar">
         <div class="history-header">
             <h3><i class="fas fa-history"></i> Histórico</h3>
-            <button class="btn-close-history" onclick="toggleHistory()">
-                <i class="fas fa-times"></i>
-            </button>
+            <button class="btn-close-history" onclick="toggleHistory()"><i class="fas fa-times"></i></button>
         </div>
         <div id="historyList"></div>
     </div>
@@ -775,9 +546,7 @@
             updateHistoryCount();
         };
 
-        function getQueryParam(name) {
-            return new URLSearchParams(window.location.search).get(name);
-        }
+        function getQueryParam(name) { return new URLSearchParams(window.location.search).get(name); }
 
         function fillQuickActions(category) {
             const container = document.getElementById('quickActions');
@@ -789,27 +558,17 @@
             };
             
             const items = examples[category] || [];
-            container.innerHTML = items.map(ex => 
-                `<span class="quick-tag" onclick="setInput('${ex}')">${ex}</span>`
-            ).join('');
+            container.innerHTML = items.map(ex => `<span class="quick-tag" onclick="setInput('${ex}')">${ex}</span>`).join('');
         }
 
-        function setInput(value) {
-            document.getElementById('dadoConsulta').value = value;
-        }
+        function setInput(value) { document.getElementById('dadoConsulta').value = value; }
 
         async function fazerConsulta() {
             const config = API_MAP[currentModule];
-            if (!config) {
-                showStatus('Módulo não configurado', 'error');
-                return;
-            }
+            if (!config) { showStatus('Módulo não configurado', 'error'); return; }
 
             const dado = document.getElementById('dadoConsulta').value.trim();
-            if (!dado) {
-                showStatus('Digite um dado para consultar', 'error');
-                return;
-            }
+            if (!dado) { showStatus('Digite um dado para consultar', 'error'); return; }
 
             const btn = document.getElementById('btnConsultar');
             btn.disabled = true;
@@ -823,7 +582,6 @@
                 const response = await fetch(url);
                 let data = await response.json();
 
-                // Remove metadata fields from V2 APIs
                 if (data._creditos || data._info || data._contato) {
                     delete data._creditos;
                     delete data._info;
@@ -858,69 +616,22 @@
 
             let html = '';
 
-            // CNPJ V1
-            if (currentModule === 'cnpj') {
-                html = renderCNPJV1(data);
-            }
-            // CNPJ V2
-            else if (currentModule === 'cnpj-v2') {
-                html = renderCNPJV2(data);
-            }
-            // CPF V1
-            else if (currentModule === 'cpf') {
-                html = renderCPFV1(data);
-            }
-            // CPF V2-V5 (baseadas na estrutura V2)
-            else if (currentModule.startsWith('cpf-v')) {
-                html = renderCPFV2(data);
-            }
-            // CPF2 (legado)
-            else if (currentModule === 'cpf2') {
-                html = renderCPF2(data);
-            }
-            // Placa V1
-            else if (currentModule === 'placa') {
-                html = renderPlacaV1(data);
-            }
-            // Placa V2
-            else if (currentModule === 'placa-v1' || currentModule === 'placa-v2') {
-                html = renderPlacaV2(data);
-            }
-            // Telefone
-            else if (currentModule === 'telefone') {
-                html = renderTelefoneV1(data);
-            }
-            // Telefone V2
-            else if (currentModule === 'telefone-v2') {
-                html = renderTelefoneV2(data);
-            }
-            // Nome
-            else if (currentModule === 'nome') {
-                html = renderNomeV1(data);
-            }
-            // Nome V2
-            else if (currentModule === 'nome-v2') {
-                html = renderNomeV2(data);
-            }
-            // CEP
-            else if (currentModule === 'cep') {
-                html = renderCEP(data);
-            }
-            // Chassi/Motor
-            else if (currentModule === 'chassi' || currentModule === 'motor') {
-                html = renderChassiMotor(data);
-            }
-            // Foto
-            else if (currentModule.includes('foto')) {
-                html = renderFoto(data);
-            }
-            // RG
-            else if (currentModule === 'rg') {
-                html = renderRG(data);
-            }
-            else {
-                html = renderGeneric(data);
-            }
+            if (currentModule === 'cnpj') { html = renderCNPJV1(data); }
+            else if (currentModule === 'cnpj-v2') { html = renderCNPJV2(data); }
+            else if (currentModule === 'cpf') { html = renderCPFV1(data); }
+            else if (currentModule.startsWith('cpf-v')) { html = renderCPFV2(data); }
+            else if (currentModule === 'cpf2') { html = renderCPF2(data); }
+            else if (currentModule === 'placa') { html = renderPlacaV1(data); }
+            else if (currentModule === 'placa-v1' || currentModule === 'placa-v2') { html = renderPlacaV2(data); }
+            else if (currentModule === 'telefone') { html = renderTelefoneV1(data); }
+            else if (currentModule === 'telefone-v2') { html = renderTelefoneV2(data); }
+            else if (currentModule === 'nome') { html = renderNomeV1(data); }
+            else if (currentModule === 'nome-v2') { html = renderNomeV2(data); }
+            else if (currentModule === 'cep') { html = renderCEP(data); }
+            else if (currentModule === 'chassi' || currentModule === 'motor') { html = renderChassiMotor(data); }
+            else if (currentModule.includes('foto')) { html = renderFoto(data); }
+            else if (currentModule === 'rg') { html = renderRG(data); }
+            else { html = renderGeneric(data); }
 
             container.innerHTML = html;
             showResults();
@@ -968,42 +679,33 @@
                 ['Atividade Principal', d.ATIVIDADE_ECONOMICA]
             ]);
 
-            // Sócios
             const socios = d.SOCIOS || [];
             if (socios.length > 0) {
                 html += `<div class="data-section">
                     <div class="section-title"><i class="fas fa-user-tie"></i> Sócios (${socios.length})</div>
                     <table class="data-table">
                         <thead><tr><th>Nome</th><th>CPF</th><th>Cargo</th><th>Participação</th></tr></thead>
-                        <tbody>
-                            ${socios.map(s => `<tr><td>${s.nome || 'N/A'}</td><td>${s.cpf || 'N/A'}</td><td>${s.cargo || 'N/A'}</td><td>${s.participacao || 'N/A'}%</td></tr>`).join('')}
-                        </tbody>
+                        <tbody>${socios.map(s => `<tr><td>${s.nome || 'N/A'}</td><td>${s.cpf || 'N/A'}</td><td>${s.cargo || 'N/A'}</td><td>${s.participacao || 'N/A'}%</td></tr>`).join('')}</tbody>
                     </table>
                 </div>`;
             }
 
-            // Funcionários
             const func = d.FUNCIONARIOS || [];
             if (func.length > 0) {
                 html += `<div class="data-section">
                     <div class="section-title"><i class="fas fa-users"></i> Funcionários (${func.length})</div>
                     <table class="data-table">
                         <thead><tr><th>Nome</th><th>CPF</th><th>Função</th><th>Cargo</th></tr></thead>
-                        <tbody>
-                            ${func.slice(0, 20).map(f => `<tr><td>${f.nome || 'N/A'}</td><td>${f.cpf || 'N/A'}</td><td>${f.funcao || 'N/A'}</td><td>${f.cargo || 'N/A'}</td></tr>`).join('')}
-                        </tbody>
+                        <tbody>${func.slice(0, 20).map(f => `<tr><td>${f.nome || 'N/A'}</td><td>${f.cpf || 'N/A'}</td><td>${f.funcao || 'N/A'}</td><td>${f.cargo || 'N/A'}</td></tr>`).join('')}</tbody>
                     </table>
                 </div>`;
             }
 
-            // Telefones
             const tels = d.TELEFONES || [];
             if (tels.length > 0) {
                 html += `<div class="data-section">
                     <div class="section-title"><i class="fas fa-phone"></i> Telefones (${tels.length})</div>
-                    <div class="data-grid">
-                        ${tels.slice(0, 15).map(t => `<div class="data-field"><div class="value">${t}</div></div>`).join('')}
-                    </div>
+                    <div class="data-grid">${tels.slice(0, 15).map(t => `<div class="data-field"><div class="value">${t}</div></div>`).join('')}</div>
                 </div>`;
             }
 
@@ -1028,27 +730,21 @@
                 ['CPF Representante', emp.cpf_representante]
             ]);
 
-            // Emails
             const emails = r.emails || [];
             if (emails.length > 0) {
                 html += `<div class="data-section">
                     <div class="section-title"><i class="fas fa-envelope"></i> E-mails (${emails.length})</div>
-                    <div class="data-grid">
-                        ${emails.map(e => `<div class="data-field"><div class="value">${e}</div></div>`).join('')}
-                    </div>
+                    <div class="data-grid">${emails.map(e => `<div class="data-field"><div class="value">${e}</div></div>`).join('')}</div>
                 </div>`;
             }
 
-            // Funcionários
             const func = r.funcionarios || [];
             if (func.length > 0) {
                 html += `<div class="data-section">
                     <div class="section-title"><i class="fas fa-users"></i> Funcionários (${func.length})</div>
                     <table class="data-table">
                         <thead><tr><th>Nome</th><th>CPF</th><th>Função</th><th>Cargo</th></tr></thead>
-                        <tbody>
-                            ${func.slice(0, 20).map(f => `<tr><td>${f.nome || 'N/A'}</td><td>${f.cpf || 'N/A'}</td><td>${f.funcao || 'N/A'}</td><td>${f.cargo || 'N/A'}</td></tr>`).join('')}
-                        </tbody>
+                        <tbody>${func.slice(0, 20).map(f => `<tr><td>${f.nome || 'N/A'}</td><td>${f.cpf || 'N/A'}</td><td>${f.funcao || 'N/A'}</td><td>${f.cargo || 'N/A'}</td></tr>`).join('')}</tbody>
                     </table>
                 </div>`;
             }
@@ -1062,9 +758,75 @@
 
             html += renderSection('Dados Pessoais', [
                 ['CPF', d.CPF],
+                ['Nome', d.NOME],
+                ['Nascimento', d.NASCIMENTO],
                 ['Idade', d.IDADE],
-                ['Nascimento', d.NASCIMENTO]
+                ['Sexo', d.SEXO],
+                ['Raça', d.RACA],
+                ['Status Receita', d.STATUS_RECEITA],
+                ['Município Nascimento', d.MUNICIPIO_NASCIMENTO],
+                ['Nome da Mãe', d.NOME_MAE],
+                ['Nome do Pai', d.NOME_PAI],
+                ['Classe Social', d.CLASSE_SOCIAL],
+                ['Renda', d.RENDA],
+                ['Score', d.SCORE]
             ]);
+
+            html += renderSection('Documentos', [
+                ['RG', d.RG],
+                ['PIS', d.PIS],
+                ['CNS', d.CNS],
+                ['Título Eleitor', d.TITULO_ELEITOR]
+            ]);
+
+            const emails = d.EMAILS || [];
+            if (emails.length > 0) {
+                html += `<div class="data-section">
+                    <div class="section-title"><i class="fas fa-envelope"></i> E-mails (${emails.length})</div>
+                    <div class="data-grid">${emails.map(e => `<div class="data-field"><div class="value">${e}</div></div>`).join('')}</div>
+                </div>`;
+            }
+
+            const tels = d.TELEFONES || [];
+            if (tels.length > 0) {
+                html += `<div class="data-section">
+                    <div class="section-title"><i class="fas fa-phone"></i> Telefones (${tels.length})</div>
+                    <div class="data-grid">${tels.map(t => `<div class="data-field"><div class="value">${t}</div></div>`).join('')}</div>
+                </div>`;
+            }
+
+            const enderecos = d.ENDERECOS || [];
+            if (enderecos.length > 0) {
+                html += `<div class="data-section">
+                    <div class="section-title"><i class="fas fa-home"></i> Endereços (${enderecos.length})</div>
+                    <div class="data-grid">${enderecos.map(e => `<div class="data-field"><div class="value">${e}</div></div>`).join('')}</div>
+                </div>`;
+            }
+
+            const empregos = d.EMPREGOS || [];
+            if (empregos.length > 0) {
+                html += `<div class="data-section">
+                    <div class="section-title"><i class="fas fa-briefcase"></i> Empregos (${empregos.length})</div>
+                    <table class="data-table">
+                        <thead><tr><th>CNPJ</th><th>Admissão</th><th>Demissão</th></tr></thead>
+                        <tbody>${empregos.map(e => `<tr><td>${e.CNPJ || 'N/A'}</td><td>${e.ADMISSAO || 'N/A'}</td><td>${e.DEMISSAO || 'N/A'}</td></tr>`).join('')}</tbody>
+                    </table>
+                </div>`;
+            }
+
+            if (d.INTERESSES_PESSOAIS) {
+                const interesses = d.INTERESSES_PESSOAIS;
+                const interessesList = Object.entries(interesses)
+                    .filter(([_, v]) => v === true)
+                    .map(([k, _]) => k.replace(/_/g, ' '));
+                
+                if (interessesList.length > 0) {
+                    html += `<div class="data-section">
+                        <div class="section-title"><i class="fas fa-heart"></i> Interesses Pessoais (${interessesList.length})</div>
+                        <div class="data-grid">${interessesList.map(i => `<span class="tag tag-info">${i}</span>`).join('')}</div>
+                    </div>`;
+                }
+            }
 
             return html;
         }
@@ -1094,7 +856,6 @@
                 ['Óbito', d.obito]
             ]);
 
-            // RG
             if (d.rg) {
                 html += renderSection('RG', [
                     ['Número', d.rg.numero],
@@ -1104,7 +865,6 @@
                 ]);
             }
 
-            // Documentos (CPF V5)
             if (d.documentos) {
                 html += renderSection('Documentos', [
                     ['RG', d.documentos.rg],
@@ -1117,7 +877,6 @@
                 ]);
             }
 
-            // Endereço (V2)
             if (d.endereco) {
                 const end = d.endereco;
                 html += renderSection('Endereço', [
@@ -1131,29 +890,23 @@
                 ]);
             }
 
-            // Endereços (CPF2/3/4)
             if (d.enderecos && Array.isArray(d.enderecos)) {
                 if (typeof d.enderecos[0] === 'string') {
                     html += `<div class="data-section">
                         <div class="section-title"><i class="fas fa-home"></i> Endereços (${d.enderecos.length})</div>
-                        <div class="data-grid">
-                            ${d.enderecos.map(e => `<div class="data-field"><div class="value">${e}</div></div>`).join('')}
-                        </div>
+                        <div class="data-grid">${d.enderecos.map(e => `<div class="data-field"><div class="value">${e}</div></div>`).join('')}</div>
                     </div>`;
                 } else {
                     html += `<div class="data-section">
                         <div class="section-title"><i class="fas fa-home"></i> Endereços (${d.enderecos.length})</div>
                         <table class="data-table">
                             <thead><tr><th>Rua</th><th>Número</th><th>Bairro</th><th>Cidade</th><th>UF</th><th>CEP</th></tr></thead>
-                            <tbody>
-                                ${d.enderecos.map(e => `<tr><td>${e.rua || e.logradouro || 'N/A'}</td><td>${e.numero || 'N/A'}</td><td>${e.bairro || 'N/A'}</td><td>${e.cidade || 'N/A'}</td><td>${e.uf || 'N/A'}</td><td>${e.cep || 'N/A'}</td></tr>`).join('')}
-                            </tbody>
+                            <tbody>${d.enderecos.map(e => `<tr><td>${e.rua || e.logradouro || 'N/A'}</td><td>${e.numero || 'N/A'}</td><td>${e.bairro || 'N/A'}</td><td>${e.cidade || 'N/A'}</td><td>${e.uf || 'N/A'}</td><td>${e.cep || 'N/A'}</td></tr>`).join('')}</tbody>
                         </table>
                     </div>`;
                 }
             }
 
-            // Telefones
             const tels = d.telefones || [];
             if (tels.length > 0) {
                 const hasWhatsapp = typeof tels[0] === 'object';
@@ -1162,84 +915,65 @@
                         <div class="section-title"><i class="fas fa-phone"></i> Telefones (${tels.length})</div>
                         <table class="data-table">
                             <thead><tr><th>Número</th><th>WhatsApp</th></tr></thead>
-                            <tbody>
-                                ${tels.map(t => `<tr><td>${t.numero || t}</td><td>${t.whatsapp || 'N/A'}</td></tr>`).join('')}
-                            </tbody>
+                            <tbody>${tels.map(t => `<tr><td>${t.numero || t}</td><td>${t.whatsapp || 'N/A'}</td></tr>`).join('')}</tbody>
                         </table>
                     </div>`;
                 } else {
                     html += `<div class="data-section">
                         <div class="section-title"><i class="fas fa-phone"></i> Telefones (${tels.length})</div>
-                        <div class="data-grid">
-                            ${tels.map(t => `<div class="data-field"><div class="value">${typeof t === 'string' ? t.replace(':', ' - ') : t}</div></div>`).join('')}
-                        </div>
+                        <div class="data-grid">${tels.map(t => `<div class="data-field"><div class="value">${typeof t === 'string' ? t.replace(':', ' - ') : t}</div></div>`).join('')}</div>
                     </div>`;
                 }
             }
 
-            // Emails
             const emails = d.emails || [];
             if (emails.length > 0) {
                 html += `<div class="data-section">
                     <div class="section-title"><i class="fas fa-envelope"></i> E-mails (${emails.length})</div>
-                    <div class="data-grid">
-                        ${emails.map(e => `<div class="data-field"><div class="value">${e}</div></div>`).join('')}
-                    </div>
+                    <div class="data-grid">${emails.map(e => `<div class="data-field"><div class="value">${e}</div></div>`).join('')}</div>
                 </div>`;
             }
 
-            // Empregos RAIS (CPF2/3)
             const rais = d.empregos_rais || [];
             if (rais.length > 0) {
                 html += `<div class="data-section">
                     <div class="section-title"><i class="fas fa-briefcase"></i> Empregos RAIS (${rais.length})</div>
                     <table class="data-table">
                         <thead><tr><th>Empresa</th><th>Salário Mensal</th><th>Ano</th></tr></thead>
-                        <tbody>
-                            ${rais.map(e => `<tr><td>${e.empresa || 'N/A'}</td><td>${e.salario_mensal || 'N/A'}</td><td>${e.ano || 'N/A'}</td></tr>`).join('')}
-                        </tbody>
+                        <tbody>${rais.map(e => `<tr><td>${e.empresa || 'N/A'}</td><td>${e.salario_mensal || 'N/A'}</td><td>${e.ano || 'N/A'}</td></tr>`).join('')}</tbody>
                     </table>
                 </div>`;
             }
 
-            // Veículos
             const veics = d.veiculos || [];
             if (veics.length > 0) {
                 html += `<div class="data-section">
                     <div class="section-title"><i class="fas fa-car"></i> Veículos (${veics.length})</div>
                     <table class="data-table">
                         <thead><tr><th>Placa</th><th>Marca/Modelo</th><th>Ano</th></tr></thead>
-                        <tbody>
-                            ${veics.map(v => `<tr><td>${v.placa || 'N/A'}</td><td>${v.marca_modelo || v.marca || 'N/A'}</td><td>${v.ano || 'N/A'}</td></tr>`).join('')}
-                        </tbody>
+                        <tbody>${veics.map(v => `<tr><td>${v.placa || 'N/A'}</td><td>${v.marca_modelo || v.marca || 'N/A'}</td><td>${v.ano || 'N/A'}</td></tr>`).join('')}</tbody>
                     </table>
                 </div>`;
             }
 
-            // Parentes (CPF4)
             const parentes = d.parentes || [];
             if (parentes.length > 0) {
                 html += `<div class="data-section">
                     <div class="section-title"><i class="fas fa-user-friends"></i> Parentes (${parentes.length})</div>
                     <table class="data-table">
                         <thead><tr><th>Nome</th><th>CPF</th><th>Parentesco</th></tr></thead>
-                        <tbody>
-                            ${parentes.map(p => `<tr><td>${p.nome || 'N/A'}</td><td>${p.cpf || 'N/A'}</td><td>${p.parentesco || 'N/A'}</td></tr>`).join('')}
-                        </tbody>
+                        <tbody>${parentes.map(p => `<tr><td>${p.nome || 'N/A'}</td><td>${p.cpf || 'N/A'}</td><td>${p.parentesco || 'N/A'}</td></tr>`).join('')}</tbody>
                     </table>
                 </div>`;
             }
 
-            // Big Data Relations (CPF3)
             const bigdata = d.relacoes_bigdata || [];
             if (bigdata.length > 0) {
                 html += `<div class="data-section">
                     <div class="section-title"><i class="fas fa-database"></i> Relações Big Data (${bigdata.length})</div>
                     <table class="data-table">
                         <thead><tr><th>Nome</th><th>CPF/CNPJ</th><th>Tipo</th><th>Função</th></tr></thead>
-                        <tbody>
-                            ${bigdata.slice(0, 20).map(b => `<tr><td>${b.nome_relacionado || 'N/A'}</td><td>${b.documento_vinculado || 'N/A'}</td><td>${b.tipo_documento || 'N/A'}</td><td>${b.funcao_cargo || 'N/A'}</td></tr>`).join('')}
-                        </tbody>
+                        <tbody>${bigdata.slice(0, 20).map(b => `<tr><td>${b.nome_relacionado || 'N/A'}</td><td>${b.documento_vinculado || 'N/A'}</td><td>${b.tipo_documento || 'N/A'}</td><td>${b.funcao_cargo || 'N/A'}</td></tr>`).join('')}</tbody>
                     </table>
                 </div>`;
             }
@@ -1247,9 +981,7 @@
             return html;
         }
 
-        function renderCPF2(data) {
-            return renderCPFV2(data);
-        }
+        function renderCPF2(data) { return renderCPFV2(data); }
 
         function renderPlacaV1(data) {
             const principal = data.veiculo_principal || {};
@@ -1266,15 +998,12 @@
                 ['Bairro', principal.BAIRRO]
             ]);
 
-            // Bases
             if (bases.length > 0) {
                 bases.forEach((base, idx) => {
                     const bd = base.dados || {};
                     html += `<div class="data-section">
                         <div class="section-title"><i class="fas fa-database"></i> Base ${base.base}</div>
-                        <div class="data-grid">
-                            ${Object.entries(bd).map(([k, v]) => `<div class="data-field"><div class="label">${k}</div><div class="value">${v || 'N/A'}</div></div>`).join('')}
-                        </div>
+                        <div class="data-grid">${Object.entries(bd).map(([k, v]) => `<div class="data-field"><div class="label">${k}</div><div class="value">${v || 'N/A'}</div></div>`).join('')}</div>
                     </div>`;
                 });
             }
@@ -1332,7 +1061,6 @@
                 ['CPF/CNPJ', poss.cpf_cnpj || r.possuidor?.cpf_cnpj]
             ]);
 
-            // Restrições
             const rest = r.restricoes || [];
             if (rest.length > 0) {
                 html += `<div class="data-section">
@@ -1363,9 +1091,7 @@
                     <div class="section-title"><i class="fas fa-users"></i> Resultados (${resultados.length})</div>
                     <table class="data-table">
                         <thead><tr><th>#</th><th>Nome</th><th>CPF/CNPJ</th></tr></thead>
-                        <tbody>
-                            ${resultados.map(r => `<tr><td>${r.resultado_numero}</td><td>${r.nome}</td><td>${r.cpf_cnpj}</td></tr>`).join('')}
-                        </tbody>
+                        <tbody>${resultados.map(r => `<tr><td>${r.resultado_numero}</td><td>${r.nome}</td><td>${r.cpf_cnpj}</td></tr>`).join('')}</tbody>
                     </table>
                 </div>`;
             }
@@ -1413,9 +1139,7 @@
                     <div class="section-title"><i class="fas fa-users"></i> Pessoas Encontradas (${pessoas.length})</div>
                     <table class="data-table">
                         <thead><tr><th>Nome</th><th>CPF</th><th>Nascimento</th></tr></thead>
-                        <tbody>
-                            ${pessoas.map(p => `<tr><td>${p.nome_completo || p.nome}</td><td>${p.cpf}</td><td>${p.data_nascimento || p.nascimento || 'N/A'}</td></tr>`).join('')}
-                        </tbody>
+                        <tbody>${pessoas.map(p => `<tr><td>${p.nome_completo || p.nome}</td><td>${p.cpf}</td><td>${p.data_nascimento || p.nascimento || 'N/A'}</td></tr>`).join('')}</tbody>
                     </table>
                 </div>`;
             }
@@ -1438,9 +1162,7 @@
                     <div class="section-title"><i class="fas fa-users"></i> Pessoas Encontradas (${resultados.length})</div>
                     <table class="data-table">
                         <thead><tr><th>Nome</th><th>CPF</th><th>Sexo</th><th>Nascimento</th></tr></thead>
-                        <tbody>
-                            ${resultados.slice(0, 50).map(p => `<tr><td>${p.nome}</td><td>${p.cpf}</td><td>${p.sexo || 'N/A'}</td><td>${p.nascimento || 'N/A'}</td></tr>`).join('')}
-                        </tbody>
+                        <tbody>${resultados.slice(0, 50).map(p => `<tr><td>${p.nome}</td><td>${p.cpf}</td><td>${p.sexo || 'N/A'}</td><td>${p.nascimento || 'N/A'}</td></tr>`).join('')}</tbody>
                     </table>
                 </div>`;
             }
@@ -1463,9 +1185,7 @@
                     <div class="section-title"><i class="fas fa-users"></i> Moradores (${moradores.length})</div>
                     <table class="data-table">
                         <thead><tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>Renda</th><th>Bairro</th><th>Cidade</th><th>UF</th></tr></thead>
-                        <tbody>
-                            ${moradores.slice(0, 50).map(m => `<tr><td>${m.nome}</td><td>${m.cpf}</td><td>${m.nascimento}</td><td>${m.renda}</td><td>${m.bairro}</td><td>${m.cidade}</td><td>${m.uf}</td></tr>`).join('')}
-                        </tbody>
+                        <tbody>${moradores.slice(0, 50).map(m => `<tr><td>${m.nome}</td><td>${m.cpf}</td><td>${m.nascimento}</td><td>${m.renda}</td><td>${m.bairro}</td><td>${m.cidade}</td><td>${m.uf}</td></tr>`).join('')}</tbody>
                     </table>
                 </div>`;
             }
@@ -1483,15 +1203,12 @@
                 ['Valor Consultado', r.valor_consultado]
             ]);
 
-            // Process each base
             const baseKeys = Object.keys(bases);
             baseKeys.forEach(key => {
                 const bd = bases[key];
                 html += `<div class="data-section">
                     <div class="section-title"><i class="fas fa-database"></i> ${key}</div>
-                    <div class="data-grid">
-                        ${Object.entries(bd).map(([k, v]) => `<div class="data-field"><div class="label">${k}</div><div class="value">${v || 'N/A'}</div></div>`).join('')}
-                    </div>
+                    <div class="data-grid">${Object.entries(bd).map(([k, v]) => `<div class="data-field"><div class="label">${k}</div><div class="value">${v || 'N/A'}</div></div>`).join('')}</div>
                 </div>`;
             });
 
@@ -1501,6 +1218,7 @@
         function renderFoto(data) {
             const keys = ['base64_image', 'base64_img', 'foto_base64', 'foto', 'imagem'];
             let img = null;
+            let consulta = 'N/A';
             
             for (const key of keys) {
                 if (data[key]) {
@@ -1509,7 +1227,6 @@
                 }
             }
             
-            // Check nested in result
             if (!img && data.resultado?.resultado) {
                 const rr = data.resultado.resultado;
                 for (const key of keys) {
@@ -1520,27 +1237,24 @@
                 }
             }
 
+            if (data.cpf_consultado) consulta = data.cpf_consultado;
+            else if (data.consulta) consulta = data.consulta;
+
             if (!img) return '<div class="photo-container"><p>Imagem não encontrada</p></div>';
             
             const cleanBase64 = img.replace(/[\s\n\r]/g, '');
             return `
                 <div class="photo-container">
                     <img src="data:image/jpeg;base64,${cleanBase64}" alt="Foto consultada">
-                    <p style="margin-top: 1rem; color: var(--cor-texto-sec);">CPF/RG: ${data.cpf_consultado || data.consulta || 'N/A'}</p>
+                    <p style="margin-top: 1rem; color: var(--cor-texto-sec);">CPF/RG: ${consulta}</p>
                 </div>
             `;
         }
 
-        function renderRG(data) {
-            return renderCPFV2(data);
-        }
+        function renderRG(data) { return renderCPFV2(data); }
 
         function renderGeneric(data) {
-            return `
-                <div class="json-view">
-                    <pre>${JSON.stringify(data, null, 2)}</pre>
-                </div>
-            `;
+            return `<div class="json-view"><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
         }
 
         function showRawResult(data) {
@@ -1555,21 +1269,15 @@
             el.style.display = 'flex';
             
             if (type !== 'loading') {
-                setTimeout(() => {
-                    el.style.display = 'none';
-                }, 5000);
+                setTimeout(() => { el.style.display = 'none'; }, 5000);
             }
         }
 
-        function showLoading(show) {
-            document.getElementById('loadingContainer').style.display = show ? 'block' : 'none';
-        }
-
+        function showLoading(show) { document.getElementById('loadingContainer').style.display = show ? 'block' : 'none'; }
         function showResults() {
             document.getElementById('resultsContainer').style.display = 'block';
             document.getElementById('emptyState').style.display = 'none';
         }
-
         function hideResults() {
             document.getElementById('resultsContainer').style.display = 'none';
             document.getElementById('statusMessage').style.display = 'none';
@@ -1585,9 +1293,7 @@
         function copiarResultado() {
             if (!currentData) return;
             const text = JSON.stringify(currentData, null, 2);
-            navigator.clipboard.writeText(text).then(() => {
-                showStatus('Resultado copiado!', 'success');
-            });
+            navigator.clipboard.writeText(text).then(() => { showStatus('Resultado copiado!', 'success'); });
         }
 
         function exportarJSON() {
@@ -1604,13 +1310,9 @@
             if (!currentData) return;
             const d = currentData.dados || currentData.resultado?.resultado || currentData;
             let csv = 'Campo,Valor\n';
-            
             Object.entries(d).forEach(([k, v]) => {
-                if (typeof v !== 'object') {
-                    csv += `"${k}","${v}"\n`;
-                }
+                if (typeof v !== 'object') { csv += `"${k}","${v}"\n`; }
             });
-            
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1620,12 +1322,7 @@
         }
 
         function addToHistory(query, module) {
-            const item = {
-                query,
-                module,
-                timestamp: new Date().toISOString(),
-                url: window.location.href
-            };
+            const item = { query, module, timestamp: new Date().toISOString(), url: window.location.href };
             consultHistory.unshift(item);
             if (consultHistory.length > 50) consultHistory.pop();
             localStorage.setItem('klord_history', JSON.stringify(consultHistory));
@@ -1633,9 +1330,7 @@
             renderHistory();
         }
 
-        function updateHistoryCount() {
-            document.getElementById('historyCount').textContent = consultHistory.length;
-        }
+        function updateHistoryCount() { document.getElementById('historyCount').textContent = consultHistory.length; }
 
         function renderHistory() {
             const container = document.getElementById('historyList');
@@ -1643,7 +1338,6 @@
                 container.innerHTML = '<div style="padding: 2rem; text-align: center; color: var(--cor-texto-sec);">Nenhuma consulta no histórico</div>';
                 return;
             }
-
             container.innerHTML = consultHistory.map((h, i) => `
                 <div class="history-item" onclick="loadFromHistory(${i})">
                     <div class="time">${new Date(h.timestamp).toLocaleString('pt-BR')}</div>
@@ -1674,9 +1368,7 @@
         }
 
         const historyQuery = getQueryParam('q');
-        if (historyQuery) {
-            document.getElementById('dadoConsulta').value = historyQuery;
-        }
+        if (historyQuery) { document.getElementById('dadoConsulta').value = historyQuery; }
     </script>
 </body>
 </html>
