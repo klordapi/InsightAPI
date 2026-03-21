@@ -606,7 +606,7 @@ def api_consulta_cnpj():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CNPJ não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/cnpj/"
+    url_base = "https://klordapiv1.onrender.com/cnpj/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -615,7 +615,7 @@ def api_consulta_cpf():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CPF não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/cpf/"
+    url_base = "https://klordapiv1.onrender.com/cpf/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -624,7 +624,7 @@ def api_consulta_cpf2():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado CPF não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/cpf/"
+    url_base = "https://klordapiv1.onrender.com/cpf/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -633,7 +633,7 @@ def api_consulta_placa():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado PLACA não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/placa/"
+    url_base = "https://klordapiv1.onrender.com/placa/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
     
@@ -642,7 +642,7 @@ def api_consulta_placa_completa():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado PLACA não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/api/token=91919/consulta?tipo=placacompleta&dado="
+    url_base = "https://klordapiv1.onrender.com/api/token=91919/consulta?tipo=placacompleta&dado="
     resultado = proxy_consulta(url_base, dado, requires_token_external=False)
     return jsonify(resultado)
 
@@ -651,7 +651,7 @@ def api_consulta_nome():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado NOME não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/nome/"
+    url_base = "https://klordapiv1.onrender.com/nome/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -660,7 +660,7 @@ def api_consulta_telefone():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado TELEFONE não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/telefone/"
+    url_base = "https://klordapiv1.onrender.com/telefone/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
     
@@ -669,7 +669,7 @@ def api_consulta_telefone2():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado TELEFONE não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/AlizinHacker/telefone?token=klordmalware&telefone="
+    url_base = "https://klordapiv1.onrender.com/AlizinHacker/telefone?token=klordmalware&telefone="
     resultado = proxy_consulta(url_base, dado, requires_token_external=False)
     return jsonify(resultado)
 
@@ -678,7 +678,7 @@ def api_consulta_foto_sp():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/fotos/SP/"
+    url_base = "https://klordapiv1.onrender.com/fotos/SP/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -687,7 +687,7 @@ def api_consulta_foto_rj():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/fotorj/"
+    url_base = "https://klordapiv1.onrender.com/fotorj/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -696,7 +696,7 @@ def api_consulta_foto_es():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/fotos/ES/"
+    url_base = "https://klordapiv1.onrender.com/fotos/ES/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
@@ -705,7 +705,7 @@ def api_consulta_renavam():
     dado = request.args.get('dado')
     if not dado:
         return jsonify({"erro": "Dado RENAVAM não fornecido"}), 400
-    url_base = "https://klordapi-rild.onrender.com/renavam/"
+    url_base = "https://klordapiv1.onrender.com/renavam/"
     resultado = proxy_consulta(url_base, dado, requires_token_external=True)
     return jsonify(resultado)
 
