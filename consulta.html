@@ -36,7 +36,6 @@
             min-height: 100vh;
         }
 
-        /* Header */
         .header {
             background: rgba(18, 18, 26, 0.95);
             backdrop-filter: blur(20px);
@@ -85,14 +84,12 @@
             color: var(--cor-texto-sec);
         }
 
-        /* Main */
         .main-content {
             padding: 100px 2rem 2rem;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        /* Input Section */
         .input-section {
             background: var(--cor-card);
             border: 1px solid var(--cor-borda);
@@ -192,7 +189,6 @@
             color: var(--cor-primaria);
         }
 
-        /* Status Messages */
         .status-message {
             padding: 1rem 1.5rem;
             border-radius: 12px;
@@ -233,7 +229,6 @@
             color: var(--cor-primaria);
         }
 
-        /* Loading */
         .loading-container {
             text-align: center;
             padding: 4rem 2rem;
@@ -255,7 +250,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Results */
         .results-container {
             background: var(--cor-card);
             border: 1px solid var(--cor-borda);
@@ -290,7 +284,6 @@
             padding: 1.5rem;
         }
 
-        /* Data Grid */
         .data-section {
             margin-bottom: 2rem;
         }
@@ -338,7 +331,6 @@
             font-style: italic;
         }
 
-        /* Tables */
         .data-table {
             width: 100%;
             border-collapse: collapse;
@@ -365,7 +357,6 @@
             background: rgba(127, 0, 255, 0.05);
         }
 
-        /* Tags */
         .tag {
             display: inline-flex;
             align-items: center;
@@ -394,7 +385,6 @@
             border: 1px solid var(--cor-acento);
         }
 
-        /* Photo Display */
         .photo-container {
             text-align: center;
             padding: 2rem;
@@ -408,7 +398,6 @@
             box-shadow: var(--shadow);
         }
 
-        /* JSON View */
         .json-view {
             background: var(--cor-card-sec);
             padding: 1.5rem;
@@ -424,7 +413,6 @@
             line-height: 1.6;
         }
 
-        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 4rem 2rem;
@@ -437,7 +425,6 @@
             opacity: 0.3;
         }
 
-        /* Export Buttons */
         .export-buttons {
             display: flex;
             gap: 0.5rem;
@@ -462,7 +449,6 @@
             color: var(--cor-primaria);
         }
 
-        /* History Button */
         .btn-history {
             position: fixed;
             bottom: 2rem;
@@ -501,7 +487,6 @@
             justify-content: center;
         }
 
-        /* History Sidebar */
         .history-sidebar {
             position: fixed;
             right: -400px;
@@ -581,7 +566,6 @@
             display: block;
         }
 
-        /* Quick Actions */
         .quick-actions {
             display: flex;
             gap: 0.5rem;
@@ -663,9 +647,7 @@
                 </button>
             </div>
             
-            <div class="quick-actions" id="quickActions">
-                <!-- Preenchido dinamicamente -->
-            </div>
+            <div class="quick-actions" id="quickActions"></div>
 
             <div class="actions-row">
                 <div class="actions-left">
@@ -705,9 +687,7 @@
                 <h2><i class="fas fa-check-circle"></i> Resultado da Consulta</h2>
                 <span id="resultTimestamp"></span>
             </div>
-            <div class="results-body" id="resultsBody">
-                <!-- Resultados inseridos aqui -->
-            </div>
+            <div class="results-body" id="resultsBody"></div>
         </div>
 
         <div class="empty-state" id="emptyState">
@@ -731,27 +711,22 @@
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <div id="historyList">
-            <!-- Histórico inserido aqui -->
-        </div>
+        <div id="historyList"></div>
     </div>
 
     <script>
-        // Configuração completa das APIs
         const API_MAP = {
-            // V1 APIs
             'cnpj': { title: 'Consulta CNPJ', endpoint: '/api/consulta-cnpj', placeholder: '00.000.000/0000-00', version: 'V1', category: 'empresas' },
-            'cpf': { title: 'Consulta CPF V1', endpoint: '/api/consulta-cpf', placeholder: '000.000.000-00', version: 'V1', category: 'pessoas' },
+            'cpf': { title: 'Consulta CPF', endpoint: '/api/consulta-cpf', placeholder: '000.000.000-00', version: 'V1', category: 'pessoas' },
             'rg': { title: 'Consulta RG', endpoint: '/api/consulta-rg', placeholder: '00000000', version: 'V1', category: 'pessoas' },
-            'nome': { title: 'Busca por Nome V1', endpoint: '/api/consulta-nome', placeholder: 'NOME COMPLETO', version: 'V1', category: 'pessoas' },
-            'telefone': { title: 'Consulta Telefone V1', endpoint: '/api/consulta-telefone', placeholder: '11999999999', version: 'V1', category: 'pessoas' },
-            'placa': { title: 'Consulta Placa V1', endpoint: '/api/consulta-placa', placeholder: 'ABC1234', version: 'V1', category: 'veiculos' },
+            'nome': { title: 'Busca por Nome', endpoint: '/api/consulta-nome', placeholder: 'NOME COMPLETO', version: 'V1', category: 'pessoas' },
+            'telefone': { title: 'Consulta Telefone', endpoint: '/api/consulta-telefone', placeholder: '11999999999', version: 'V1', category: 'pessoas' },
+            'placa': { title: 'Consulta Placa', endpoint: '/api/consulta-placa', placeholder: 'ABC1234', version: 'V1', category: 'veiculos' },
             'renavam': { title: 'Consulta RENAVAM', endpoint: '/api/consulta-renavam', placeholder: '00000000000', version: 'V1', category: 'veiculos' },
             'foto-sp': { title: 'Foto SP', endpoint: '/api/consulta-foto-sp', placeholder: '00000000000', version: 'V1', category: 'imagens' },
             'foto-rj': { title: 'Foto RJ', endpoint: '/api/consulta-foto-rj', placeholder: '00000000000', version: 'V1', category: 'imagens' },
             'foto-es': { title: 'Foto ES', endpoint: '/api/consulta-foto-es', placeholder: '00000000000', version: 'V1', category: 'imagens' },
             
-            // V2 APIs
             'cpf-v1': { title: 'Consulta CPF V1 (V2)', endpoint: '/api/consulta-cpf-v1', placeholder: '000.000.000-00', version: 'V2', category: 'pessoas' },
             'cpf-v2': { title: 'Consulta CPF V2', endpoint: '/api/consulta-cpf-v2', placeholder: '000.000.000-00', version: 'V2', category: 'pessoas' },
             'cpf-v3': { title: 'Consulta CPF V3 + Foto', endpoint: '/api/consulta-cpf-v3', placeholder: '000.000.000-00', version: 'V2', category: 'pessoas' },
@@ -767,10 +742,7 @@
             'motor': { title: 'Consulta Motor', endpoint: '/api/consulta-motor', placeholder: 'NÚMERO DO MOTOR', version: 'V2', category: 'veiculos' },
             'chassi': { title: 'Consulta Chassi', endpoint: '/api/consulta-chassi', placeholder: '00000000000000000', version: 'V2', category: 'veiculos' },
             
-            // Legados
-            'cpf2': { title: 'Consulta CPF (Base 2)', endpoint: '/api/consulta-cpf2', placeholder: '000.000.000-00', version: 'LEGADO', category: 'pessoas' },
-            'placa_completa': { title: 'Placa Completa', endpoint: '/api/consulta-placa-completa', placeholder: 'ABC1234', version: 'LEGADO', category: 'veiculos' },
-            'telefone2': { title: 'Telefone (Base 2)', endpoint: '/api/consulta-telefone2', placeholder: '11999999999', version: 'LEGADO', category: 'pessoas' }
+            'cpf2': { title: 'Consulta CPF (Base 2)', endpoint: '/api/consulta-cpf2', placeholder: '000.000.000-00', version: 'V2', category: 'pessoas' }
         };
 
         let currentModule = '';
@@ -778,11 +750,9 @@
         let consultHistory = JSON.parse(localStorage.getItem('klord_history') || '[]');
         const internalToken = "KLORD-TESTE-1234567890ABCDEF";
 
-        // Inicialização
         window.onload = function() {
             currentModule = getQueryParam('modulo');
             
-            // Correção de nomes
             if (!currentModule || !API_MAP[currentModule]) {
                 if (currentModule && currentModule.includes('_')) {
                     const corrected = currentModule.replace(/_/g, '-');
@@ -796,8 +766,6 @@
                 document.getElementById('moduleVersion').textContent = `API ${config.version} • ${config.category}`;
                 document.getElementById('dadoConsulta').placeholder = config.placeholder;
                 document.title = `${config.title} - Klord Buscas`;
-                
-                // Preencher quick actions baseado na categoria
                 fillQuickActions(config.category);
             } else {
                 document.getElementById('moduleTitle').textContent = 'Módulo não encontrado';
@@ -853,12 +821,19 @@
             try {
                 const url = `${config.endpoint}?dado=${encodeURIComponent(dado)}&token=${internalToken}`;
                 const response = await fetch(url);
-                const data = await response.json();
+                let data = await response.json();
+
+                // Remove metadata fields from V2 APIs
+                if (data._creditos || data._info || data._contato) {
+                    delete data._creditos;
+                    delete data._info;
+                    delete data._contato;
+                }
 
                 currentData = data;
 
-                if (!response.ok || data.erro || data.status === 'erro') {
-                    const errorMsg = data.erro || data.mensagem || 'Erro na consulta';
+                if (!response.ok || data.erro || data.status === 'erro' || (data.resultado && data.resultado.status === 'false')) {
+                    const errorMsg = data.erro || data.mensagem || data.status || 'Erro na consulta';
                     showStatus(`Erro: ${errorMsg}`, 'error');
                     showRawResult(data);
                 } else {
@@ -883,24 +858,67 @@
 
             let html = '';
 
-            // Renderização específica por tipo
-            if (currentModule.includes('foto')) {
-                html = renderFoto(data);
-            } else if (currentModule.includes('cpf')) {
-                html = renderCPF(data);
-            } else if (currentModule.includes('cnpj')) {
-                html = renderCNPJ(data);
-            } else if (currentModule.includes('placa') || currentModule.includes('renavam') || currentModule.includes('motor') || currentModule.includes('chassi')) {
-                html = renderVeiculo(data);
-            } else if (currentModule.includes('telefone')) {
-                html = renderTelefone(data);
-            } else if (currentModule.includes('nome')) {
-                html = renderNome(data);
-            } else if (currentModule.includes('rg')) {
-                html = renderRG(data);
-            } else if (currentModule.includes('cep')) {
+            // CNPJ V1
+            if (currentModule === 'cnpj') {
+                html = renderCNPJV1(data);
+            }
+            // CNPJ V2
+            else if (currentModule === 'cnpj-v2') {
+                html = renderCNPJV2(data);
+            }
+            // CPF V1
+            else if (currentModule === 'cpf') {
+                html = renderCPFV1(data);
+            }
+            // CPF V2-V5 (baseadas na estrutura V2)
+            else if (currentModule.startsWith('cpf-v')) {
+                html = renderCPFV2(data);
+            }
+            // CPF2 (legado)
+            else if (currentModule === 'cpf2') {
+                html = renderCPF2(data);
+            }
+            // Placa V1
+            else if (currentModule === 'placa') {
+                html = renderPlacaV1(data);
+            }
+            // Placa V2
+            else if (currentModule === 'placa-v1' || currentModule === 'placa-v2') {
+                html = renderPlacaV2(data);
+            }
+            // Telefone
+            else if (currentModule === 'telefone') {
+                html = renderTelefoneV1(data);
+            }
+            // Telefone V2
+            else if (currentModule === 'telefone-v2') {
+                html = renderTelefoneV2(data);
+            }
+            // Nome
+            else if (currentModule === 'nome') {
+                html = renderNomeV1(data);
+            }
+            // Nome V2
+            else if (currentModule === 'nome-v2') {
+                html = renderNomeV2(data);
+            }
+            // CEP
+            else if (currentModule === 'cep') {
                 html = renderCEP(data);
-            } else {
+            }
+            // Chassi/Motor
+            else if (currentModule === 'chassi' || currentModule === 'motor') {
+                html = renderChassiMotor(data);
+            }
+            // Foto
+            else if (currentModule.includes('foto')) {
+                html = renderFoto(data);
+            }
+            // RG
+            else if (currentModule === 'rg') {
+                html = renderRG(data);
+            }
+            else {
                 html = renderGeneric(data);
             }
 
@@ -909,7 +927,7 @@
         }
 
         function renderSection(title, fields) {
-            const validFields = fields.filter(([_, v]) => v && v !== 'SEM INFORMAÇÃO' && v !== 'N/A');
+            const validFields = fields.filter(([_, v]) => v && v !== 'SEM INFORMAÇÃO' && v !== 'N/A' && v !== 'SEM INFORMAÇÃO');
             if (validFields.length === 0) return '';
             
             return `
@@ -927,68 +945,91 @@
             `;
         }
 
-        function renderFoto(data) {
-            const img = data.base64_image || data.base64_img || data.foto_base64 || data.foto;
-            if (!img) return '<div class="photo-container"><p>Imagem não encontrada</p></div>';
-            
-            const cleanBase64 = img.replace(/[\s\n\r]/g, '');
-            return `
-                <div class="photo-container">
-                    <img src="data:image/jpeg;base64,${cleanBase64}" alt="Foto consultada">
-                    <p style="margin-top: 1rem; color: var(--cor-texto-sec);">CPF/RG: ${data.consulta || 'N/A'}</p>
-                </div>
-            `;
-        }
-
-        function renderCPF(data) {
+        function renderCNPJV1(data) {
             const d = data.dados || data;
             let html = '';
 
-            // Dados pessoais
-            html += renderSection('Dados Pessoais', [
-                ['Nome', d.NOME || d.nome],
-                ['CPF', d.CPF || d.cpf],
-                ['Nascimento', d.NASCIMENTO || d.nascimento || d.data_nascimento],
-                ['Idade', d.IDADE || d.idade],
-                ['Sexo', d.SEXO || d.sexo],
-                ['Status Receita', d.STATUS_RECEITA_FEDERAL || d.status_receita],
-                ['Estado Civil', d.ESTADO_CIVIL || d.estado_civil],
-                ['Nome da Mãe', d.MAE || d.mae || d.nome_mae],
-                ['Nome do Pai', d.PAI || d.pai || d.nome_pai],
-                ['RG', d.RG || d.rg],
-                ['PIS', d.PIS || d.pis],
-                ['Escolaridade', d.ESCOLARIDADE || d.escolaridade],
-                ['Profissão', d.PROFISSAO || d.profissao]
+            html += renderSection('Dados da Empresa', [
+                ['CNPJ', d.CNPJ],
+                ['Razão Social', d.RAZAO_SOCIAL],
+                ['Nome Fantasia', d.NOME_FANTASIA],
+                ['Tipo', d.TIPO_EMPRESA],
+                ['Natureza Jurídica', d.NATUREZA_JURIDICA],
+                ['Situação', d.SITUACAO_CADASTRAL],
+                ['Data Fundação', d.DATA_FUNDACAO],
+                ['Capital Social', d.CAPITAL_SOCIAL],
+                ['Funcionários', d.QTD_FUNCIONARIOS],
+                ['Ramo', d.RAMO],
+                ['Inscrição Estadual', d.INSCRICAO_ESTADUAL],
+                ['CPF Representante', d.CPF_REPRESENTANTE]
             ]);
 
-            // Endereço
-            const end = d.ENDERECO || d.endereco || {};
-            html += renderSection('Endereço', [
-                ['Logradouro', end.LOGRADOURO || end.logradouro],
-                ['Número', end.NUMERO || end.numero],
-                ['Complemento', end.COMPLEMENTO || end.complemento],
-                ['Bairro', end.BAIRRO || end.bairro],
-                ['Cidade', end.CIDADE || end.cidade || end.MUNICIPIO || end.municipio],
-                ['Estado', end.ESTADO || end.estado || end.UF || end.uf],
-                ['CEP', end.CEP || end.cep]
+            html += renderSection('Atividade Econômica', [
+                ['Atividade Principal', d.ATIVIDADE_ECONOMICA]
             ]);
 
-            // Contatos
-            const tels = d.TELEFONES || d.telefones || d.TELEFONES_PROPRIETARIO || [];
-            if (tels.length > 0) {
+            // Sócios
+            const socios = d.SOCIOS || [];
+            if (socios.length > 0) {
                 html += `<div class="data-section">
-                    <div class="section-title"><i class="fas fa-phone"></i> Telefones (${tels.length})</div>
+                    <div class="section-title"><i class="fas fa-user-tie"></i> Sócios (${socios.length})</div>
                     <table class="data-table">
-                        <thead><tr><th>Número</th><th>Status</th></tr></thead>
+                        <thead><tr><th>Nome</th><th>CPF</th><th>Cargo</th><th>Participação</th></tr></thead>
                         <tbody>
-                            ${tels.map(t => `<tr><td>${t.numero || t.NUMERO || t}</td><td>${t.status || t.STATUS || 'Ativo'}</td></tr>`).join('')}
+                            ${socios.map(s => `<tr><td>${s.nome || 'N/A'}</td><td>${s.cpf || 'N/A'}</td><td>${s.cargo || 'N/A'}</td><td>${s.participacao || 'N/A'}%</td></tr>`).join('')}
                         </tbody>
                     </table>
                 </div>`;
             }
 
+            // Funcionários
+            const func = d.FUNCIONARIOS || [];
+            if (func.length > 0) {
+                html += `<div class="data-section">
+                    <div class="section-title"><i class="fas fa-users"></i> Funcionários (${func.length})</div>
+                    <table class="data-table">
+                        <thead><tr><th>Nome</th><th>CPF</th><th>Função</th><th>Cargo</th></tr></thead>
+                        <tbody>
+                            ${func.slice(0, 20).map(f => `<tr><td>${f.nome || 'N/A'}</td><td>${f.cpf || 'N/A'}</td><td>${f.funcao || 'N/A'}</td><td>${f.cargo || 'N/A'}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>`;
+            }
+
+            // Telefones
+            const tels = d.TELEFONES || [];
+            if (tels.length > 0) {
+                html += `<div class="data-section">
+                    <div class="section-title"><i class="fas fa-phone"></i> Telefones (${tels.length})</div>
+                    <div class="data-grid">
+                        ${tels.slice(0, 15).map(t => `<div class="data-field"><div class="value">${t}</div></div>`).join('')}
+                    </div>
+                </div>`;
+            }
+
+            return html;
+        }
+
+        function renderCNPJV2(data) {
+            const r = data.resultado?.resultado || data;
+            const emp = r.empresa || r;
+            let html = '';
+
+            html += renderSection('Dados da Empresa', [
+                ['CNPJ', emp.cnpj],
+                ['Razão Social', emp.razao_social],
+                ['Nome Fantasia', emp.nome_fantasia],
+                ['Fundação', emp.fundacao],
+                ['Natureza', emp.natureza],
+                ['Funcionários', emp.qtd_funcionarios],
+                ['Tipo', emp.tipo_empresa],
+                ['Capital Social', emp.capital_social],
+                ['Ramo', emp.ramo],
+                ['CPF Representante', emp.cpf_representante]
+            ]);
+
             // Emails
-            const emails = d.EMAILS || d.emails || [];
+            const emails = r.emails || [];
             if (emails.length > 0) {
                 html += `<div class="data-section">
                     <div class="section-title"><i class="fas fa-envelope"></i> E-mails (${emails.length})</div>
@@ -998,15 +1039,15 @@
                 </div>`;
             }
 
-            // Vizinhos
-            const viz = d.POSSIVEIS_VIZINHOS || d.vizinhos || [];
-            if (viz.length > 0) {
+            // Funcionários
+            const func = r.funcionarios || [];
+            if (func.length > 0) {
                 html += `<div class="data-section">
-                    <div class="section-title"><i class="fas fa-users"></i> Possíveis Vizinhos (${viz.length})</div>
+                    <div class="section-title"><i class="fas fa-users"></i> Funcionários (${func.length})</div>
                     <table class="data-table">
-                        <thead><tr><th>Nome</th><th>CPF</th></tr></thead>
+                        <thead><tr><th>Nome</th><th>CPF</th><th>Função</th><th>Cargo</th></tr></thead>
                         <tbody>
-                            ${viz.map(v => `<tr><td>${v.nome || v.NOME}</td><td>${v.cpf || v.CPF}</td></tr>`).join('')}
+                            ${func.slice(0, 20).map(f => `<tr><td>${f.nome || 'N/A'}</td><td>${f.cpf || 'N/A'}</td><td>${f.funcao || 'N/A'}</td><td>${f.cargo || 'N/A'}</td></tr>`).join('')}
                         </tbody>
                     </table>
                 </div>`;
@@ -1015,59 +1056,189 @@
             return html;
         }
 
-        function renderCNPJ(data) {
+        function renderCPFV1(data) {
             const d = data.dados || data;
             let html = '';
 
-            html += renderSection('Dados da Empresa', [
-                ['Razão Social', d.NOME_EMPRESARIAL || d.razao_social],
-                ['Nome Fantasia', d.NOME_FANTASIA || d.nome_fantasia],
-                ['CNPJ', d.CNPJ || d.cnpj],
-                ['Tipo', d.TIPO || d.tipo],
-                ['Situação', d.SITUACAO_CADASTRAL || d.situacao],
-                ['Status', d.STATUS || d.status],
-                ['Natureza Jurídica', d.NATUREZA_JURIDICA || d.natureza_juridica],
-                ['Porte', d.PORTE || d.porte],
-                ['Capital Social', d.CAPITAL_SOCIAL || d.capital_social],
-                ['Data Abertura', d.ABERTURA || d.data_abertura],
-                ['Última Atualização', d.ULTIMA_ATUALIZACAO || d.ultima_atualizacao]
+            html += renderSection('Dados Pessoais', [
+                ['CPF', d.CPF],
+                ['Idade', d.IDADE],
+                ['Nascimento', d.NASCIMENTO]
             ]);
 
-            // Atividades
-            const ativ = d.ATIVIDADES || d.atividades || {};
-            html += renderSection('Atividades Econômicas', [
-                ['Principal', ativ.PRINCIPAL || ativ.principal],
-                ['Secundárias', Array.isArray(ativ.SECUNDARIAS) ? ativ.SECUNDARIAS.join('; ') : ativ.secundarias]
+            return html;
+        }
+
+        function renderCPFV2(data) {
+            const r = data.resultado?.resultado || data;
+            const d = r;
+            let html = '';
+
+            html += renderSection('Dados Pessoais', [
+                ['CPF', d.cpf],
+                ['Nome', d.nome],
+                ['Sexo', d.sexo],
+                ['Nascimento', d.nascimento],
+                ['Idade', d.idade],
+                ['Signo', d.signo],
+                ['Mãe', d.mae],
+                ['Pai', d.pai],
+                ['Nacionalidade', d.nacionalidade],
+                ['Município Nascimento', d.municipio_nascimento],
+                ['Estado Civil', d.estado_civil],
+                ['Status Receita', d.status_receita || d.estado_receita],
+                ['Renda', d.renda],
+                ['Faixa Renda', d.faixa_renda],
+                ['Score', d.score],
+                ['Score Estimado', d.score_estimado],
+                ['Óbito', d.obito]
             ]);
 
-            // Endereço
-            const end = d.ENDERECO || d.endereco || {};
-            html += renderSection('Endereço', [
-                ['Logradouro', end.LOGRADOURO || end.logradouro],
-                ['Número', end.NUMERO || end.numero],
-                ['Complemento', end.COMPLEMENTO || end.complemento],
-                ['Bairro', end.BAIRRO || end.bairro],
-                ['Município', end.MUNICIPIO || end.municipio || end.CIDADE || end.cidade],
-                ['Estado', end.ESTADO || end.estado || end.UF || end.uf],
-                ['CEP', end.CEP || end.cep]
-            ]);
+            // RG
+            if (d.rg) {
+                html += renderSection('RG', [
+                    ['Número', d.rg.numero],
+                    ['Órgão Emissor', d.rg.orgao_emissor],
+                    ['UF', d.rg.uf],
+                    ['Data Emissão', d.rg.data_emissao]
+                ]);
+            }
 
-            // Contato
-            const cont = d.CONTATO || d.contato || {};
-            html += renderSection('Contato', [
-                ['Telefone', cont.TELEFONE || cont.telefone],
-                ['E-mail', cont.EMAIL || cont.email]
-            ]);
+            // Documentos (CPF V5)
+            if (d.documentos) {
+                html += renderSection('Documentos', [
+                    ['RG', d.documentos.rg],
+                    ['PIS', d.documentos.pis],
+                    ['NIS', d.documentos.nis],
+                    ['CNS', d.documentos.cns],
+                    ['Título Eleitor', d.documentos.titulo_eleitoral],
+                    ['Escolaridade', d.escolaridade],
+                    ['Profissão', d.profissao]
+                ]);
+            }
 
-            // Sócios
-            const socios = d.SOCIOS_ADMINISTRADORES || d.socios || [];
-            if (socios.length > 0) {
+            // Endereço (V2)
+            if (d.endereco) {
+                const end = d.endereco;
+                html += renderSection('Endereço', [
+                    ['Logradouro', end.logradouro],
+                    ['Número', end.numero],
+                    ['Complemento', end.complemento],
+                    ['Bairro', end.bairro],
+                    ['Cidade', end.cidade || end.municipio],
+                    ['UF', end.uf],
+                    ['CEP', end.cep]
+                ]);
+            }
+
+            // Endereços (CPF2/3/4)
+            if (d.enderecos && Array.isArray(d.enderecos)) {
+                if (typeof d.enderecos[0] === 'string') {
+                    html += `<div class="data-section">
+                        <div class="section-title"><i class="fas fa-home"></i> Endereços (${d.enderecos.length})</div>
+                        <div class="data-grid">
+                            ${d.enderecos.map(e => `<div class="data-field"><div class="value">${e}</div></div>`).join('')}
+                        </div>
+                    </div>`;
+                } else {
+                    html += `<div class="data-section">
+                        <div class="section-title"><i class="fas fa-home"></i> Endereços (${d.enderecos.length})</div>
+                        <table class="data-table">
+                            <thead><tr><th>Rua</th><th>Número</th><th>Bairro</th><th>Cidade</th><th>UF</th><th>CEP</th></tr></thead>
+                            <tbody>
+                                ${d.enderecos.map(e => `<tr><td>${e.rua || e.logradouro || 'N/A'}</td><td>${e.numero || 'N/A'}</td><td>${e.bairro || 'N/A'}</td><td>${e.cidade || 'N/A'}</td><td>${e.uf || 'N/A'}</td><td>${e.cep || 'N/A'}</td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>`;
+                }
+            }
+
+            // Telefones
+            const tels = d.telefones || [];
+            if (tels.length > 0) {
+                const hasWhatsapp = typeof tels[0] === 'object';
+                if (hasWhatsapp) {
+                    html += `<div class="data-section">
+                        <div class="section-title"><i class="fas fa-phone"></i> Telefones (${tels.length})</div>
+                        <table class="data-table">
+                            <thead><tr><th>Número</th><th>WhatsApp</th></tr></thead>
+                            <tbody>
+                                ${tels.map(t => `<tr><td>${t.numero || t}</td><td>${t.whatsapp || 'N/A'}</td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>`;
+                } else {
+                    html += `<div class="data-section">
+                        <div class="section-title"><i class="fas fa-phone"></i> Telefones (${tels.length})</div>
+                        <div class="data-grid">
+                            ${tels.map(t => `<div class="data-field"><div class="value">${typeof t === 'string' ? t.replace(':', ' - ') : t}</div></div>`).join('')}
+                        </div>
+                    </div>`;
+                }
+            }
+
+            // Emails
+            const emails = d.emails || [];
+            if (emails.length > 0) {
                 html += `<div class="data-section">
-                    <div class="section-title"><i class="fas fa-user-tie"></i> Sócios e Administradores (${socios.length})</div>
+                    <div class="section-title"><i class="fas fa-envelope"></i> E-mails (${emails.length})</div>
+                    <div class="data-grid">
+                        ${emails.map(e => `<div class="data-field"><div class="value">${e}</div></div>`).join('')}
+                    </div>
+                </div>`;
+            }
+
+            // Empregos RAIS (CPF2/3)
+            const rais = d.empregos_rais || [];
+            if (rais.length > 0) {
+                html += `<div class="data-section">
+                    <div class="section-title"><i class="fas fa-briefcase"></i> Empregos RAIS (${rais.length})</div>
                     <table class="data-table">
-                        <thead><tr><th>Nome</th><th>Qualificação</th></tr></thead>
+                        <thead><tr><th>Empresa</th><th>Salário Mensal</th><th>Ano</th></tr></thead>
                         <tbody>
-                            ${socios.map(s => `<tr><td>${s.nome || s.NOME}</td><td>${s.qualificacao || s.QUALIFICACAO}</td></tr>`).join('')}
+                            ${rais.map(e => `<tr><td>${e.empresa || 'N/A'}</td><td>${e.salario_mensal || 'N/A'}</td><td>${e.ano || 'N/A'}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>`;
+            }
+
+            // Veículos
+            const veics = d.veiculos || [];
+            if (veics.length > 0) {
+                html += `<div class="data-section">
+                    <div class="section-title"><i class="fas fa-car"></i> Veículos (${veics.length})</div>
+                    <table class="data-table">
+                        <thead><tr><th>Placa</th><th>Marca/Modelo</th><th>Ano</th></tr></thead>
+                        <tbody>
+                            ${veics.map(v => `<tr><td>${v.placa || 'N/A'}</td><td>${v.marca_modelo || v.marca || 'N/A'}</td><td>${v.ano || 'N/A'}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>`;
+            }
+
+            // Parentes (CPF4)
+            const parentes = d.parentes || [];
+            if (parentes.length > 0) {
+                html += `<div class="data-section">
+                    <div class="section-title"><i class="fas fa-user-friends"></i> Parentes (${parentes.length})</div>
+                    <table class="data-table">
+                        <thead><tr><th>Nome</th><th>CPF</th><th>Parentesco</th></tr></thead>
+                        <tbody>
+                            ${parentes.map(p => `<tr><td>${p.nome || 'N/A'}</td><td>${p.cpf || 'N/A'}</td><td>${p.parentesco || 'N/A'}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>`;
+            }
+
+            // Big Data Relations (CPF3)
+            const bigdata = d.relacoes_bigdata || [];
+            if (bigdata.length > 0) {
+                html += `<div class="data-section">
+                    <div class="section-title"><i class="fas fa-database"></i> Relações Big Data (${bigdata.length})</div>
+                    <table class="data-table">
+                        <thead><tr><th>Nome</th><th>CPF/CNPJ</th><th>Tipo</th><th>Função</th></tr></thead>
+                        <tbody>
+                            ${bigdata.slice(0, 20).map(b => `<tr><td>${b.nome_relacionado || 'N/A'}</td><td>${b.documento_vinculado || 'N/A'}</td><td>${b.tipo_documento || 'N/A'}</td><td>${b.funcao_cargo || 'N/A'}</td></tr>`).join('')}
                         </tbody>
                     </table>
                 </div>`;
@@ -1076,49 +1247,97 @@
             return html;
         }
 
-        function renderVeiculo(data) {
-            const d = data.dados || data;
-            const veic = d.DADOS_VEICULO || d.veiculo || d;
-            const fab = d.DADOS_FABRICACAO || d.fabricacao || d;
-            const prop = d.PROPRIETARIO_POSSUIDOR || d.proprietario || {};
-            const reg = d.REGISTRO || d.registro || {};
+        function renderCPF2(data) {
+            return renderCPFV2(data);
+        }
 
+        function renderPlacaV1(data) {
+            const principal = data.veiculo_principal || {};
+            const bases = data.bases || [];
             let html = '';
+
+            html += renderSection('Veículo Principal', [
+                ['Placa', principal.PLACA],
+                ['RENAVAM', principal.RENAVAM],
+                ['Chassi', principal.CHASSI],
+                ['Cidade', principal.CIDADE],
+                ['Estado', principal.ESTADO],
+                ['CEP', principal.CEP],
+                ['Bairro', principal.BAIRRO]
+            ]);
+
+            // Bases
+            if (bases.length > 0) {
+                bases.forEach((base, idx) => {
+                    const bd = base.dados || {};
+                    html += `<div class="data-section">
+                        <div class="section-title"><i class="fas fa-database"></i> Base ${base.base}</div>
+                        <div class="data-grid">
+                            ${Object.entries(bd).map(([k, v]) => `<div class="data-field"><div class="label">${k}</div><div class="value">${v || 'N/A'}</div></div>`).join('')}
+                        </div>
+                    </div>`;
+                });
+            }
+
+            return html;
+        }
+
+        function renderPlacaV2(data) {
+            const r = data.resultado?.resultado || data;
+            const veic = r.veiculo || r;
+            const prop = r.proprietario || {};
+            const poss = r.possuidor || {};
+            const ident = r.identificacao || {};
+            const loc = r.localizacao || {};
+            const sit = r.situacao || {};
+            let html = '';
+
+            html += renderSection('Veículo', [
+                ['Placa', r.placa || veic.placa],
+                ['Situação', r.situacao || sit.status],
+                ['Marca/Modelo', r.marca_modelo || veic.marca_modelo],
+                ['Cor', r.cor || veic.cor],
+                ['Ano Fabricação', r.ano_fabricacao || veic.ano_fabricacao],
+                ['Ano Modelo', r.ano_modelo || veic.ano_modelo],
+                ['Combustível', r.combustivel || veic.combustivel],
+                ['Potência', r.potencia || veic.potencia],
+                ['Cilindradas', r.cilindradas || veic.cilindradas],
+                ['Tipo', r.tipo_veiculo || veic.tipo],
+                ['Espécie', r.especie || veic.especie],
+                ['Passageiros', r.quantidade_passageiros || veic.passageiros],
+                ['Última Atualização', r.ultima_atualizacao || sit.ultima_atualizacao]
+            ]);
 
             html += renderSection('Identificação', [
-                ['Placa', d.PLACA || d.placa],
-                ['RENAVAM', d.RENAVAM || d.renavam],
-                ['Chassi', d.CHASSI || d.chassi],
-                ['Situação', d.SITUACAO || d.situacao],
-                ['UF', reg.UF_REGISTRO || reg.uf || d.UF],
-                ['Município', reg.MUNICIPIO_REGISTRO || reg.municipio || d.MUNICIPIO]
+                ['Chassi', r.chassi || ident.chassi],
+                ['RENAVAM', r.renavam || ident.renavam],
+                ['Motor', ident.motor],
+                ['Origem', ident.origem]
             ]);
 
-            html += renderSection('Dados Técnicos', [
-                ['Marca', veic.MARCA || veic.marca],
-                ['Modelo', veic.MODELO || veic.modelo],
-                ['Ano Fab.', fab.ANO_FABRICACAO || fab.ano_fabricacao],
-                ['Ano Modelo', fab.ANO_MODELO || fab.ano_modelo],
-                ['Cor', veic.COR || veic.cor],
-                ['Combustível', veic.COMBUSTIVEL || veic.combustivel],
-                ['Potência', veic.POTENCIA || veic.potencia],
-                ['Cilindradas', veic.CILINDRADAS || veic.cilindradas],
-                ['Tipo', veic.TIPO_VEICULO || veic.tipo],
-                ['Espécie', veic.ESPECIE || veic.especie],
-                ['Passageiros', veic.QUANTIDADE_PASSAGEIROS || veic.passageiros]
+            html += renderSection('Localização', [
+                ['Município', r.municipio || loc.municipio],
+                ['Estado', r.estado || loc.estado],
+                ['Município Fabricação', loc.municipio_fabricacao],
+                ['Estado Fabricação', loc.estado_fabricacao]
             ]);
 
             html += renderSection('Proprietário', [
-                ['Nome', prop.NOME || prop.nome],
-                ['CPF/CNPJ', prop.CPF_CNPJ || prop.cpf_cnpj]
+                ['Nome', prop.nome || r.proprietario?.nome],
+                ['CPF/CNPJ', prop.documento || prop.cpf_cnpj || r.proprietario?.documento]
+            ]);
+
+            html += renderSection('Possuidor', [
+                ['Nome', poss.nome || r.possuidor?.nome],
+                ['CPF/CNPJ', poss.cpf_cnpj || r.possuidor?.cpf_cnpj]
             ]);
 
             // Restrições
-            const rest = d.RESTRICOES || d.restricoes || [];
+            const rest = r.restricoes || [];
             if (rest.length > 0) {
                 html += `<div class="data-section">
                     <div class="section-title"><i class="fas fa-exclamation-triangle"></i> Restrições (${rest.length})</div>
-                    ${rest.map(r => `<span class="tag tag-restricao">${r.replace(/_/g, ' ')}</span>`).join('')}
+                    ${rest.map(r => `<span class="tag tag-restricao">${r}</span>`).join('')}
                 </div>`;
             } else {
                 html += `<div class="data-section">
@@ -1130,91 +1349,190 @@
             return html;
         }
 
-        function renderTelefone(data) {
-            const d = data.dados || data.resultado || data;
-            const cad = d.dados_cadastrais || d.DADOS_CADASTRAIS || d;
-            const end = d.endereco || d.ENDERECO || {};
-            const renda = d.renda || d.RENDA || {};
-            const veic = d.veiculos || d.VEICULOS || {};
-
+        function renderTelefoneV1(data) {
+            const resultados = data.resultados || [];
             let html = '';
 
-            html += renderSection('Dados Cadastrais', [
-                ['Nome', cad.nome || cad.NOME],
-                ['CPF', cad.cpf || cad.CPF],
-                ['Nascimento', cad.nascimento || cad.NASCIMENTO || cad.data_nascimento],
-                ['Nome da Mãe', cad.mae || cad.MAE || cad.nome_mae],
-                ['Status Receita', cad.status_receita || cad.STATUS_RECEITA],
-                ['Sexo', cad.sexo || cad.SEXO]
+            html += renderSection('Telefone Consultado', [
+                ['Telefone', data.telefone_consultado],
+                ['Total Resultados', data.total_resultados]
             ]);
 
-            html += renderSection('Endereço', [
-                ['Logradouro', `${end.tipo || ''} ${end.logradouro || end.LOGRADOURO}`.trim()],
-                ['Número', end.numero || end.NUMERO],
-                ['Complemento', end.complemento || end.COMPLEMENTO],
-                ['Bairro', end.bairro || end.BAIRRO],
-                ['Cidade/UF', `${end.cidade || end.CIDADE || ''} / ${end.uf || end.UF || ''}`.trim()],
-                ['CEP', end.cep || end.CEP]
-            ]);
-
-            html += renderSection('Informações Adicionais', [
-                ['Renda Presumida', renda.renda_presumida || renda.RENDA_PRESUMIDA],
-                ['Faixa de Renda', renda.faixa_renda || renda.FAIXA_RENDA],
-                ['Qtd. Veículos', veic.quantidade || veic.QUANTIDADE],
-                ['Veículo Principal', `${veic.marca1 || veic.MARCA1 || ''} ${veic.modelo1 || veic.MODELO1} (${veic.ano1 || veic.ANO1})`.trim()]
-            ]);
+            if (resultados.length > 0) {
+                html += `<div class="data-section">
+                    <div class="section-title"><i class="fas fa-users"></i> Resultados (${resultados.length})</div>
+                    <table class="data-table">
+                        <thead><tr><th>#</th><th>Nome</th><th>CPF/CNPJ</th></tr></thead>
+                        <tbody>
+                            ${resultados.map(r => `<tr><td>${r.resultado_numero}</td><td>${r.nome}</td><td>${r.cpf_cnpj}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>`;
+            }
 
             return html;
         }
 
-        function renderNome(data) {
-            const pessoas = data.pessoas_encontradas || data.dados || data.POSSIVEIS_CPF || (Array.isArray(data) ? data : []);
-            
-            if (pessoas.length === 0) {
-                return '<div class="data-section"><p>Nenhuma pessoa encontrada</p></div>';
+        function renderTelefoneV2(data) {
+            const r = data.resultado?.resultado || data;
+            let html = '';
+
+            html += renderSection('Telefone', [
+                ['Telefone', r.telefone],
+                ['Nome', r.nome],
+                ['CPF/CNPJ', r.cpf_cnpj]
+            ]);
+
+            if (r.endereco) {
+                const end = r.endereco;
+                html += renderSection('Endereço', [
+                    ['Logradouro', end.logradouro],
+                    ['Número', end.numero],
+                    ['Complemento', end.complemento],
+                    ['Bairro', end.bairro],
+                    ['Cidade', end.cidade],
+                    ['Estado', end.estado],
+                    ['CEP', end.cep]
+                ]);
             }
 
-            return `
-                <div class="data-section">
+            return html;
+        }
+
+        function renderNomeV1(data) {
+            const pessoas = data.pessoas_encontradas || [];
+            let html = '';
+
+            html += renderSection('Consulta', [
+                ['Nome', data.nome_consultado],
+                ['Total Encontrado', data.total_encontrado]
+            ]);
+
+            if (pessoas.length > 0) {
+                html += `<div class="data-section">
                     <div class="section-title"><i class="fas fa-users"></i> Pessoas Encontradas (${pessoas.length})</div>
                     <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>CPF</th>
-                                <th>Nascimento</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>Nome</th><th>CPF</th><th>Nascimento</th></tr></thead>
                         <tbody>
-                            ${pessoas.map(p => `
-                                <tr>
-                                    <td>${p.nome_completo || p.nome || p.NOME}</td>
-                                    <td>${p.cpf || p.CPF}</td>
-                                    <td>${p.data_nascimento || p.nascimento || p.NASCIMENTO || 'N/A'}</td>
-                                </tr>
-                            `).join('')}
+                            ${pessoas.map(p => `<tr><td>${p.nome_completo || p.nome}</td><td>${p.cpf}</td><td>${p.data_nascimento || p.nascimento || 'N/A'}</td></tr>`).join('')}
                         </tbody>
                     </table>
+                </div>`;
+            }
+
+            return html;
+        }
+
+        function renderNomeV2(data) {
+            const r = data.resultado?.resultado || data;
+            const resultados = r.resultados || r;
+            let html = '';
+
+            html += renderSection('Consulta', [
+                ['Nome', r.nome_consultado || 'N/A'],
+                ['Total Encontrado', r.total_encontrado || resultados.length]
+            ]);
+
+            if (resultados.length > 0) {
+                html += `<div class="data-section">
+                    <div class="section-title"><i class="fas fa-users"></i> Pessoas Encontradas (${resultados.length})</div>
+                    <table class="data-table">
+                        <thead><tr><th>Nome</th><th>CPF</th><th>Sexo</th><th>Nascimento</th></tr></thead>
+                        <tbody>
+                            ${resultados.slice(0, 50).map(p => `<tr><td>${p.nome}</td><td>${p.cpf}</td><td>${p.sexo || 'N/A'}</td><td>${p.nascimento || 'N/A'}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>`;
+            }
+
+            return html;
+        }
+
+        function renderCEP(data) {
+            const r = data.resultado?.resultado || data;
+            const moradores = r.moradores || [];
+            let html = '';
+
+            html += renderSection('CEP', [
+                ['CEP Consultado', r.cep_consultado],
+                ['Quantidade Encontrada', r.quantidade_encontrada]
+            ]);
+
+            if (moradores.length > 0) {
+                html += `<div class="data-section">
+                    <div class="section-title"><i class="fas fa-users"></i> Moradores (${moradores.length})</div>
+                    <table class="data-table">
+                        <thead><tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>Renda</th><th>Bairro</th><th>Cidade</th><th>UF</th></tr></thead>
+                        <tbody>
+                            ${moradores.slice(0, 50).map(m => `<tr><td>${m.nome}</td><td>${m.cpf}</td><td>${m.nascimento}</td><td>${m.renda}</td><td>${m.bairro}</td><td>${m.cidade}</td><td>${m.uf}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>`;
+            }
+
+            return html;
+        }
+
+        function renderChassiMotor(data) {
+            const r = data.resultado?.resultado || data;
+            const bases = r.bases || {};
+            let html = '';
+
+            html += renderSection('Consulta', [
+                ['Tipo', r.tipo_consulta],
+                ['Valor Consultado', r.valor_consultado]
+            ]);
+
+            // Process each base
+            const baseKeys = Object.keys(bases);
+            baseKeys.forEach(key => {
+                const bd = bases[key];
+                html += `<div class="data-section">
+                    <div class="section-title"><i class="fas fa-database"></i> ${key}</div>
+                    <div class="data-grid">
+                        ${Object.entries(bd).map(([k, v]) => `<div class="data-field"><div class="label">${k}</div><div class="value">${v || 'N/A'}</div></div>`).join('')}
+                    </div>
+                </div>`;
+            });
+
+            return html;
+        }
+
+        function renderFoto(data) {
+            const keys = ['base64_image', 'base64_img', 'foto_base64', 'foto', 'imagem'];
+            let img = null;
+            
+            for (const key of keys) {
+                if (data[key]) {
+                    img = data[key];
+                    break;
+                }
+            }
+            
+            // Check nested in result
+            if (!img && data.resultado?.resultado) {
+                const rr = data.resultado.resultado;
+                for (const key of keys) {
+                    if (rr[key]) {
+                        img = rr[key];
+                        break;
+                    }
+                }
+            }
+
+            if (!img) return '<div class="photo-container"><p>Imagem não encontrada</p></div>';
+            
+            const cleanBase64 = img.replace(/[\s\n\r]/g, '');
+            return `
+                <div class="photo-container">
+                    <img src="data:image/jpeg;base64,${cleanBase64}" alt="Foto consultada">
+                    <p style="margin-top: 1rem; color: var(--cor-texto-sec);">CPF/RG: ${data.cpf_consultado || data.consulta || 'N/A'}</p>
                 </div>
             `;
         }
 
         function renderRG(data) {
-            return renderGeneric(data); // Estrutura similar a CPF
-        }
-
-        function renderCEP(data) {
-            const d = data.dados || data;
-            return renderSection('Endereço Completo', [
-                ['Logradouro', d.logradouro || d.LOGRADOURO],
-                ['Bairro', d.bairro || d.BAIRRO],
-                ['Cidade', d.cidade || d.localidade || d.CIDADE],
-                ['Estado', d.uf || d.estado || d.UF],
-                ['CEP', d.cep || d.CEP],
-                ['Complemento', d.complemento || d.COMPLEMENTO],
-                ['IBGE', d.ibge || d.IBGE],
-                ['DDD', d.ddd || d.DDD]
-            ]);
+            return renderCPFV2(data);
         }
 
         function renderGeneric(data) {
@@ -1230,7 +1548,6 @@
             showResults();
         }
 
-        // UI Helpers
         function showStatus(msg, type) {
             const el = document.getElementById('statusMessage');
             el.textContent = msg;
@@ -1265,7 +1582,6 @@
             currentData = null;
         }
 
-        // Export functions
         function copiarResultado() {
             if (!currentData) return;
             const text = JSON.stringify(currentData, null, 2);
@@ -1286,8 +1602,7 @@
 
         function exportarCSV() {
             if (!currentData) return;
-            // Conversão básica para CSV
-            const d = currentData.dados || currentData;
+            const d = currentData.dados || currentData.resultado?.resultado || currentData;
             let csv = 'Campo,Valor\n';
             
             Object.entries(d).forEach(([k, v]) => {
@@ -1304,7 +1619,6 @@
             a.click();
         }
 
-        // History functions
         function addToHistory(query, module) {
             const item = {
                 query,
@@ -1359,7 +1673,6 @@
             }
         }
 
-        // Verificar query param de histórico
         const historyQuery = getQueryParam('q');
         if (historyQuery) {
             document.getElementById('dadoConsulta').value = historyQuery;
