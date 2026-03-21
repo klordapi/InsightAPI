@@ -263,8 +263,20 @@
         .tag-success { background: rgba(16, 185, 129, 0.1); color: var(--cor-sucesso); border: 1px solid var(--cor-sucesso); }
         .tag-info { background: rgba(0, 212, 255, 0.1); color: var(--cor-acento); border: 1px solid var(--cor-acento); }
 
-        .photo-container { text-align: center; padding: 2rem; }
-        .photo-container img { max-width: 100%; max-height: 400px; border-radius: 12px; border: 3px solid var(--cor-primaria); box-shadow: var(--shadow); }
+        .photo-container { 
+            text-align: center; 
+            padding: 1.5rem; 
+            background: var(--cor-card-sec);
+            border-radius: 12px;
+            border: 1px solid var(--cor-borda);
+        }
+        .photo-container img { 
+            max-width: 100%; 
+            max-height: 400px; 
+            border-radius: 12px; 
+            border: 3px solid var(--cor-primaria); 
+            box-shadow: var(--shadow); 
+        }
 
         .json-view { background: var(--cor-card-sec); padding: 1.5rem; border-radius: 10px; overflow-x: auto; }
         .json-view pre { margin: 0; color: var(--cor-texto-sec); font-family: 'Fira Code', monospace; font-size: 0.875rem; line-height: 1.6; }
@@ -975,6 +987,16 @@
                         <thead><tr><th>Nome</th><th>CPF/CNPJ</th><th>Tipo</th><th>Função</th></tr></thead>
                         <tbody>${bigdata.slice(0, 20).map(b => `<tr><td>${b.nome_relacionado || 'N/A'}</td><td>${b.documento_vinculado || 'N/A'}</td><td>${b.tipo_documento || 'N/A'}</td><td>${b.funcao_cargo || 'N/A'}</td></tr>`).join('')}</tbody>
                     </table>
+                </div>`;
+            }
+
+            // NOVO: Verificar e renderizar foto se existir (CPF V3)
+            if (d.foto) {
+                html += `<div class="data-section">
+                    <div class="section-title"><i class="fas fa-camera"></i> Foto</div>
+                    <div class="photo-container">
+                        <img src="data:image/jpeg;base64,${d.foto}" alt="Foto do CPF" style="max-width: 300px; border-radius: 8px; border: 2px solid var(--cor-primaria);">
+                    </div>
                 </div>`;
             }
 
