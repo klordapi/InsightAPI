@@ -340,7 +340,8 @@
                     status.innerHTML = '<i class="fas fa-check-circle"></i> Login realizado! Redirecionando...';
                     
                     setTimeout(() => {
-                        window.location.href = data.tipo === 'owner' || data.tipo === 'admin' ? '/admin/dashboard' : '/painel';
+                        // CORREÇÃO: Todos vão para /painel primeiro, admin ou não
+                        window.location.href = '/painel';
                     }, 1000);
                 } else {
                     status.className = 'status-message status-error show';
