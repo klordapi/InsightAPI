@@ -35,6 +35,185 @@
             min-height: 100vh;
         }
 
+        /* Login Overlay Styles */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--cor-fundo);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .login-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .login-container {
+            background: var(--cor-card);
+            border: 1px solid var(--cor-borda);
+            border-radius: 20px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 25px 50px -12px rgba(127, 0, 255, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primario);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: var(--gradient-primario);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            color: var(--cor-texto-sec);
+            font-size: 0.9rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--cor-texto-sec);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: var(--cor-card-sec);
+            border: 1px solid var(--cor-borda);
+            border-radius: 10px;
+            color: var(--cor-texto);
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--cor-primaria);
+            box-shadow: 0 0 0 3px rgba(127, 0, 255, 0.1);
+        }
+
+        .input-group i {
+            position: absolute;
+            right: 1rem;
+            top: 2.6rem;
+            color: var(--cor-texto-sec);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--gradient-primario);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(127, 0, 255, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--cor-erro);
+            color: var(--cor-erro);
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            animation: shake 0.5s;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .lock-icon {
+            font-size: 3rem;
+            color: var(--cor-primaria);
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        /* Main Content (Hidden by default) */
+        .main-wrapper {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .main-wrapper.show {
+            display: block;
+            opacity: 1;
+        }
+
         .header {
             background: rgba(18, 18, 26, 0.95);
             backdrop-filter: blur(20px);
@@ -68,6 +247,7 @@
         .nav-menu {
             display: flex;
             gap: 1rem;
+            align-items: center;
         }
 
         .nav-item {
@@ -89,6 +269,27 @@
 
         .nav-item.active {
             background: var(--gradient-primario);
+            color: white;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--cor-erro);
+            color: var(--cor-erro);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.875rem;
+        }
+
+        .logout-btn:hover {
+            background: var(--cor-erro);
             color: white;
         }
 
@@ -260,6 +461,29 @@
             font-weight: 600;
         }
 
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .login-btn.loading .spinner {
+            display: inline-block;
+        }
+
+        .login-btn.loading .btn-text {
+            display: none;
+        }
+
         @media (max-width: 968px) {
             .chart-section {
                 grid-template-columns: 1fr;
@@ -268,157 +492,301 @@
             .nav-menu {
                 display: none;
             }
+
+            .login-container {
+                margin: 1rem;
+                padding: 2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-content">
-            <div class="logo">
-                <i class="fas fa-shield-alt"></i>
-                <span>Klord Admin</span>
-            </div>
-            <nav class="nav-menu">
-                <a href="/admin/dashboard" class="nav-item active">
-                    <i class="fas fa-chart-line"></i>
-                    Dashboard
-                </a>
-                <a href="/admin/users" class="nav-item">
-                    <i class="fas fa-users"></i>
-                    Usuários
-                </a>
-                <a href="/adm/Kl0rd123" class="nav-item">
-                    <i class="fas fa-cog"></i>
-                    Configurações
-                </a>
-                <a href="/painel" class="nav-item">
-                    <i class="fas fa-arrow-left"></i>
-                    Voltar
-                </a>
-            </nav>
-        </div>
-    </header>
-
-    <main class="main-content">
-        <h1 class="page-title">
-            <i class="fas fa-chart-pie" style="color: var(--cor-primaria);"></i>
-            Dashboard
-        </h1>
-
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div>
-                        <div class="stat-value" id="totalUsers">-</div>
-                        <div class="stat-label">Usuários Cadastrados</div>
-                    </div>
-                    <div class="stat-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="lock-icon">
+                    <i class="fas fa-shield-alt"></i>
                 </div>
+                <div class="login-title">Área Restrita</div>
+                <div class="login-subtitle">Digite suas credenciais para acessar o painel administrativo</div>
             </div>
-
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div>
-                        <div class="stat-value">25</div>
-                        <div class="stat-label">APIs Disponíveis</div>
-                    </div>
-                    <div class="stat-icon">
-                        <i class="fas fa-plug"></i>
-                    </div>
+            
+            <form class="login-form" id="loginForm">
+                <div class="error-message" id="errorMessage">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Usuário ou senha incorretos</span>
                 </div>
-            </div>
 
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div>
-                        <div class="stat-value" id="activeUsers">-</div>
-                        <div class="stat-label">Usuários Ativos</div>
-                    </div>
-                    <div class="stat-icon">
-                        <i class="fas fa-user-check"></i>
-                    </div>
+                <div class="input-group">
+                    <label for="username">Usuário</label>
+                    <input type="text" id="username" placeholder="Digite o usuário" autocomplete="off" required>
+                    <i class="fas fa-user"></i>
                 </div>
-            </div>
 
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div>
-                        <div class="stat-value" id="expiredUsers">-</div>
-                        <div class="stat-label">Contas Expiradas</div>
-                    </div>
-                    <div class="stat-icon">
-                        <i class="fas fa-user-times"></i>
-                    </div>
+                <div class="input-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" placeholder="Digite a senha" required>
+                    <i class="fas fa-lock"></i>
                 </div>
-            </div>
-        </div>
 
-        <div class="chart-section">
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3><i class="fas fa-server"></i> Status das APIs</h3>
-                    <span class="status-badge status-online">
-                        <i class="fas fa-check-circle"></i>
-                        Online
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <span class="btn-text">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Entrar no Sistema
                     </span>
+                    <div class="spinner"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Content (Protected) -->
+    <div class="main-wrapper" id="mainWrapper">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Klord Admin</span>
                 </div>
-                <div class="api-list">
-                    <div class="api-item">
-                        <div class="api-info">
-                            <div class="api-status"></div>
-                            <div>
-                                <div class="api-name">API V1</div>
-                                <div class="api-url">klordapiv1.onrender.com</div>
-                            </div>
+                <nav class="nav-menu">
+                    <a href="/admin/dashboard" class="nav-item active">
+                        <i class="fas fa-chart-line"></i>
+                        Dashboard
+                    </a>
+                    <a href="/admin/users" class="nav-item">
+                        <i class="fas fa-users"></i>
+                        Usuários
+                    </a>
+                    <a href="/adm/Kl0rd123" class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        Configurações
+                    </a>
+                    <a href="/painel" class="nav-item">
+                        <i class="fas fa-arrow-left"></i>
+                        Voltar
+                    </a>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sair
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <h1 class="page-title">
+                <i class="fas fa-chart-pie" style="color: var(--cor-primaria);"></i>
+                Dashboard
+            </h1>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value" id="totalUsers">-</div>
+                            <div class="stat-label">Usuários Cadastrados</div>
                         </div>
-                        <span class="api-count">10 endpoints</span>
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
                     </div>
-                    <div class="api-item">
-                        <div class="api-info">
-                            <div class="api-status"></div>
-                            <div>
-                                <div class="api-name">API V2</div>
-                                <div class="api-url">klordapiv2.onrender.com</div>
-                            </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">25</div>
+                            <div class="stat-label">APIs Disponíveis</div>
                         </div>
-                        <span class="api-count">12 endpoints</span>
+                        <div class="stat-icon">
+                            <i class="fas fa-plug"></i>
+                        </div>
                     </div>
-                    <div class="api-item">
-                        <div class="api-info">
-                            <div class="api-status"></div>
-                            <div>
-                                <div class="api-name">API Legada</div>
-                                <div class="api-url">klordapi-rild.onrender.com</div>
-                            </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value" id="activeUsers">-</div>
+                            <div class="stat-label">Usuários Ativos</div>
                         </div>
-                        <span class="api-count">3 endpoints</span>
+                        <div class="stat-icon">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value" id="expiredUsers">-</div>
+                            <div class="stat-label">Contas Expiradas</div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-user-times"></i>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3><i class="fas fa-info-circle"></i> Informações</h3>
+            <div class="chart-section">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-server"></i> Status das APIs</h3>
+                        <span class="status-badge status-online">
+                            <i class="fas fa-check-circle"></i>
+                            Online
+                        </span>
+                    </div>
+                    <div class="api-list">
+                        <div class="api-item">
+                            <div class="api-info">
+                                <div class="api-status"></div>
+                                <div>
+                                    <div class="api-name">API V1</div>
+                                    <div class="api-url">klordapiv1.onrender.com</div>
+                                </div>
+                            </div>
+                            <span class="api-count">10 endpoints</span>
+                        </div>
+                        <div class="api-item">
+                            <div class="api-info">
+                                <div class="api-status"></div>
+                                <div>
+                                    <div class="api-name">API V2</div>
+                                    <div class="api-url">klordapiv2.onrender.com</div>
+                                </div>
+                            </div>
+                            <span class="api-count">12 endpoints</span>
+                        </div>
+                        <div class="api-item">
+                            <div class="api-info">
+                                <div class="api-status"></div>
+                                <div>
+                                    <div class="api-name">API Legada</div>
+                                    <div class="api-url">klordapi-rild.onrender.com</div>
+                                </div>
+                            </div>
+                            <span class="api-count">3 endpoints</span>
+                        </div>
+                    </div>
                 </div>
-                <div style="color: var(--cor-texto-sec); line-height: 1.8;">
-                    <p><strong>Versão:</strong> 2.0.0</p>
-                    <p><strong>GitHub:</strong> klordTV/klTV</p>
-                    <p><strong>Database:</strong> database.json</p>
-                    <p><strong>Admin Token:</strong> Kl0rd123</p>
-                    <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--cor-borda);">
-                        <i class="fas fa-code-branch" style="color: var(--cor-primaria);"></i>
-                        Sistema atualizado em <span id="updateTime"></span>
-                    </p>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-info-circle"></i> Informações</h3>
+                    </div>
+                    <div style="color: var(--cor-texto-sec); line-height: 1.8;">
+                        <p><strong>Versão:</strong> 2.0.0</p>
+                        <p><strong>GitHub:</strong> klordTV/klTV</p>
+                        <p><strong>Database:</strong> database.json</p>
+                        <p><strong>Admin Token:</strong> Kl0rd123</p>
+                        <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--cor-borda);">
+                            <i class="fas fa-code-branch" style="color: var(--cor-primaria);"></i>
+                            Sistema atualizado em <span id="updateTime"></span>
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
     <script>
-        document.getElementById('updateTime').textContent = new Date().toLocaleString('pt-BR');
+        // Configurações de login
+        const CONFIG = {
+            username: 'klord',
+            password: 'Kl0rd777',
+            sessionKey: 'klord_admin_auth'
+        };
 
+        // Verificar se já está logado ao carregar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+            document.getElementById('updateTime').textContent = new Date().toLocaleString('pt-BR');
+        });
+
+        // Verificar status de autenticação
+        function checkAuthStatus() {
+            const isAuthenticated = sessionStorage.getItem(CONFIG.sessionKey) === 'true';
+            
+            if (isAuthenticated) {
+                showDashboard();
+            } else {
+                showLogin();
+            }
+        }
+
+        // Mostrar tela de login
+        function showLogin() {
+            document.getElementById('loginOverlay').classList.remove('hidden');
+            document.getElementById('mainWrapper').classList.remove('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Mostrar dashboard
+        function showDashboard() {
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('mainWrapper').classList.add('show');
+            document.body.style.overflow = 'auto';
+            loadStats(); // Carregar dados apenas quando mostrar o dashboard
+        }
+
+        // Handler do formulário de login
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorMsg = document.getElementById('errorMessage');
+            const loginBtn = document.getElementById('loginBtn');
+            
+            // Mostrar loading
+            loginBtn.classList.add('loading');
+            loginBtn.disabled = true;
+            
+            // Simular delay de verificação (efeito visual)
+            await new Promise(resolve => setTimeout(resolve, 800));
+            
+            // Verificar credenciais
+            if (username === CONFIG.username && password === CONFIG.password) {
+                // Sucesso
+                sessionStorage.setItem(CONFIG.sessionKey, 'true');
+                errorMsg.classList.remove('show');
+                
+                // Animação de transição
+                setTimeout(() => {
+                    showDashboard();
+                    // Limpar campos
+                    document.getElementById('username').value = '';
+                    document.getElementById('password').value = '';
+                }, 300);
+            } else {
+                // Erro
+                errorMsg.classList.add('show');
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
+                
+                // Efeito de shake no container
+                const container = document.querySelector('.login-container');
+                container.style.animation = 'none';
+                setTimeout(() => {
+                    container.style.animation = 'shake 0.5s';
+                }, 10);
+            }
+            
+            // Remover loading
+            loginBtn.classList.remove('loading');
+            loginBtn.disabled = false;
+        });
+
+        // Função de logout
+        function logout() {
+            sessionStorage.removeItem(CONFIG.sessionKey);
+            showLogin();
+        }
+
+        // Carregar estatísticas (função original mantida)
         async function loadStats() {
             try {
                 const response = await fetch('/adm/Kl0rd123?data=json');
@@ -429,10 +797,29 @@
                 document.getElementById('expiredUsers').textContent = users.filter(u => u.status === 'EXPIRADO').length;
             } catch (error) {
                 console.error('Erro ao carregar estatísticas:', error);
+                document.getElementById('totalUsers').textContent = '0';
+                document.getElementById('activeUsers').textContent = '0';
+                document.getElementById('expiredUsers').textContent = '0';
             }
         }
 
-        loadStats();
+        // Prevenir acesso via tecla ESC no login
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !document.getElementById('loginOverlay').classList.contains('hidden')) {
+                e.preventDefault();
+            }
+        });
+
+        // Bloquear botão voltar do navegador quando deslogado
+        window.addEventListener('popstate', function(e) {
+            if (sessionStorage.getItem(CONFIG.sessionKey) !== 'true') {
+                e.preventDefault();
+                window.history.pushState(null, null, window.location.href);
+            }
+        });
+
+        // Forçar push state inicial para prevenir back navigation
+        window.history.pushState(null, null, window.location.href);
     </script>
 </body>
 </html>
