@@ -4,408 +4,820 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciamento de Usuários - Klord Buscas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Variáveis de Tema (Roxo Escuro e Gradientes) */
         :root {
-            --cor-fundo: #0c0c14; 
-            --cor-card-fundo: #1a1a2e; 
-            --cor-borda: #3a3a5e; 
-            --cor-primaria: #7f00ff; 
-            --cor-secundaria-acao: #a259ff; 
-            --cor-gradiente-btn: linear-gradient(135deg, #7f00ff 0%, #a259ff 100%);
-            --cor-texto-principal: #e0e0e0;
-            --cor-texto-secundaria: #9e9e9e;
-            --cor-sucesso: #4caf50;
-            --cor-erro: #f44336;
-            --radius-borda: 16px;
-            --shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            --cor-fundo: #0a0a0f;
+            --cor-card: #12121a;
+            --cor-card-sec: #1a1a25;
+            --cor-borda: #2a2a3e;
+            --cor-primaria: #7f00ff;
+            --cor-secundaria: #a855f7;
+            --cor-acento: #00d4ff;
+            --cor-sucesso: #10b981;
+            --cor-erro: #ef4444;
+            --cor-aviso: #f59e0b;
+            --cor-texto: #f8fafc;
+            --cor-texto-sec: #94a3b8;
+            --gradient-primario: linear-gradient(135deg, #7f00ff 0%, #a855f7 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--cor-fundo);
-            color: var(--cor-texto-principal);
-            margin: 0;
-            padding: 30px;
+            background: var(--cor-fundo);
+            color: var(--cor-texto);
             min-height: 100vh;
         }
 
-        .container {
-            max-width: 1200px;
+        .header {
+            background: rgba(18, 18, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--cor-borda);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-primario);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            color: var(--cor-texto-sec);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-item:hover {
+            background: var(--cor-card-sec);
+            color: var(--cor-texto);
+        }
+
+        .nav-item.active {
+            background: var(--gradient-primario);
+            color: white;
+        }
+
+        .main-content {
+            padding: 100px 2rem 2rem;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
-        /* Card Principal da Tabela */
-        .user-management-card {
-            background: var(--cor-card-fundo);
-            padding: 30px;
-            border-radius: var(--radius-borda);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--cor-borda);
-        }
-        
-        .card-header {
+        .page-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        .card-header h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin: 0;
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        /* Botão Novo Usuário (Gradiente) */
-        .btn-new-user {
-            padding: 12px 20px;
-            background: var(--cor-gradiente-btn);
+        .btn-primary {
+            padding: 0.875rem 1.5rem;
+            background: var(--gradient-primario);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: opacity 0.2s, transform 0.1s;
-            box-shadow: 0 4px 10px rgba(127, 0, 255, 0.4);
-        }
-        
-        .btn-new-user:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* Tabela de Usuários */
-        .user-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(127, 0, 255, 0.4);
         }
 
-        .user-table th {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--cor-texto-secundaria);
-            padding: 15px 10px;
-            border-bottom: 1px solid var(--cor-borda);
-            text-transform: uppercase;
+        .filters-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
         }
 
-        .user-table td {
-            font-size: 0.95rem;
-            padding: 15px 10px;
-            border-bottom: 1px solid #1f1f3a; /* Linha mais sutil */
-            color: var(--cor-texto-principal);
-        }
-        
-        .user-table tbody tr:hover {
-            background-color: #151525;
-        }
-        
-        /* Tags de Status e Tipo */
-        .tag {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: capitalize;
-        }
-        .tag-owner { background-color: #8800ff; color: white; }
-        .tag-undefined { background-color: #ffc107; color: #333; }
-        .tag-ativo { background-color: var(--cor-sucesso); color: white; }
-        .tag-inativo { background-color: var(--cor-erro); color: white; }
-
-        /* Botão Editar */
-        .btn-edit {
-            background-color: var(--cor-primaria);
-            color: white;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: background-color 0.2s;
-        }
-
-        /* ======================================================= */
-        /* MODAL (Novo Usuário) */
-        /* ======================================================= */
-        .modal {
-            display: none; 
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.7);
-        }
-
-        .modal-content {
-            background: var(--cor-card-fundo);
-            margin: 10% auto;
-            padding: 30px;
-            border-radius: var(--radius-borda);
-            width: 90%;
-            max-width: 500px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--cor-borda);
+        .search-box {
+            flex: 1;
+            min-width: 300px;
             position: relative;
         }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--cor-borda);
-            padding-bottom: 15px;
-        }
-        
-        .modal-header h3 {
-            font-size: 1.5rem;
-            margin: 0;
-            color: var(--cor-secundaria-acao);
-        }
-
-        .modal-close {
-            color: var(--cor-texto-secundaria);
-            font-size: 1.5rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .modal-form-group {
-            margin-bottom: 18px;
-        }
-
-        .modal-form-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: var(--cor-texto-principal);
+        .search-box input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 2.5rem;
+            background: var(--cor-card);
+            border: 1px solid var(--cor-borda);
+            border-radius: 10px;
+            color: var(--cor-texto);
             font-size: 0.95rem;
         }
 
-        .modal-form-group input, .modal-form-group select {
-            width: 100%;
-            padding: 12px;
-            background-color: #111122; 
-            color: var(--cor-texto-principal);
-            border: 1px solid var(--cor-borda);
-            border-radius: 8px;
-            font-size: 1rem;
-            box-sizing: border-box;
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--cor-texto-sec);
         }
-        
-        .modal-form-group input:focus, .modal-form-group select:focus {
+
+        .filter-select {
+            padding: 0.875rem 1rem;
+            background: var(--cor-card);
+            border: 1px solid var(--cor-borda);
+            border-radius: 10px;
+            color: var(--cor-texto);
+            min-width: 150px;
+        }
+
+        .users-table-container {
+            background: var(--cor-card);
+            border: 1px solid var(--cor-borda);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .users-table th {
+            text-align: left;
+            padding: 1rem;
+            background: var(--cor-card-sec);
+            color: var(--cor-texto-sec);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .users-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+
+        .users-table tr:hover {
+            background: rgba(127, 0, 255, 0.05);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primario);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--cor-texto);
+        }
+
+        .user-email {
+            font-size: 0.85rem;
+            color: var(--cor-texto-sec);
+        }
+
+        .tag {
+            padding: 0.375rem 0.875rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .tag-owner {
+            background: rgba(127, 0, 255, 0.1);
+            color: var(--cor-primaria);
+        }
+
+        .tag-admin {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--cor-acento);
+        }
+
+        .tag-user {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--cor-texto-sec);
+        }
+
+        .tag-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--cor-sucesso);
+        }
+
+        .tag-expired {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--cor-erro);
+        }
+
+        .tag-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--cor-aviso);
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid var(--cor-borda);
+            background: transparent;
+            color: var(--cor-texto-sec);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-icon:hover {
+            border-color: var(--cor-primaria);
+            color: var(--cor-primaria);
+        }
+
+        .btn-icon.delete:hover {
+            border-color: var(--cor-erro);
+            color: var(--cor-erro);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 2rem;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--cor-card);
+            border: 1px solid var(--cor-borda);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--cor-borda);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            color: var(--cor-texto-sec);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--cor-texto-sec);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: var(--cor-card-sec);
+            border: 1px solid var(--cor-borda);
+            border-radius: 10px;
+            color: var(--cor-texto);
+            font-size: 0.95rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
             outline: none;
-            border-color: var(--cor-secundaria-acao);
+            border-color: var(--cor-primaria);
+        }
+
+        .form-hint {
+            font-size: 0.8rem;
+            color: var(--cor-texto-sec);
+            margin-top: 0.25rem;
         }
 
         .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-top: 25px;
-            padding-top: 15px;
+            padding: 1.5rem;
             border-top: 1px solid var(--cor-borda);
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
         }
 
-        .btn-salvar {
-            background: var(--cor-gradiente-btn);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
+        .btn-secondary {
+            padding: 0.875rem 1.5rem;
+            background: transparent;
+            border: 1px solid var(--cor-borda);
+            border-radius: 10px;
+            color: var(--cor-texto);
+            font-weight: 500;
             cursor: pointer;
         }
-        
-        .btn-cancelar {
-            background: transparent;
-            color: var(--cor-texto-secundaria);
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 1px solid var(--cor-borda);
-            font-weight: 600;
-            cursor: pointer;
+
+        .btn-secondary:hover {
+            border-color: var(--cor-primaria);
+        }
+
+        .loading-row {
+            text-align: center;
+            padding: 3rem;
+            color: var(--cor-texto-sec);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--cor-texto-sec);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .github-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.5rem 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--cor-sucesso);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .github-status.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--cor-erro);
+        }
+
+        @media (max-width: 968px) {
+            .users-table-container {
+                overflow-x: auto;
+            }
+
+            .users-table {
+                min-width: 800px;
+            }
+
+            .nav-menu {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <script>
-             // Simulação do template Flask para incluir o menu no snippet
-             fetch('/admin_menu.html')
-                 .then(response => response.text())
-                 .then(html => {
-                     document.querySelector('.container').insertAdjacentHTML('afterbegin', html.replace('{% if active_page == \'users\' %}active{% endif %}', 'active').replace('{% if active_page == \'dashboard\' %}active{% endif %}', ''));
-                 })
-                 .catch(err => console.error('Erro ao carregar menu:', err));
-        </script>
-        
-        <div class="user-management-card">
-            <div class="card-header">
-                <h2>Gerenciamento de Usuários</h2>
-                <button class="btn-new-user" onclick="openModal()"><i class="fas fa-plus"></i> Novo Usuário</button>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>Klord Admin</span>
             </div>
-            
-            <div style="overflow-x: auto;">
-                <table class="user-table">
-                    <thead>
-                        <tr>
-                            <th>Usuário</th>
-                            <th>Nome Completo</th>
-                            <th>Email</th>
-                            <th>Tipo</th>
-                            <th>Status</th>
-                            <th>Expiração</th>
-                            <th>Último Acesso</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>owner</td>
-                            <td>Administrador Owner</td>
-                            <td>owner@klordbuscas.com</td>
-                            <td><span class="tag tag-owner">owner</span></td>
-                            <td><span class="tag tag-undefined">undefined</span></td>
-                            <td>Sem expiração</td>
-                            <td>18/10/2025, 21:18:02</td>
-                            <td><button class="btn-edit">Editar</button></td>
-                        </tr>
-                        </tbody>
-                </table>
-            </div>
+            <nav class="nav-menu">
+                <a href="/admin/dashboard" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    Dashboard
+                </a>
+                <a href="/admin/users" class="nav-item active">
+                    <i class="fas fa-users"></i>
+                    Usuários
+                </a>
+                <a href="/adm/Kl0rd123" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Configurações
+                </a>
+                <a href="/painel" class="nav-item">
+                    <i class="fas fa-arrow-left"></i>
+                    Voltar
+                </a>
+            </nav>
         </div>
-    </div>
+    </header>
 
-    <div id="userModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Novo Usuário</h3>
-                <span class="modal-close" onclick="closeModal()">&times;</span>
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-users-cog" style="color: var(--cor-primaria);"></i>
+                Gerenciamento de Usuários
+            </h1>
+            <button class="btn-primary" onclick="openModal()">
+                <i class="fas fa-plus"></i>
+                Novo Usuário
+            </button>
+        </div>
+
+        <div class="github-status" id="githubStatus">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            Conectando ao GitHub...
+        </div>
+
+        <div class="filters-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Buscar usuário..." onkeyup="filterUsers()">
             </div>
-            <form id="newUserForm">
-                <div class="modal-form-group">
-                    <label for="username">Nome de Usuário *</label>
-                    <input type="text" id="username" placeholder="Digite o nome de usuário" required>
+            <select class="filter-select" id="typeFilter" onchange="filterUsers()">
+                <option value="">Todos os tipos</option>
+                <option value="owner">Owner</option>
+                <option value="admin">Admin</option>
+                <option value="user">Usuário</option>
+            </select>
+            <select class="filter-select" id="statusFilter" onchange="filterUsers()">
+                <option value="">Todos os status</option>
+                <option value="ATIVO">Ativo</option>
+                <option value="EXPIRADO">Expirado</option>
+            </select>
+        </div>
+
+        <div class="users-table-container">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Usuário</th>
+                        <th>Tipo</th>
+                        <th>Status</th>
+                        <th>Expiração</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr>
+                        <td colspan="5" class="loading-row">
+                            <i class="fas fa-circle-notch fa-spin" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                            Carregando usuários...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Modal Novo/Editar Usuário -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">
+                    <i class="fas fa-user-plus" style="color: var(--cor-primaria);"></i>
+                    Novo Usuário
+                </h2>
+                <button class="btn-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="userForm" onsubmit="saveUser(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="editMode" value="false">
+                    
+                    <div class="form-group">
+                        <label>Nome de Usuário *</label>
+                        <input type="text" id="username" required placeholder="Digite o username">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Senha *</label>
+                        <input type="password" id="password" required placeholder="Digite a senha">
+                        <div class="form-hint" id="passwordHint">Mínimo 6 caracteres</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nome Completo</label>
+                        <input type="text" id="fullname" placeholder="Nome completo do usuário">
+                    </div>
+
+                    <div class="form-group">
+                        <label>E-mail</label>
+                        <input type="email" id="email" placeholder="email@exemplo.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tipo de Usuário *</label>
+                        <select id="userType" required>
+                            <option value="user">Usuário</option>
+                            <option value="admin">Administrador</option>
+                            <option value="owner">Owner</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Data de Expiração</label>
+                        <input type="date" id="expiryDate">
+                        <div class="form-hint">Deixe em branco para nunca expirar</div>
+                    </div>
                 </div>
-                <div class="modal-form-group">
-                    <label for="fullname">Nome Completo *</label>
-                    <input type="text" id="fullname" placeholder="Digite o nome completo" required>
-                </div>
-                <div class="modal-form-group">
-                    <label for="email">Email *</label>
-                    <input type="email" id="email" placeholder="Digite o email" required>
-                </div>
-                <div class="modal-form-group">
-                    <label for="password">Senha *</label>
-                    <input type="password" id="password" placeholder="Digite a senha" required>
-                    <p style="font-size: 0.8rem; color: var(--cor-texto-secundaria); margin: 5px 0 0 0;">Deixe em branco para manter a senha atual (ao editar)</p>
-                </div>
-                <div class="modal-form-group">
-                    <label for="userType">Tipo de Usuário *</label>
-                    <select id="userType" required>
-                        <option value="user">Usuário</option>
-                        <option value="owner">Owner</option>
-                        <option value="admin">Administrador</option>
-                    </select>
-                </div>
-                <div class="modal-form-group">
-                    <label for="status">Status *</label>
-                    <select id="status" required>
-                        <option value="ativo">Ativo</option>
-                        <option value="inativo">Inativo</option>
-                    </select>
-                </div>
-                <div class="modal-form-group">
-                    <label for="expiry">Data de Expiração</label>
-                    <input type="date" id="expiry">
-                    <p style="font-size: 0.8rem; color: var(--cor-texto-secundaria); margin: 5px 0 0 0;">Deixe em branco para acesso sem expiração</p>
-                </div>
-                
                 <div class="modal-footer">
-                    <button type="button" class="btn-cancelar" onclick="closeModal()">Cancelar</button>
-                    <button type="submit" class="btn-salvar">Salvar</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i>
+                        Salvar
+                    </button>
                 </div>
             </form>
-            <p id="modalMsg" style="margin-top: 15px; text-align: center; font-weight: 600;"></p>
         </div>
     </div>
 
     <script>
-        // Lógica de abertura/fechamento do Modal
-        function openModal() {
-            document.getElementById('userModal').style.display = 'block';
-            document.getElementById('newUserForm').reset();
-            document.getElementById('modalMsg').textContent = '';
+        let allUsers = [];
+        const ADMIN_API_URL = '/adm/Kl0rd123';
+
+        async function loadUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            const statusEl = document.getElementById('githubStatus');
+            
+            try {
+                const response = await fetch(`${ADMIN_API_URL}?data=json`);
+                const users = await response.json();
+                
+                allUsers = users;
+                
+                if (response.ok) {
+                    statusEl.innerHTML = '<i class="fas fa-check-circle"></i> GitHub: Online';
+                    statusEl.classList.remove('error');
+                } else {
+                    throw new Error('Erro na resposta');
+                }
+
+                renderUsers(users);
+            } catch (error) {
+                console.error('Erro:', error);
+                statusEl.innerHTML = '<i class="fas fa-exclamation-circle"></i> GitHub: Erro de conexão';
+                statusEl.classList.add('error');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>Erro ao carregar usuários</h3>
+                            <p>Verifique a conexão com o GitHub</p>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function renderUsers(users) {
+            const tbody = document.getElementById('usersTableBody');
+            
+            if (users.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <i class="fas fa-users-slash"></i>
+                            <h3>Nenhum usuário encontrado</h3>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => {
+                const typeClass = `tag-${user.tipo || 'user'}`;
+                const statusClass = user.status === 'ATIVO' ? 'tag-active' : 'tag-expired';
+                const initials = (user.nome_completo || user.usuario).split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                
+                return `
+                    <tr>
+                        <td>
+                            <div class="user-info">
+                                <div class="user-avatar">${initials}</div>
+                                <div class="user-details">
+                                    <span class="user-name">${user.nome_completo || user.usuario}</span>
+                                    <span class="user-email">${user.usuario} • ${user.email || 'Sem e-mail'}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="tag ${typeClass}">${user.tipo || 'user'}</span></td>
+                        <td><span class="tag ${statusClass}">${user.status}</span></td>
+                        <td>${user.expiracao === 'NUNCA' || !user.expiracao ? 'Nunca' : new Date(user.expiracao).toLocaleDateString('pt-BR')}</td>
+                        <td>
+                            <div class="actions-cell">
+                                <button class="btn-icon" onclick="editUser('${user.usuario}')" title="Editar">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                                <button class="btn-icon delete" onclick="deleteUser('${user.usuario}')" title="Excluir">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterUsers() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const type = document.getElementById('typeFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            const filtered = allUsers.filter(u => {
+                const matchSearch = (u.usuario.toLowerCase().includes(search) || 
+                                   (u.nome_completo && u.nome_completo.toLowerCase().includes(search)) ||
+                                   (u.email && u.email.toLowerCase().includes(search)));
+                const matchType = !type || u.tipo === type;
+                const matchStatus = !status || u.status === status;
+                return matchSearch && matchType && matchStatus;
+            });
+
+            renderUsers(filtered);
+        }
+
+        function openModal(editUserData = null) {
+            const modal = document.getElementById('userModal');
+            const form = document.getElementById('userForm');
+            const title = document.getElementById('modalTitle');
+            
+            if (editUserData) {
+                title.innerHTML = '<i class="fas fa-user-edit" style="color: var(--cor-primaria);"></i> Editar Usuário';
+                document.getElementById('editMode').value = 'true';
+                document.getElementById('username').value = editUserData.usuario;
+                document.getElementById('username').disabled = true;
+                document.getElementById('password').required = false;
+                document.getElementById('passwordHint').textContent = 'Deixe em branco para manter a senha atual';
+                document.getElementById('fullname').value = editUserData.nome_completo || '';
+                document.getElementById('email').value = editUserData.email || '';
+                document.getElementById('userType').value = editUserData.tipo || 'user';
+                document.getElementById('expiryDate').value = editUserData.expiracao !== 'NUNCA' ? editUserData.expiracao : '';
+            } else {
+                title.innerHTML = '<i class="fas fa-user-plus" style="color: var(--cor-primaria);"></i> Novo Usuário';
+                document.getElementById('editMode').value = 'false';
+                form.reset();
+                document.getElementById('username').disabled = false;
+                document.getElementById('password').required = true;
+                document.getElementById('passwordHint').textContent = 'Mínimo 6 caracteres';
+            }
+            
+            modal.classList.add('show');
         }
 
         function closeModal() {
-            document.getElementById('userModal').style.display = 'none';
+            document.getElementById('userModal').classList.remove('show');
         }
 
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('userModal')) {
-                closeModal();
-            }
-        }
-        
-        // Lógica para Salvar Novo Usuário (Chama a rota de ADMIN do Flask)
-        document.getElementById('newUserForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const form = event.target;
-            const msg = document.getElementById('modalMsg');
-            msg.textContent = 'Salvando usuário...';
-            msg.style.color = '#ff9800';
-
+        async function saveUser(e) {
+            e.preventDefault();
+            
+            const isEdit = document.getElementById('editMode').value === 'true';
             const userData = {
-                usuario: form.username.value,
-                senha: form.password.value,
-                // Em um ambiente real, você enviaria todos os campos.
-                // Aqui, vamos enviar apenas o que a sua rota /adm/Kl0rd123 exige:
-                // email: form.email.value, 
-                // tipo: form.userType.value,
-                // status: form.status.value,
+                acao: isEdit ? 'editar' : 'cadastrar',
+                usuario: document.getElementById('username').value,
+                senha: document.getElementById('password').value || undefined,
+                nome_completo: document.getElementById('fullname').value || null,
+                email: document.getElementById('email').value || null,
+                tipo: document.getElementById('userType').value,
+                expiracao: document.getElementById('expiryDate').value || null
             };
 
             try {
-                // Chama a rota de admin que já existe no seu app.py para cadastrar
-                const response = await fetch('/adm/Kl0rd123', {
+                const response = await fetch(ADMIN_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(userData)
                 });
 
-                const data = await response.json();
-
-                if (response.ok && data.ok) {
-                    msg.textContent = data.mensagem;
-                    msg.style.color = 'var(--cor-sucesso)';
-                    // Fechar o modal após um pequeno delay e sucesso (ou recarregar a tabela)
-                    setTimeout(() => {
-                        closeModal();
-                        // Em um sistema real, você recarregaria apenas a tabela de usuários
-                        // window.location.reload(); 
-                    }, 1500); 
+                const result = await response.json();
+                
+                if (result.ok) {
+                    closeModal();
+                    loadUsers();
+                    alert(result.mensagem);
                 } else {
-                    msg.textContent = data.erro || 'Erro ao cadastrar usuário.';
-                    msg.style.color = 'var(--cor-erro)';
+                    alert(result.erro || 'Erro ao salvar usuário');
                 }
-
             } catch (error) {
-                msg.textContent = 'Erro de rede. Verifique a conexão do servidor.';
-                msg.style.color = 'var(--cor-erro)';
-                console.error('Erro de Fetch:', error);
+                alert('Erro de conexão');
             }
-        });
+        }
+
+        function editUser(username) {
+            const user = allUsers.find(u => u.usuario === username);
+            if (user) openModal(user);
+        }
+
+        async function deleteUser(username) {
+            if (!confirm(`Tem certeza que deseja excluir o usuário "${username}"?`)) return;
+
+            try {
+                const response = await fetch(ADMIN_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ acao: 'deletar', usuario: username })
+                });
+
+                const result = await response.json();
+                
+                if (result.ok) {
+                    loadUsers();
+                    alert(result.mensagem);
+                } else {
+                    alert(result.erro || 'Erro ao excluir usuário');
+                }
+            } catch (error) {
+                alert('Erro de conexão');
+            }
+        }
+
+        // Carregar usuários ao iniciar
+        loadUsers();
     </script>
 </body>
 </html>
