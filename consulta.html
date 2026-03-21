@@ -991,14 +991,16 @@
             }
 
             // NOVO: Verificar e renderizar foto se existir (CPF V3)
-            if (d.foto) {
-                html += `<div class="data-section">
-                    <div class="section-title"><i class="fas fa-camera"></i> Foto</div>
-                    <div class="photo-container">
-                        <img src="data:image/jpeg;base64,${d.foto}" alt="Foto do CPF" style="max-width: 300px; border-radius: 8px; border: 2px solid var(--cor-primaria);">
-                    </div>
-                </div>`;
-            }
+if (d.foto) {
+    const cleanFoto = d.foto.replace(/[\s\n\r]/g, '');
+    html += `<div class="data-section">
+        <div class="section-title"><i class="fas fa-camera"></i> Foto</div>
+        <div class="photo-container">
+            <img src="data:image/jpeg;base64,${cleanFoto}" alt="Foto de ${d.nome || 'CPF'}">
+            <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--cor-texto-sec);">CPF: ${d.cpf}</p>
+        </div>
+    </div>`;
+}
 
             return html;
         }
