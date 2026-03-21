@@ -21,8 +21,8 @@ ADMIN_ROUTE = f"/adm/{ADMIN_MANAGER_TOKEN}"
 # =======================================================
 # CONFIGURAÇÃO DO GITHUB
 # =======================================================
-GITHUB_TOKEN = "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"
-GITHUB_REPO = "klordTV/klTV"
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+GITHUB_REPO = "klordapi/InsightAPI"
 GITHUB_FILE_PATH = "database.json"
 GITHUB_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{GITHUB_FILE_PATH}"
 
