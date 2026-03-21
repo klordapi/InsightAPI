@@ -3,317 +3,779 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Klord Buscas - Painel de Consultas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Klord Buscas V2.0 - Painel de Consultas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Variáveis CSS Focadas no Roxo Escuro (Consistente com login.html) */
         :root {
-            --cor-fundo: #0c0c14; 
-            --cor-card-fundo: #1a1a2e; 
-            --cor-borda: #3a3a5e; 
-            --cor-primaria: #7f00ff; 
-            --cor-secundaria-acao: #a259ff; 
-            --cor-gradiente-btn: linear-gradient(135deg, #7f00ff 0%, #a259ff 100%);
-            --cor-texto-principal: #e0e0e0;
-            --cor-texto-secundaria: #9e9e9e;
-            --cor-sucesso: #4caf50;
-            --cor-erro: #f44336;
-            --radius-borda: 16px;
-            --shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            --cor-fundo: #0a0a0f;
+            --cor-card: #12121a;
+            --cor-card-hover: #1a1a25;
+            --cor-borda: #2a2a3e;
+            --cor-primaria: #7f00ff;
+            --cor-secundaria: #a855f7;
+            --cor-acento: #00d4ff;
+            --cor-sucesso: #10b981;
+            --cor-erro: #ef4444;
+            --cor-aviso: #f59e0b;
+            --cor-texto: #f8fafc;
+            --cor-texto-sec: #94a3b8;
+            --gradient-primario: linear-gradient(135deg, #7f00ff 0%, #a855f7 100%);
+            --gradient-secundario: linear-gradient(135deg, #00d4ff 0%, #7f00ff 100%);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --shadow-hover: 0 12px 48px rgba(127, 0, 255, 0.2);
         }
 
-        /* Reset Básico e Tipografia */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--cor-fundo);
-            color: var(--cor-texto-principal);
-            margin: 0;
-            padding: 25px;
-            line-height: 1.6;
+            background: var(--cor-fundo);
+            color: var(--cor-texto);
             min-height: 100vh;
+            line-height: 1.6;
         }
 
-        /* Top Bar / Header */
-        .top-bar {
+        /* Header */
+        .header {
+            background: rgba(18, 18, 26, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--cor-borda);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 0;
-            margin-bottom: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-primario);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: var(--cor-primaria);
+            -webkit-text-fill-color: var(--cor-primaria);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stats-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(127, 0, 255, 0.1);
+            border: 1px solid rgba(127, 0, 255, 0.3);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--cor-secundaria);
+        }
+
+        .btn-admin {
+            padding: 10px 20px;
+            background: var(--gradient-primario);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-admin:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 120px 2rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .welcome-section {
+            margin-bottom: 3rem;
+        }
+
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fff 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-section p {
+            color: var(--cor-texto-sec);
+            font-size: 1.1rem;
+        }
+
+        /* Categorias */
+        .category-section {
+            margin-bottom: 3rem;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
             border-bottom: 1px solid var(--cor-borda);
         }
-        
-        .logo-title {
+
+        .category-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--cor-texto);
+        }
+
+        .category-header i {
             font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--cor-secundaria-acao);
+            color: var(--cor-primaria);
         }
 
-        .user-menu i {
-            font-size: 1.2rem;
-            color: var(--cor-texto-secundaria);
-            cursor: pointer;
+        .category-count {
+            margin-left: auto;
+            padding: 4px 12px;
+            background: rgba(127, 0, 255, 0.1);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--cor-secundaria);
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .header h1 {
-            font-weight: 700;
-            color: var(--cor-texto-principal);
-            font-size: 2rem;
-            margin-bottom: 5px;
-        }
-
-        .header p {
-            color: var(--cor-texto-secundaria);
-            font-size: 1rem;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        /* Grid de Módulos */
+        .modules-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
         }
 
-        /* Estilo dos Cartões de Módulo */
         .module-card {
-            background: var(--cor-card-fundo);
-            padding: 25px;
-            border-radius: var(--radius-borda);
-            box-shadow: var(--shadow);
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            flex-direction: column;
-            text-align: center;
+            background: var(--cor-card);
             border: 1px solid var(--cor-borda);
+            border-radius: 16px;
+            padding: 1.5rem;
             cursor: pointer;
-            text-decoration: none; 
-            color: inherit;
+            transition: all 0.3s ease;
             position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
-        
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient-primario);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
         .module-card:hover {
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
-            transform: translateY(-3px);
+            background: var(--cor-card-hover);
             border-color: var(--cor-primaria);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
         }
 
-        /* Ícone centralizado do Módulo */
-        .module-icon-wrapper {
-            background: linear-gradient(135deg, rgba(127, 0, 255, 0.2) 0%, rgba(162, 89, 255, 0.2) 100%);
-            color: var(--cor-secundaria-acao);
-            padding: 20px;
-            border-radius: 50%; 
-            display: inline-flex;
-            margin: 0 auto 20px auto;
-            font-size: 2.5rem;
-            box-shadow: 0 0 10px rgba(162, 89, 255, 0.2);
+        .module-card:hover::before {
+            transform: scaleX(1);
         }
-        
-        .module-card h2 {
-            font-size: 1.3rem;
+
+        .module-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(127, 0, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            color: var(--cor-primaria);
+            transition: all 0.3s;
+        }
+
+        .module-card:hover .module-icon {
+            background: var(--gradient-primario);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .module-title {
+            font-size: 1.1rem;
             font-weight: 700;
-            margin: 0 0 10px 0;
+            margin-bottom: 0.5rem;
+            color: var(--cor-texto);
         }
 
-        .module-card p {
+        .module-desc {
             font-size: 0.9rem;
-            color: var(--cor-texto-secundaria);
-            margin-bottom: 15px;
-            min-height: 40px; 
+            color: var(--cor-texto-sec);
+            margin-bottom: 1rem;
+            line-height: 1.5;
         }
-        
-        /* Tags/Badges */
-        .tags {
+
+        .module-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+        }
+
+        .tag-version {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+        }
+
+        .tag-v1 {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--cor-acento);
+        }
+
+        .tag-v2 {
+            background: rgba(168, 85, 247, 0.1);
+            color: var(--cor-secundaria);
+        }
+
+        .tag-new {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--cor-sucesso);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Status Indicator */
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 15, 0.95);
+            border-top: 1px solid var(--cor-borda);
+            padding: 1rem 2rem;
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 3rem;
+            font-size: 0.9rem;
+            backdrop-filter: blur(20px);
         }
 
-        .tag {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--cor-texto-sec);
         }
 
-        .tag-ativo {
-            background-color: var(--cor-sucesso);
-            color: #fff;
-        }
-        
-        .tag-bloqueado {
-            background-color: var(--cor-erro);
-            color: #fff;
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--cor-sucesso);
+            box-shadow: 0 0 10px var(--cor-sucesso);
         }
 
-        .tag-tipo {
-            background-color: var(--cor-borda);
-            color: var(--cor-texto-principal);
-        }
-        
-        /* Estilo para módulo desativado */
-        .module-card.disabled {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-        .module-card.disabled .module-icon-wrapper {
-            background: rgba(255, 0, 0, 0.1); 
-            color: var(--cor-erro);
-            box-shadow: none;
-        }
-        
-        /* Media Queries */
+        /* Responsivo */
         @media (max-width: 768px) {
-            .container {
+            .header-content {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .welcome-section h1 {
+                font-size: 1.75rem;
+            }
+
+            .modules-grid {
                 grid-template-columns: 1fr;
             }
+
+            .status-bar {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem 1rem 3.5rem;
+            background: var(--cor-card);
+            border: 1px solid var(--cor-borda);
+            border-radius: 12px;
+            color: var(--cor-texto);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--cor-primaria);
+            box-shadow: 0 0 0 3px rgba(127, 0, 255, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--cor-texto-sec);
+        }
+
+        .search-input:focus + .search-icon {
+            color: var(--cor-primaria);
+        }
+
+        /* Filtros */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            color: var(--cor-texto-sec);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--cor-primaria);
+            border-color: var(--cor-primaria);
+            color: white;
         }
     </style>
 </head>
 <body>
-    <div class="top-bar">
-        <span class="logo-title">Klord Buscas V2.0</span>
-        <div class="user-menu">
-            <a href="/admin/dashboard" style="text-decoration: none;"><i class="fas fa-bars" title="Painel Admin" style="margin-right: 15px; color: var(--cor-secundaria-acao);"></i></a>
-            <i class="fas fa-user-circle"></i>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>Klord Buscas</span>
+            </div>
+            <div class="user-menu">
+                <div class="stats-badge">
+                    <i class="fas fa-bolt"></i>
+                    <span>25 APIs Ativas</span>
+                </div>
+                <a href="/admin/dashboard" class="btn-admin">
+                    <i class="fas fa-cog"></i>
+                    Admin
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="welcome-section">
+            <h1>Painel de Consultas</h1>
+            <p>Escolha uma categoria abaixo para realizar consultas em tempo real</p>
+        </section>
+
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="searchInput" placeholder="Buscar módulo..." onkeyup="filterModules()">
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterCategory('all')">Todos</button>
+            <button class="filter-btn" onclick="filterCategory('pessoas')">Pessoas</button>
+            <button class="filter-btn" onclick="filterCategory('veiculos')">Veículos</button>
+            <button class="filter-btn" onclick="filterCategory('empresas')">Empresas</button>
+            <button class="filter-btn" onclick="filterCategory('imagens')">Imagens</button>
+        </div>
+
+        <!-- CATEGORIA: PESSOAS -->
+        <section class="category-section" data-category="pessoas">
+            <div class="category-header">
+                <i class="fas fa-users"></i>
+                <h2>Consultas de Pessoas</h2>
+                <span class="category-count">8 módulos</span>
+            </div>
+            <div class="modules-grid">
+                <a href="/consulta?modulo=cpf" class="module-card">
+                    <div class="module-icon"><i class="fas fa-id-card"></i></div>
+                    <div class="module-title">CPF V1</div>
+                    <div class="module-desc">Consulta completa de dados pessoais via CPF</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v1">API V1</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=cpf-v1" class="module-card">
+                    <div class="module-icon"><i class="fas fa-id-card"></i></div>
+                    <div class="module-title">CPF V1 (V2)</div>
+                    <div class="module-desc">Consulta alternativa de CPF com dados básicos</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v2">API V2</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=cpf-v2" class="module-card">
+                    <div class="module-icon"><i class="fas fa-id-card"></i></div>
+                    <div class="module-title">CPF V2</div>
+                    <div class="module-desc">Consulta secundária com dados complementares</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v2">API V2</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=cpf-v3" class="module-card">
+                    <div class="module-icon"><i class="fas fa-id-card"></i></div>
+                    <div class="module-title">CPF V3 + Foto</div>
+                    <div class="module-desc">Consulta CPF com foto (RJ, MA, RO, SP, CE, BA)</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v2">API V2</span>
+                        <span class="tag-version tag-new">NOVO</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=cpf-v4" class="module-card">
+                    <div class="module-icon"><i class="fas fa-id-card"></i></div>
+                    <div class="module-title">CPF V4</div>
+                    <div class="module-desc">Consulta avançada de CPF - Base 4</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v2">API V2</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=cpf-v5" class="module-card">
+                    <div class="module-icon"><i class="fas fa-id-card"></i></div>
+                    <div class="module-title">CPF V5</div>
+                    <div class="module-desc">Consulta premium de CPF - Base 5</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v2">API V2</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=nome" class="module-card">
+                    <div class="module-icon"><i class="fas fa-user-tag"></i></div>
+                    <div class="module-title">Busca por Nome V1</div>
+                    <div class="module-desc">Localizar pessoas pelo nome completo</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v1">API V1</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=nome-v2" class="module-card">
+                    <div class="module-icon"><i class="fas fa-user-tag"></i></div>
+                    <div class="module-title">Busca por Nome V2</div>
+                    <div class="module-desc">Busca alternativa por nome na API V2</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v2">API V2</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=rg" class="module-card">
+                    <div class="module-icon"><i class="fas fa-address-card"></i></div>
+                    <div class="module-title">Consulta RG</div>
+                    <div class="module-desc">Busca dados via número do RG</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v1">API V1</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=telefone" class="module-card">
+                    <div class="module-icon"><i class="fas fa-phone"></i></div>
+                    <div class="module-title">Telefone V1</div>
+                    <div class="module-desc">Consulta dados via telefone - Base 1</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v1">API V1</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=telefone-v2" class="module-card">
+                    <div class="module-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <div class="module-title">Telefone V2</div>
+                    <div class="module-desc">Consulta via telefone - Base 2</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v2">API V2</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=telefone2" class="module-card">
+                    <div class="module-icon"><i class="fas fa-phone-volume"></i></div>
+                    <div class="module-title">Telefone Base 2</div>
+                    <div class="module-desc">Consulta alternativa de telefone</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v1">ALT</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=cep" class="module-card">
+                    <div class="module-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="module-title">Consulta CEP</div>
+                    <div class="module-desc">Busca endereço completo via CEP</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v2">API V2</span>
+                        <span class="tag-version tag-new">NOVO</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- CATEGORIA: VEÍCULOS -->
+        <section class="category-section" data-category="veiculos">
+            <div class="category-header">
+                <i class="fas fa-car"></i>
+                <h2>Consultas de Veículos</h2>
+                <span class="category-count">6 módulos</span>
+            </div>
+            <div class="modules-grid">
+                <a href="/consulta?modulo=placa" class="module-card">
+                    <div class="module-icon"><i class="fas fa-car-side"></i></div>
+                    <div class="module-title">Placa V1</div>
+                    <div class="module-desc">Consulta básica de veículos via placa</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v1">API V1</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=placa-v1" class="module-card">
+                    <div class="module-icon"><i class="fas fa-car-side"></i></div>
+                    <div class="module-title">Placa V1 (V2)</div>
+                    <div class="module-desc">Consulta alternativa via placa - API V2</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v2">API V2</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=placa-v2" class="module-card">
+                    <div class="module-icon"><i class="fas fa-car-side"></i></div>
+                    <div class="module-title">Placa V2</div>
+                    <div class="module-desc">Consulta completa de veículos via placa</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v2">API V2</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=placa_completa" class="module-card">
+                    <div class="module-icon"><i class="fas fa-clipboard-list"></i></div>
+                    <div class="module-title">Placa Completa</div>
+                    <div class="module-desc">Consulta detalhada com dados completos</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v1">LEGADO</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=renavam" class="module-card">
+                    <div class="module-icon"><i class="fas fa-file-alt"></i></div>
+                    <div class="module-title">RENAVAM</div>
+                    <div class="module-desc">Consulta veículo via código RENAVAM</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v1">API V1</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=motor" class="module-card">
+                    <div class="module-icon"><i class="fas fa-cog"></i></div>
+                    <div class="module-title">Motor</div>
+                    <div class="module-desc">Consulta veículo via número do motor</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v2">API V2</span>
+                        <span class="tag-version tag-new">NOVO</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=chassi" class="module-card">
+                    <div class="module-icon"><i class="fas fa-barcode"></i></div>
+                    <div class="module-title">Chassi</div>
+                    <div class="module-desc">Consulta veículo via número do chassi</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v2">API V2</span>
+                        <span class="tag-version tag-new">NOVO</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- CATEGORIA: EMPRESAS -->
+        <section class="category-section" data-category="empresas">
+            <div class="category-header">
+                <i class="fas fa-building"></i>
+                <h2>Consultas de Empresas</h2>
+                <span class="category-count">2 módulos</span>
+            </div>
+            <div class="modules-grid">
+                <a href="/consulta?modulo=cnpj" class="module-card">
+                    <div class="module-icon"><i class="fas fa-building"></i></div>
+                    <div class="module-title">CNPJ V1</div>
+                    <div class="module-desc">Consulta completa de dados empresariais</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v1">API V1</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=cnpj-v2" class="module-card">
+                    <div class="module-icon"><i class="fas fa-building"></i></div>
+                    <div class="module-title">CNPJ V2</div>
+                    <div class="module-desc">Consulta alternativa de CNPJ - API V2</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v2">API V2</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- CATEGORIA: IMAGENS -->
+        <section class="category-section" data-category="imagens">
+            <div class="category-header">
+                <i class="fas fa-images"></i>
+                <h2>Consultas de Imagens</h2>
+                <span class="category-count">4 módulos</span>
+            </div>
+            <div class="modules-grid">
+                <a href="/consulta?modulo=foto-sp" class="module-card">
+                    <div class="module-icon"><i class="fas fa-camera"></i></div>
+                    <div class="module-title">Foto SP</div>
+                    <div class="module-desc">Busca foto Base64 - São Paulo</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v1">API V1</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=foto-rj" class="module-card">
+                    <div class="module-icon"><i class="fas fa-portrait"></i></div>
+                    <div class="module-title">Foto RJ</div>
+                    <div class="module-desc">Busca foto Base64 - Rio de Janeiro</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v1">API V1</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=foto-es" class="module-card">
+                    <div class="module-icon"><i class="fas fa-image"></i></div>
+                    <div class="module-title">Foto ES</div>
+                    <div class="module-desc">Busca foto Base64 - Espírito Santo</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v1">API V1</span>
+                    </div>
+                </a>
+
+                <a href="/consulta?modulo=fotope" class="module-card">
+                    <div class="module-icon"><i class="fas fa-user-circle"></i></div>
+                    <div class="module-title">Foto por Nome</div>
+                    <div class="module-desc">Busca foto via nome completo</div>
+                    <div class="module-meta">
+                        <span class="tag-version tag-v2">API V2</span>
+                        <span class="tag-version tag-new">NOVO</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <div class="status-bar">
+        <div class="status-item">
+            <div class="status-dot"></div>
+            <span>Sistema Online</span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-server"></i>
+            <span>API V1: klordapiv1.onrender.com</span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-server"></i>
+            <span>API V2: klordapiv2.onrender.com</span>
         </div>
     </div>
-    
-    <div class="header">
-        <h1>Painel de Consultas</h1>
-        <p>Selecione um módulo para realizar consultas em tempo real</p>
-    </div>
 
-    <div class="container">
-        
-        <a href="/consulta?modulo=cnpj" class="module-card">
-            <div class="module-icon-wrapper"><i class="fas fa-building"></i></div>
-            <h2>CNPJ</h2>
-            <p>Consulta de dados cadastrais de empresas através do CNPJ</p>
-            <div class="tags">
-                <span class="tag tag-ativo">Ativo</span>
-                <span class="tag tag-tipo">Empresas</span>
-            </div>
-        </a>
+    <script>
+        // Filtro por categoria
+        function filterCategory(category) {
+            const sections = document.querySelectorAll('.category-section');
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
 
-        <a href="/consulta?modulo=cpf" class="module-card">
-            <div class="module-icon-wrapper"><i class="fas fa-user-alt"></i></div>
-            <h2>CPF (Base)</h2>
-            <p>Consulta de dados pessoais através do CPF</p>
-            <div class="tags">
-                <span class="tag tag-ativo">Ativo</span>
-                <span class="tag tag-tipo">Pessoas</span>
-            </div>
-        </a>
+            if (category === 'all') {
+                sections.forEach(section => section.style.display = 'block');
+            } else {
+                sections.forEach(section => {
+                    if (section.dataset.category === category) {
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
+                    }
+                });
+            }
+        }
 
-        <a href="/consulta?modulo=cpf2" class="module-card">
-            <div class="module-icon-wrapper"><i class="fas fa-id-card-alt"></i></div>
-            <h2>CPF (Secundário)</h2>
-            <p>Consulta em base secundária para dados complementares.</p>
-            <div class="tags">
-                <span class="tag tag-ativo">Ativo</span>
-                <span class="tag tag-tipo">Pessoas</span>
-            </div>
-        </a>
-        
-        <a href="/consulta?modulo=nome" class="module-card">
-            <div class="module-icon-wrapper"><i class="fas fa-users"></i></div>
-            <h2>NOME</h2>
-            <p>Busca de pessoas através do nome completo</p>
-            <div class="tags">
-                <span class="tag tag-ativo">Ativo</span>
-                <span class="tag tag-tipo">Pessoas</span>
-            </div>
-        </a>
-
-        <a href="/consulta?modulo=placa" class="module-card">
-            <div class="module-icon-wrapper"><i class="fas fa-file-alt"></i></div>
-            <h2>Placa (Base)</h2>
-            <p>Consulta básica de veículos através da placa</p>
-            <div class="tags">
-                <span class="tag tag-ativo">Ativo</span>
-                <span class="tag tag-tipo">Veículos</span>
-            </div>
-        </a>
-        
-        <a href="/consulta?modulo=placa_completa" class="module-card">
-            <div class="module-icon-wrapper"><i class="fas fa-file-invoice"></i></div>
-            <h2>Placa (Completa)</h2>
-            <p>Consulta completa de veículos com dados detalhados</p>
-            <div class="tags">
-                <span class="tag tag-ativo">Ativo</span>
-                <span class="tag tag-tipo">Veículos</span>
-            </div>
-        </a>
-
-        <a href="/consulta?modulo=renavam" class="module-card">
-            <div class="module-icon-wrapper"><i class="fas fa-file-signature"></i></div>
-            <h2>RENAVAM</h2>
-            <p>Consulta de veículos através do Renavam</p>
-            <div class="tags">
-                <span class="tag tag-ativo">Ativo</span>
-                <span class="tag tag-tipo">Veículos</span>
-            </div>
-        </a>
-        
-        <a href="/consulta?modulo=telefone" class="module-card">
-            <div class="module-icon-wrapper"><i class="fas fa-phone-alt"></i></div>
-            <h2>TELEFONE (Base)</h2>
-            <p>Consulta de dados através do telefone</p>
-            <div class="tags">
-                <span class="tag tag-ativo">Ativo</span>
-                <span class="tag tag-tipo">Contatos</span>
-            </div>
-        </a>
-        
-        <a href="/consulta?modulo=telefone2" class="module-card">
-            <div class="module-icon-wrapper"><i class="fas fa-mobile-alt"></i></div>
-            <h2>TELEFONE (Secundário)</h2>
-            <p>Consulta de dados através do telefone em base alternativa.</p>
-            <div class="tags">
-                <span class="tag tag-ativo">Ativo</span>
-                <span class="tag tag-tipo">Contatos</span>
-            </div>
-        </a>
-
-        <a href="/consulta?modulo=foto_sp" class="module-card">
-            <div class="module-icon-wrapper"><i class="fas fa-camera"></i></div>
-            <h2>FOTO SP</h2>
-            <p>Busca de foto Base64 por CPF/RG do estado de São Paulo.</p>
-            <div class="tags">
-                <span class="tag tag-ativo">Ativo</span>
-                <span class="tag tag-tipo">Imagens</span>
-            </div>
-        </a>
-        
-        <a href="/consulta?modulo=foto_rj" class="module-card">
-            <div class="module-icon-wrapper"><i class="fas fa-portrait"></i></div>
-            <h2>FOTO RJ</h2>
-            <p>Busca de foto Base64 por CPF/RG do estado do Rio de Janeiro.</p>
-            <div class="tags">
-                <span class="tag tag-ativo">Ativo</span>
-                <span class="tag tag-tipo">Imagens</span>
-            </div>
-        </a>
-        
-        <a href="/consulta?modulo=foto_es" class="module-card">
-            <div class="module-icon-wrapper"><i class="fas fa-image"></i></div>
-            <h2>FOTO ES</h2>
-            <p>Busca de foto Base64 por CPF/RG do estado do Espírito Santo.</p>
-            <div class="tags">
-                <span class="tag tag-ativo">Ativo</span>
-                <span class="tag tag-tipo">Imagens</span>
-            </div>
-        </a>
-        
-    </div>
+        // Busca por texto
+        function filterModules() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const cards = document.querySelectorAll('.module-card');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('.module-title').textContent.toLowerCase();
+                const desc = card.querySelector('.module-desc').textContent.toLowerCase();
+                
+                if (title.includes(filter) || desc.includes(filter)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
 </body>
 </html>
-
