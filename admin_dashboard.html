@@ -4,165 +4,435 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Klord Buscas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Variáveis de Tema (Roxo Escuro e Gradientes) */
         :root {
-            --cor-fundo: #0c0c14; 
-            --cor-card-fundo: #1a1a2e; 
-            --cor-borda: #3a3a5e; 
-            --cor-primaria: #7f00ff; 
-            --cor-secundaria-acao: #a259ff; 
-            --cor-gradiente-btn: linear-gradient(135deg, #7f00ff 0%, #a259ff 100%);
-            --cor-texto-principal: #e0e0e0;
-            --cor-texto-secundaria: #9e9e9e;
-            --cor-sucesso: #4caf50;
-            --radius-borda: 16px;
-            --shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            --cor-fundo: #0a0a0f;
+            --cor-card: #12121a;
+            --cor-card-sec: #1a1a25;
+            --cor-borda: #2a2a3e;
+            --cor-primaria: #7f00ff;
+            --cor-secundaria: #a855f7;
+            --cor-acento: #00d4ff;
+            --cor-sucesso: #10b981;
+            --cor-erro: #ef4444;
+            --cor-texto: #f8fafc;
+            --cor-texto-sec: #94a3b8;
+            --gradient-primario: linear-gradient(135deg, #7f00ff 0%, #a855f7 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--cor-fundo);
-            color: var(--cor-texto-principal);
-            margin: 0;
-            padding: 30px;
+            background: var(--cor-fundo);
+            color: var(--cor-texto);
             min-height: 100vh;
         }
 
-        .container {
-            max-width: 1200px;
+        .header {
+            background: rgba(18, 18, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--cor-borda);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-primario);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            color: var(--cor-texto-sec);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-item:hover {
+            background: var(--cor-card-sec);
+            color: var(--cor-texto);
+        }
+
+        .nav-item.active {
+            background: var(--gradient-primario);
+            color: white;
+        }
+
+        .main-content {
+            padding: 100px 2rem 2rem;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
-        h1 {
-            color: var(--cor-secundaria-acao);
-            margin-bottom: 25px;
+        .page-title {
             font-size: 2rem;
-            border-bottom: 1px solid var(--cor-borda);
-            padding-bottom: 15px;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        
-        /* Layout dos Cartões de Estatísticas */
+
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .stat-card {
-            background: var(--cor-card-fundo);
-            padding: 25px;
-            border-radius: var(--radius-borda);
-            box-shadow: var(--shadow);
+            background: var(--cor-card);
             border: 1px solid var(--cor-borda);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--cor-primaria);
+            transform: translateY(-4px);
         }
 
         .stat-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .stat-header h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin: 0;
-            color: var(--cor-texto-principal);
+            margin-bottom: 1rem;
         }
 
         .stat-icon {
-            background: rgba(127, 0, 255, 0.15); 
-            padding: 10px;
-            border-radius: 8px;
-            color: var(--cor-secundaria-acao);
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(127, 0, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--cor-primaria);
             font-size: 1.5rem;
         }
-        
+
         .stat-value {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 700;
-            color: var(--cor-secundaria-acao);
-            margin-bottom: 5px;
+            color: var(--cor-texto);
         }
 
-        .stat-footer {
+        .stat-label {
+            color: var(--cor-texto-sec);
             font-size: 0.9rem;
-            color: var(--cor-texto-secundaria);
-        }
-        
-        /* Cartão de Status do Sistema */
-        .status-online {
-            background-color: var(--cor-sucesso);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            display: inline-block;
-            margin-top: 10px;
         }
 
+        .chart-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: var(--cor-card);
+            border: 1px solid var(--cor-borda);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-header h3 {
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-online {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--cor-sucesso);
+            border: 1px solid var(--cor-sucesso);
+        }
+
+        .status-offline {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--cor-erro);
+            border: 1px solid var(--cor-erro);
+        }
+
+        .api-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .api-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--cor-card-sec);
+            border-radius: 10px;
+            border: 1px solid var(--cor-borda);
+        }
+
+        .api-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .api-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--cor-sucesso);
+            box-shadow: 0 0 8px var(--cor-sucesso);
+        }
+
+        .api-status.offline {
+            background: var(--cor-erro);
+            box-shadow: 0 0 8px var(--cor-erro);
+        }
+
+        .api-name {
+            font-weight: 600;
+        }
+
+        .api-url {
+            font-size: 0.8rem;
+            color: var(--cor-texto-sec);
+        }
+
+        .api-count {
+            padding: 0.25rem 0.75rem;
+            background: rgba(127, 0, 255, 0.1);
+            color: var(--cor-primaria);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 968px) {
+            .chart-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Painel de Administração</h1>
-        
-        <script>
-             // Simulação do template Flask para incluir o menu no snippet
-             fetch('/admin_menu.html')
-                 .then(response => response.text())
-                 .then(html => {
-                     document.querySelector('.container').insertAdjacentHTML('afterbegin', html.replace('{% if active_page == \'dashboard\' %}active{% endif %}', 'active').replace('{% if active_page == \'users\' %}active{% endif %}', ''));
-                 })
-                 .catch(err => console.error('Erro ao carregar menu:', err));
-        </script>
-        
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>Klord Admin</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="/admin/dashboard" class="nav-item active">
+                    <i class="fas fa-chart-line"></i>
+                    Dashboard
+                </a>
+                <a href="/admin/users" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    Usuários
+                </a>
+                <a href="/adm/Kl0rd123" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Configurações
+                </a>
+                <a href="/painel" class="nav-item">
+                    <i class="fas fa-arrow-left"></i>
+                    Voltar
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <h1 class="page-title">
+            <i class="fas fa-chart-pie" style="color: var(--cor-primaria);"></i>
+            Dashboard
+        </h1>
+
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-header">
-                    <h2>Usuários Ativos</h2>
-                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div>
+                        <div class="stat-value" id="totalUsers">-</div>
+                        <div class="stat-label">Usuários Cadastrados</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
                 </div>
-                <div class="stat-value">3</div>
-                <div class="stat-footer">Total de usuários cadastrados</div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-header">
-                    <h2>Módulos Ativos</h2>
-                    <div class="stat-icon"><i class="fas fa-th-large"></i></div>
+                    <div>
+                        <div class="stat-value">25</div>
+                        <div class="stat-label">APIs Disponíveis</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-plug"></i>
+                    </div>
                 </div>
-                <div class="stat-value">12</div>
-                <div class="stat-footer">Módulos disponíveis no sistema</div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-header">
-                    <h2>Consultas Hoje</h2>
-                    <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
+                    <div>
+                        <div class="stat-value" id="activeUsers">-</div>
+                        <div class="stat-label">Usuários Ativos</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
                 </div>
-                <div class="stat-value">0</div>
-                <div class="stat-footer">Consultas realizadas hoje</div>
             </div>
-            
+
             <div class="stat-card">
                 <div class="stat-header">
-                    <h2>Status do Sistema</h2>
-                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div>
+                        <div class="stat-value" id="expiredUsers">-</div>
+                        <div class="stat-label">Contas Expiradas</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-user-times"></i>
+                    </div>
                 </div>
-                <span class="status-online">Online</span>
-                <div class="stat-footer" style="margin-top: 5px;">Sistema operacional</div>
             </div>
         </div>
-        
+
+        <div class="chart-section">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-server"></i> Status das APIs</h3>
+                    <span class="status-badge status-online">
+                        <i class="fas fa-check-circle"></i>
+                        Online
+                    </span>
+                </div>
+                <div class="api-list">
+                    <div class="api-item">
+                        <div class="api-info">
+                            <div class="api-status"></div>
+                            <div>
+                                <div class="api-name">API V1</div>
+                                <div class="api-url">klordapiv1.onrender.com</div>
+                            </div>
+                        </div>
+                        <span class="api-count">10 endpoints</span>
+                    </div>
+                    <div class="api-item">
+                        <div class="api-info">
+                            <div class="api-status"></div>
+                            <div>
+                                <div class="api-name">API V2</div>
+                                <div class="api-url">klordapiv2.onrender.com</div>
+                            </div>
+                        </div>
+                        <span class="api-count">12 endpoints</span>
+                    </div>
+                    <div class="api-item">
+                        <div class="api-info">
+                            <div class="api-status"></div>
+                            <div>
+                                <div class="api-name">API Legada</div>
+                                <div class="api-url">klordapi-rild.onrender.com</div>
+                            </div>
+                        </div>
+                        <span class="api-count">3 endpoints</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-info-circle"></i> Informações</h3>
+                </div>
+                <div style="color: var(--cor-texto-sec); line-height: 1.8;">
+                    <p><strong>Versão:</strong> 2.0.0</p>
+                    <p><strong>GitHub:</strong> klordTV/klTV</p>
+                    <p><strong>Database:</strong> database.json</p>
+                    <p><strong>Admin Token:</strong> Kl0rd123</p>
+                    <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--cor-borda);">
+                        <i class="fas fa-code-branch" style="color: var(--cor-primaria);"></i>
+                        Sistema atualizado em <span id="updateTime"></span>
+                    </p>
+                </div>
+            </div>
         </div>
+    </main>
+
+    <script>
+        document.getElementById('updateTime').textContent = new Date().toLocaleString('pt-BR');
+
+        async function loadStats() {
+            try {
+                const response = await fetch('/adm/Kl0rd123?data=json');
+                const users = await response.json();
+                
+                document.getElementById('totalUsers').textContent = users.length;
+                document.getElementById('activeUsers').textContent = users.filter(u => u.status === 'ATIVO').length;
+                document.getElementById('expiredUsers').textContent = users.filter(u => u.status === 'EXPIRADO').length;
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+
+        loadStats();
+    </script>
 </body>
 </html>
