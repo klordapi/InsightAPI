@@ -15,6 +15,14 @@
             "nome_completo": "Paulo",
             "email": "cliente@gmail.com",
             "tipo": "usuario"
+        },
+        {
+            "usuario": "sevenOG",
+            "senha": "Seven01do171",
+            "expiracao": null,
+            "nome_completo": "seven original",
+            "email": "cliente@gmail.com",
+            "tipo": "user"
         }
     ]
 }
