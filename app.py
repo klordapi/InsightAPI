@@ -1,12 +1,13 @@
-from flask import Flask, request, jsonify, send_from_directory, render_template_string
+from flask import Flask, request, jsonify, send_from_directory, render_template_string, session, redirect, url_for
 import json
 import os
 import requests
 import base64
 from functools import wraps
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
 app = Flask(__name__, static_folder='.', template_folder='.')
+app.secret_key = 'klord_secret_key_2025_super_seguro'
 
 # =======================================================
 # CONFIGURAÇÃO DE SEGURANÇA E TOKENS
@@ -103,20 +104,67 @@ def salvar_logins(logins_list):
 def check_expiration(user_data):
     expiracao_str = user_data.get("expiracao")
     if not expiracao_str:
-        return "ATIVO"
+        return "ATIVO", None
     try:
         expiracao_date = datetime.strptime(expiracao_str, '%Y-%m-%d').date()
         today = date.today()
         if expiracao_date < today:
-            return "EXPIRADO"
+            return "EXPIRADO", None
         else:
-            return "ATIVO"
+            # Calcular tempo restante
+            delta = expiracao_date - today
+            return "ATIVO", delta.days
     except ValueError:
-        return "ERRO"
+        return "ERRO", None
+
+def get_user_expiry_info(username):
+    """Retorna informações detalhadas sobre a expiração do usuário"""
+    logins = carregar_logins()
+    for login in logins:
+        if login.get("usuario") == username:
+            expiracao_str = login.get("expiracao")
+            if not expiracao_str:
+                return None  # Sem expiração
+            try:
+                expiracao_date = datetime.strptime(expiracao_str, '%Y-%m-%d')
+                now = datetime.now()
+                
+                if expiracao_date.date() < now.date():
+                    return None  # Expirado
+                
+                # Calcular diferença
+                delta = expiracao_date - now
+                
+                meses = delta.days // 30
+                dias = delta.days % 30
+                horas = delta.seconds // 3600
+                minutos = (delta.seconds % 3600) // 60
+                segundos = delta.seconds % 60
+                
+                return {
+                    "meses": meses,
+                    "dias": dias,
+                    "horas": horas,
+                    "minutos": minutos,
+                    "segundos": segundos,
+                    "total_dias": delta.days,
+                    "data_expiracao": expiracao_str
+                }
+            except:
+                return None
+    return None
 
 # =======================================================
 # DECORATOR E PROXY
 # =======================================================
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user' not in session:
+            return redirect('/')
+        return f(*args, **kwargs)
+    return decorated_function
 
 def token_required(f):
     @wraps(f)
@@ -157,20 +205,49 @@ def home():
     return send_from_directory('.', 'login.html') 
 
 @app.route('/painel')
+@login_required
 def painel():
     return send_from_directory('.', 'index.html')
 
 @app.route('/consulta')
+@login_required
 def consulta():
     return send_from_directory('.', 'consulta.html')
 
 @app.route('/admin/dashboard')
+@login_required
 def admin_dashboard():
     return send_from_directory('.', 'admin_dashboard.html')
 
 @app.route('/admin/users')
+@login_required
 def admin_users():
     return send_from_directory('.', 'admin_users.html')
+
+# =======================================================
+# API - INFORMAÇÕES DO USUÁRIO LOGADO
+# =======================================================
+
+@app.route('/api/user-info')
+@login_required
+def api_user_info():
+    """Retorna informações do usuário logado incluindo tempo de VIP"""
+    username = session.get('user')
+    expiry_info = get_user_expiry_info(username)
+    
+    logins = carregar_logins()
+    user_data = None
+    for login in logins:
+        if login.get("usuario") == username:
+            user_data = login
+            break
+    
+    return jsonify({
+        "usuario": username,
+        "tipo": user_data.get("tipo", "user") if user_data else "user",
+        "nome_completo": user_data.get("nome_completo", username) if user_data else username,
+        "expiracao": expiry_info
+    })
 
 # =======================================================
 # ROTA DE LOGIN
@@ -185,21 +262,36 @@ def api_login():
 
     for login in logins:
         if login.get("usuario") == usuario and login.get("senha") == senha:
-            status = check_expiration(login)
+            status, dias = check_expiration(login)
             if status == "EXPIRADO":
                  return jsonify({"ok": False, "erro": "Conta expirada"}), 403
             if status == "ERRO":
                  return jsonify({"ok": False, "erro": "Erro data expiração"}), 500
+            
+            # Criar sessão
+            session['user'] = usuario
+            session['tipo'] = login.get("tipo", "user")
+            
             return jsonify({"ok": True, "mensagem": "Login OK", "tipo": login.get("tipo", "user")})
 
     return jsonify({"ok": False, "erro": "Usuário ou senha inválidos"}), 401
+
+@app.route('/api/logout', methods=['POST'])
+def api_logout():
+    session.clear()
+    return jsonify({"ok": True, "mensagem": "Logout realizado"})
 
 # =======================================================
 # ROTA DE ADMINISTRAÇÃO
 # =======================================================
 
 @app.route(ADMIN_ROUTE, methods=['GET', 'POST'])
+@login_required
 def admin_manager():
+    # Verificar se é admin ou owner
+    if session.get('tipo') not in ['admin', 'owner']:
+        return jsonify({"ok": False, "erro": "Acesso negado"}), 403
+        
     if request.method == 'POST':
         try:
             dados = request.get_json()
@@ -290,7 +382,7 @@ def admin_manager():
         logins = carregar_logins()
         users_with_status = []
         for user in logins:
-            status = check_expiration(user)
+            status = check_expiration(user)[0]
             user_data = user.copy()
             user_data["status"] = status
             user_data["expiracao"] = user_data.get("expiracao") or 'NUNCA'
@@ -308,6 +400,7 @@ def admin_manager():
 BASE_URL_V1 = "https://klordapiv1.onrender.com"
 
 @app.route('/api/consulta-cnpj')
+@login_required
 def api_consulta_cnpj():
     dado = request.args.get('dado')
     if not dado:
@@ -317,6 +410,7 @@ def api_consulta_cnpj():
     return jsonify(resultado)
 
 @app.route('/api/consulta-cpf')
+@login_required
 def api_consulta_cpf():
     dado = request.args.get('dado')
     if not dado:
@@ -326,6 +420,7 @@ def api_consulta_cpf():
     return jsonify(resultado)
 
 @app.route('/api/consulta-rg')
+@login_required
 def api_consulta_rg():
     dado = request.args.get('dado')
     if not dado:
@@ -335,6 +430,7 @@ def api_consulta_rg():
     return jsonify(resultado)
 
 @app.route('/api/consulta-nome')
+@login_required
 def api_consulta_nome():
     dado = request.args.get('dado')
     if not dado:
@@ -344,6 +440,7 @@ def api_consulta_nome():
     return jsonify(resultado)
 
 @app.route('/api/consulta-telefone')
+@login_required
 def api_consulta_telefone():
     dado = request.args.get('dado')
     if not dado:
@@ -353,6 +450,7 @@ def api_consulta_telefone():
     return jsonify(resultado)
 
 @app.route('/api/consulta-placa')
+@login_required
 def api_consulta_placa():
     dado = request.args.get('dado')
     if not dado:
@@ -362,6 +460,7 @@ def api_consulta_placa():
     return jsonify(resultado)
 
 @app.route('/api/consulta-renavam')
+@login_required
 def api_consulta_renavam():
     dado = request.args.get('dado')
     if not dado:
@@ -371,6 +470,7 @@ def api_consulta_renavam():
     return jsonify(resultado)
 
 @app.route('/api/consulta-foto-sp')
+@login_required
 def api_consulta_foto_sp():
     dado = request.args.get('dado')
     if not dado:
@@ -380,6 +480,7 @@ def api_consulta_foto_sp():
     return jsonify(resultado)
 
 @app.route('/api/consulta-foto-rj')
+@login_required
 def api_consulta_foto_rj():
     dado = request.args.get('dado')
     if not dado:
@@ -389,6 +490,7 @@ def api_consulta_foto_rj():
     return jsonify(resultado)
 
 @app.route('/api/consulta-foto-es')
+@login_required
 def api_consulta_foto_es():
     dado = request.args.get('dado')
     if not dado:
@@ -404,6 +506,7 @@ def api_consulta_foto_es():
 BASE_URL_V2 = "https://klordapiv2.onrender.com"
 
 @app.route('/api/consulta-cpf-v1')
+@login_required
 def api_consulta_cpf_v1():
     dado = request.args.get('dado')
     if not dado:
@@ -413,6 +516,7 @@ def api_consulta_cpf_v1():
     return jsonify(resultado)
 
 @app.route('/api/consulta-cpf-v2')
+@login_required
 def api_consulta_cpf_v2():
     dado = request.args.get('dado')
     if not dado:
@@ -422,6 +526,7 @@ def api_consulta_cpf_v2():
     return jsonify(resultado)
 
 @app.route('/api/consulta-cpf-v3')
+@login_required
 def api_consulta_cpf_v3():
     dado = request.args.get('dado')
     if not dado:
@@ -431,6 +536,7 @@ def api_consulta_cpf_v3():
     return jsonify(resultado)
 
 @app.route('/api/consulta-cpf-v4')
+@login_required
 def api_consulta_cpf_v4():
     dado = request.args.get('dado')
     if not dado:
@@ -440,6 +546,7 @@ def api_consulta_cpf_v4():
     return jsonify(resultado)
 
 @app.route('/api/consulta-cpf-v5')
+@login_required
 def api_consulta_cpf_v5():
     dado = request.args.get('dado')
     if not dado:
@@ -449,6 +556,7 @@ def api_consulta_cpf_v5():
     return jsonify(resultado)
 
 @app.route('/api/consulta-fotope')
+@login_required
 def api_consulta_fotope():
     dado = request.args.get('dado')
     if not dado:
@@ -458,6 +566,7 @@ def api_consulta_fotope():
     return jsonify(resultado)
 
 @app.route('/api/consulta-nome-v2')
+@login_required
 def api_consulta_nome_v2():
     dado = request.args.get('dado')
     if not dado:
@@ -467,6 +576,7 @@ def api_consulta_nome_v2():
     return jsonify(resultado)
 
 @app.route('/api/consulta-placa-v1')
+@login_required
 def api_consulta_placa_v1():
     dado = request.args.get('dado')
     if not dado:
@@ -476,6 +586,7 @@ def api_consulta_placa_v1():
     return jsonify(resultado)
 
 @app.route('/api/consulta-placa-v2')
+@login_required
 def api_consulta_placa_v2():
     dado = request.args.get('dado')
     if not dado:
@@ -485,6 +596,7 @@ def api_consulta_placa_v2():
     return jsonify(resultado)
 
 @app.route('/api/consulta-telefone-v2')
+@login_required
 def api_consulta_telefone_v2():
     dado = request.args.get('dado')
     if not dado:
@@ -494,6 +606,7 @@ def api_consulta_telefone_v2():
     return jsonify(resultado)
 
 @app.route('/api/consulta-cep')
+@login_required
 def api_consulta_cep():
     dado = request.args.get('dado')
     if not dado:
@@ -503,6 +616,7 @@ def api_consulta_cep():
     return jsonify(resultado)
 
 @app.route('/api/consulta-cnpj-v2')
+@login_required
 def api_consulta_cnpj_v2():
     dado = request.args.get('dado')
     if not dado:
@@ -512,6 +626,7 @@ def api_consulta_cnpj_v2():
     return jsonify(resultado)
 
 @app.route('/api/consulta-motor')
+@login_required
 def api_consulta_motor():
     dado = request.args.get('dado')
     if not dado:
@@ -521,6 +636,7 @@ def api_consulta_motor():
     return jsonify(resultado)
 
 @app.route('/api/consulta-chassi')
+@login_required
 def api_consulta_chassi():
     dado = request.args.get('dado')
     if not dado:
@@ -530,14 +646,50 @@ def api_consulta_chassi():
     return jsonify(resultado)
 
 # =======================================================
+# NOVAS ROTAS - PARENTES, EMPREGOS E FOTO BR
+# =======================================================
+
+@app.route('/api/consulta-parentes')
+@login_required
+def api_consulta_parentes():
+    dado = request.args.get('dado')
+    if not dado:
+        return jsonify({"erro": "Dado CPF não fornecido"}), 400
+    url_base = f"{BASE_URL_V2}/parentes/"
+    resultado = proxy_consulta(url_base, dado, requires_token_external=True, token_value=ADM_TOKEN_V2)
+    return jsonify(resultado)
+
+@app.route('/api/consulta-empregos')
+@login_required
+def api_consulta_empregos():
+    dado = request.args.get('dado')
+    if not dado:
+        return jsonify({"erro": "Dado CPF não fornecido"}), 400
+    url_base = f"{BASE_URL_V2}/empregos/"
+    resultado = proxy_consulta(url_base, dado, requires_token_external=True, token_value=ADM_TOKEN_V2)
+    return jsonify(resultado)
+
+@app.route('/api/consulta-fotobr')
+@login_required
+def api_consulta_fotobr():
+    dado = request.args.get('dado')
+    if not dado:
+        return jsonify({"erro": "Dado CPF não fornecido"}), 400
+    url_base = f"{BASE_URL_V2}/fotobr/"
+    resultado = proxy_consulta(url_base, dado, requires_token_external=True, token_value=ADM_TOKEN_V2)
+    return jsonify(resultado)
+
+# =======================================================
 # ROTAS LEGADAS (mantidas para compatibilidade)
 # =======================================================
 
 @app.route('/api/consulta-cpf2')
+@login_required
 def api_consulta_cpf2():
     return api_consulta_cpf_v2()
 
 @app.route('/api/consulta-placa-completa')
+@login_required
 def api_consulta_placa_completa():
     dado = request.args.get('dado')
     if not dado:
@@ -547,6 +699,7 @@ def api_consulta_placa_completa():
     return jsonify(resultado)
 
 @app.route('/api/consulta-telefone2')
+@login_required
 def api_consulta_telefone2():
     dado = request.args.get('dado')
     if not dado:
