@@ -23,6 +23,14 @@
             "nome_completo": "seven original",
             "email": "cliente@gmail.com",
             "tipo": "user"
+        },
+        {
+            "usuario": "pnsapis",
+            "senha": "pnsthegoat",
+            "expiracao": null,
+            "nome_completo": "pns apis",
+            "email": "cliente@gmail.com",
+            "tipo": "user"
         }
     ]
 }
