@@ -31,6 +31,14 @@
             "nome_completo": "pns apis",
             "email": "cliente@gmail.com",
             "tipo": "user"
+        },
+        {
+            "usuario": "clienteteste",
+            "senha": "clienteteste55",
+            "expiracao": "2026-03-26",
+            "nome_completo": "klordteste",
+            "email": "cliente@gmail.com",
+            "tipo": "user"
         }
     ]
 }
